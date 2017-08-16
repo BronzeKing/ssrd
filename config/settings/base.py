@@ -190,8 +190,9 @@ QINIU_BUCKET_NAME = env("QINIU_BUCKET_NAME") or 'mumumu'
 QINIU_BUCKET_DOMAIN = env("QINIU_BUCKET_DOMAIN") or 'otjswwscq.bkt.clouddn.com'
 QINIU_SECURE_URL = env.bool("QINIU_SECURE_URL", False)
 STATIC_URL = QINIU_BUCKET_DOMAIN + '/static/'
-# DEFAULT_FILE_STORAGE = 'qiniustorage.backends.QiniuMediaStorage'
-# STATICFILES_STORAGE = 'qiniustorage.backends.QiniuStaticStorage'
+if 'production' in env("DJANGO_SETTINGS_MODULE", default=''):
+    DEFAULT_FILE_STORAGE = 'qiniustorage.backends.QiniuMediaStorage'
+    STATICFILES_STORAGE = 'qiniustorage.backends.QiniuStaticStorage'
 STATIC_URL = '/static/'
 # See: http://django-crispy-forms.readthedocs.io/en/latest/install.html#template-packs
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
