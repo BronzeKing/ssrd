@@ -1,0 +1,3 @@
+[submodule "ssrd-fe"]
+	path = ssrd-fe
+	url = https://github.com/Evansy/ssrd-fe

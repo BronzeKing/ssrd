@@ -1,0 +1,25 @@
+FROM python:3.5
+ENV PYTHONUNBUFFERED 1
+
+RUN sed -i s@archive.ubuntu.com@mirrors.aliyun.com@g /etc/apt/sources.list
+RUN sed -i s@deb.debian.org@mirrors.aliyun.com@g /etc/apt/sources.list
+RUN sed -i s@security.ubuntu.com@mirrors.aliyun.com@g /etc/apt/sources.list
+
+# Requirements have to be pulled and installed here, otherwise caching won't work
+COPY ./requirements /requirements
+RUN pip install --no-cache-dir --trusted-host mirrors.aliyun.com --index-url http://mirrors.aliyun.com/pypi/simple/ -r /requirements/local.txt
+
+COPY ./compose/django/entrypoint.sh /entrypoint.sh
+RUN sed -i 's/\r//' /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+COPY ./compose/django/start-dev.sh /start-dev.sh
+RUN sed -i 's/\r//' /start-dev.sh
+RUN chmod +x /start-dev.sh
+
+COPY . /app
+#RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && apt install -y nodejs && npm config set registry https://registry.npm.taobao.org && cd /app/ssrd-fe && npm i
+
+WORKDIR /app
+
+ENTRYPOINT ["/entrypoint.sh"]

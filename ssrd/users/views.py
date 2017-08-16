@@ -1,0 +1,426 @@
+from django.core.urlresolvers import reverse
+from django.views.generic import DetailView, ListView, RedirectView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from paraer import para_ok_or_400, perm_ok_or_403
+
+from ssrd import const
+from ssrd.contrib import ViewSet, V, UnSafeAPIView
+from .models import User, AuthorizeCode, Invitation, Project, Collect
+
+
+class UserDetailView(LoginRequiredMixin, DetailView):
+    model = User
+    # These next two lines tell the view to index lookups by username
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
+
+
+class UserRedirectView(LoginRequiredMixin, RedirectView):
+    permanent = False
+
+    def get_redirect_url(self):
+        return reverse(
+            'users:detail', kwargs={'username': self.request.user.username})
+
+
+class UserUpdateView(LoginRequiredMixin, UpdateView):
+
+    fields = [
+        'name',
+    ]
+
+    # we already imported User in the view code above, remember?
+    model = User
+
+    # send the user back to their own page after a successful update
+    def get_success_url(self):
+        return reverse(
+            'users:detail', kwargs={'username': self.request.user.username})
+
+    def get_object(self):
+        # Only get the User record for the user making the request
+        return User.objects.get(username=self.request.user.username)
+
+
+class UserListView(LoginRequiredMixin, ListView):
+    model = User
+    # These next two lines tell the view to index lookups by username
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
+
+
+@para_ok_or_400([{
+    'name': 'role',
+    'method': V.role,
+    'description': ("用户角色, 默认为4，即常规用户", ) + const.ROLES
+}, {
+    'name': 'email',
+    'method': V.email,
+    'required': True,
+    'description': '用户邮箱'
+}, {
+    'name': 'password',
+    'method': V.password,
+    'required': True,
+    'description': '用户密码'
+}, {
+    'name': 'username',
+    'method': V.name,
+    'required': True,
+    'description': '用户名'
+}])
+def post(self,
+         request,
+         username=None,
+         role=4,
+         email=None,
+         password=None,
+         **kwargs):
+    result = self.result_class()
+    if role < getattr(request.user, 'role', -10):  # 可以为匿名用户
+        return result(403)
+    data = dict()
+    username and data.update(username=username)
+    email and data.update(email=email)
+    role and data.update(role=role)
+    user = User(**data)
+    password and user.set_password(password)
+    user.save()
+    return result.data(user)(serialize=True)
+
+
+class UserView(UnSafeAPIView):
+    serializer_class = User
+
+    post = post
+    post.__doc__ = '新建用户'
+
+
+class UserViewSet(ViewSet):
+    serializer_class = User
+
+    @para_ok_or_400([{
+        'name': 'role',
+        'method': V.role,
+        'description': ("用户角色过滤", ) + const.ROLES
+    }, {
+        'name': 'status',
+        'method': V.num,
+        'description': ("用户状态过滤", ) + const.STATUS
+    }, {
+        'name': 'search',
+        'description': '按名称搜索',
+    }])
+    def list(self, request, role=None, search=None, status=None, **kwargs):
+        """"""
+        query = dict()
+        role and query.update(role=role)
+        status and query.update(is_active=status)
+        search and query.update(name__contains=search)
+        users = User.objects.filter(**query).order_by('-id')
+        return self.result_class().data(users)(serialize=True)
+
+    create = post
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.user,
+        'description': '用户ID',
+        'replace': 'user'
+    }, {
+        'name': 'username',
+        'method': V.name,
+        'description': '用户名称'
+    }, {
+        'name': 'email',
+        'method': V.email,
+        'description': '用户邮箱'
+    }, {
+        'name': 'status',
+        'method': V.num,
+        'description': ("用户状态过滤", ) + const.STATUS
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['user']),
+        'reason': '无权限'
+    }])
+    def update(self,
+               request,
+               user=None,
+               username=None,
+               status=None,
+               email=None,
+               **kwargs):
+        """更新用户"""
+        username and setattr(user, 'username', username)
+        email and setattr(user, 'email', email)
+        status and setattr(user, 'status', status)
+        user.save()
+        return self.result_class(user)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.user,
+        'description': '用户ID',
+        'replace': 'user'
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['user']),
+        'reason': '无权限'
+    }])
+    def destroy(self, request, user, **kwargs):
+        """
+        删除用户
+        """
+        user.delete()
+        return self.result_class().data(user)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.user,
+        'description': '用户ID',
+        'replace': 'user'
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['user']),
+        'reason': '无权限'
+    }])
+    def retrieve(self, request, user, **kwargs):
+        """
+        获取用户
+        """
+        return self.result_class().data(user)(serialize=True)
+
+
+class AuthorizeCodeViewSet(ViewSet):
+    serializer_class = AuthorizeCode
+
+    @para_ok_or_400([{
+        'name': 'user',
+        'method': V.user,
+        'description': '用户ID',
+    }])
+    def list(self, request, user=None, **kwargs):
+        query = dict()
+        request.user.role > 0 and query.update(user=request.user)
+        acs = AuthorizeCode.objects.filter(**query)
+        return self.result_class(data=acs)(serialize=True)
+
+    def create(self, request, **kwargs):
+        """新建授权码"""
+        obj = AuthorizeCode(creator=request.user).generateUser()
+        obj.save()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.authorizecode,
+        'description': '授权码ID',
+        'replace': 'obj'
+    }, {
+        'name': 'status',
+        'method': V.num,
+        'description': ("授权码状态过滤", ) + const.STATUS
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['obj']),
+        'reason': '无权限更改此授权码'
+    }])
+    def update(self, request, obj=None, status=None, **kwargs):
+        """更新授权码"""
+        obj.statsu = status
+        obj.save()
+        return self.result_class(obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.authorizecode,
+        'description': '授权码ID',
+        'replace': 'obj'
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['obj']),
+        'reason': '无权限更改此授权码'
+    }])
+    def destroy(self, request, obj=None, status=None, **kwargs):
+        """删除授权码"""
+        obj.delete()
+        return self.result_class(obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.authorizecode,
+        'description': '授权码ID',
+        'replace': 'ac'
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['ac']),
+        'reason': '无权限更改此授权码'
+    }])
+    def retrieve(self, request, ac=None, **kwargs):
+        """获取单个授权码"""
+        return self.result_class(ac)(serialize=True)
+
+
+class InvitationViewSet(ViewSet):
+    serializer_class = Invitation
+
+    @para_ok_or_400([{
+        'name': 'user',
+        'method': V.user,
+        'description': "所属用户过滤"
+    }])
+    def list(self, request, user=None, **kwargs):
+        """
+        获取受登录用户邀请的用户列表
+        """
+        query = dict()
+        request.user.role == 0 and user and query.update(request.user)
+        its = Invitation.objects.filter(**query)
+        return self.result_class(data=its)(serialize=True)
+
+
+class ProjectViewSet(ViewSet):
+    serializer_class = Project
+
+    @para_ok_or_400([{
+        'name': 'stats',
+        'method': V.status,
+        'description': ("项目状态过滤", ) + const.ORDER_STATUS
+    }, {
+        'name': 'search',
+        'description': '名称搜索过滤'
+    }])
+    def list(self, request, status=None, search=None, **kwargs):
+        """
+        获取受登录用户有权限的项目
+        """
+        user = request.user
+        query = dict()
+        user.role > 0 and query.update(user=user)  # 管理员获取全量
+        search and query.update(name=search)
+        status and query.update(status=status)
+        dataset = Project.objects.filter(**query).select_related('user')
+        return self.result_class(data=dataset)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'name',
+        'description': '项目名称',
+        'method': V.name,
+        'required': True
+    }, {
+        'name': 'picture',
+        'description': '背景图片',
+        'required': True,
+        'method': V.file,
+        'type': 'file'
+    }])
+    def create(self, request, name=None, picture=None, **kwargs):
+        """新建项目"""
+        data = dict(name=name, user=request.user, picture=picture)
+        obj = Project.objects.create(**data)
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.project,
+        'description': '项目ID',
+        'replace': 'obj'
+    }, {
+        'name': 'status',
+        'method': V.order_status,
+        'description': ("项目状态", ) + const.ORDER_STATUS
+    }, {
+        'name': 'name',
+        'description': '项目名称',
+        'method': V.name,
+        'required': True
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['obj']),
+        'reason': '无权限更改此项目'
+    }])
+    def update(self, request, obj=None, name=None, status=None, **kwargs):
+        """更新授权码"""
+        status and setattr(obj, 'status', status)
+        name and setattr(obj, 'name', name)
+        obj.save()
+        return self.result_class(obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.project,
+        'description': '项目ID',
+        'replace': 'obj'
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['obj']),
+        'reason': '无权限删除此项目'
+    }])
+    def destroy(self, request, obj=None, status=None, **kwargs):
+        """删除项目"""
+        obj.delete()
+        return self.result_class(obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.project,
+        'description': '项目ID',
+        'replace': 'obj'
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['obj']),
+        'reason': '无权限查看此项目'
+    }])
+    def retrieve(self, request, obj=None, **kwargs):
+        """获取单个项目"""
+        return self.result_class(obj)(serialize=True)
+
+
+class CollectViewSet(ViewSet):
+    serializer_class = Collect
+
+    def list(self, request):
+        """
+        获取登录用户的收藏列表
+        """
+        query = dict()
+        request.user.role > 0 and query.update(user=request.user)
+        objs = Collect.objects.filter(**query)
+        return self.result_class(objs)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'projectId',
+        'method': V.project,
+        'description': '项目ID',
+        'replace': 'obj',
+        'required': True
+    }])
+    def create(self, request, obj=None, **kwargs):
+        """
+        新建收藏
+        """
+        obj = Collect.objects.create(user=request.user, project=obj)
+        return self.result_class(obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.collect,
+        'description': '收藏品ID',
+        'replace': 'obj'
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['obj']),
+        'reason': '无权限删除此收藏'
+    }])
+    def destroy(self, request, obj=None, **kwargs):
+        """
+        删除收藏
+        """
+        obj.delete()
+        return self.result_class(obj)(serialize=True)
+
+
+class MessageViewSet(ViewSet):
+    def list(self, request):
+        pass
