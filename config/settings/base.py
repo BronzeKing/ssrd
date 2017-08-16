@@ -12,7 +12,6 @@ import environ
 ROOT_DIR = environ.Path(
     __file__) - 3  # (ssrd/config/settings/base.py - 3 = ssrd/)
 APPS_DIR = ROOT_DIR.path('ssrd')
-FE_DIR = ROOT_DIR.path('fe')
 BASE_DIR = str(ROOT_DIR)
 
 # Load operating system environment variables and then prepare to use them
@@ -156,7 +155,6 @@ TEMPLATES = [
         # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
         'DIRS': [
             str(APPS_DIR.path('templates')),
-            str(FE_DIR.path('dist'))
         ],
         'OPTIONS': {
             # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
@@ -206,8 +204,7 @@ STATIC_ROOT = 'staticfiles'
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-print(FE_DIR)
-STATICFILES_DIRS = [str(APPS_DIR.path('static')), str(FE_DIR.path('dist').path('static'))]
+STATICFILES_DIRS = [str(APPS_DIR.path('static'))]
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [
