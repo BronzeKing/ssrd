@@ -33,7 +33,7 @@ services:
 
       - certbot
     environment:
-      - MY_DOMAIN_NAME=mum5.cn
+      - MY_DOMAIN_NAME=api.mum5.cn
 
     ports:
       - "0.0.0.0:80:80"
@@ -45,7 +45,7 @@ services:
 
   certbot:
     image: quay.io/letsencrypt/letsencrypt
-    command: bash -c "sleep 6 && certbot certonly -n --standalone -d mum5.cn --test --agree-tos --email drinksober@foxmail.com --server https://acme-v01.api.letsencrypt.org/directory --rsa-key-size 4096 --verbose --keep-until-expiring --preferred-challenges http-01"
+    command: bash -c "sleep 6 && certbot certonly -n --standalone -d api.mum5.cn --test --agree-tos --email drinksober@foxmail.com --server https://acme-v01.api.letsencrypt.org/directory --rsa-key-size 4096 --verbose --keep-until-expiring --preferred-challenges http-01"
     entrypoint: ""
     volumes:
       - ./compose/letsencrypt/etc:/etc/letsencrypt
