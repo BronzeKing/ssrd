@@ -1,3 +1,0 @@
-[submodule "fe"]
-	path = fe
-	url = git@github.com:Evansy/ssrd-fe.git
