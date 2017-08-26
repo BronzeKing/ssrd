@@ -13,8 +13,8 @@ router.register(r'serviceNets', views.ServiceNetViewSet, base_name='serviceNets'
 router.register(r'servicePromises', views.ServicePromiseViewSet, base_name='servicePromises')
 router.register(r'recruitments', views.RecruitmentViewSet, base_name='recruitments')
 router.register(r'products', views.ProductViewSet, base_name='products')
-router.register(r'industryLink', views.IndustryLinkViewSet, base_name='industryLink')
-router.register(r'system', views.SystemViewSet, base_name='system')
+router.register(r'industryLinks', views.IndustryLinkViewSet, base_name='industryLinks')
+router.register(r'systems', views.SystemViewSet, base_name='systems')
 router.register(r'news', views.NewsViewSet, base_name='news')
 urlpatterns = [
     url(r'', include(router.urls)),

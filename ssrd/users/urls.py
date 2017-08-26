@@ -1,7 +1,7 @@
 from django.conf.urls import url, include
 from rest_framework.routers import DefaultRouter
 
-from . import views
+from . import views, captcha
 router = DefaultRouter(trailing_slash=False)
 router.register(r'users', views.UserViewSet, base_name='users')
 router.register(r'authorizecodes', views.AuthorizeCodeViewSet, base_name='authorizecodes')
@@ -19,6 +19,7 @@ urlpatterns = [
         view=views.UserDetailView.as_view(),
         name='detail'),
     url(r'', include(router.urls)),
+    url(r'^captcha/$', captcha.CaptchaView.as_view()),
     url(regex=r'^~update/$',
         view=views.UserUpdateView.as_view(),
         name='update'),
