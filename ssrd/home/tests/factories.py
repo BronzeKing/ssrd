@@ -1,4 +1,6 @@
 import factory
+import io
+from PIL import Image
 
 
 class RecruitmentCategoryFactory(factory.django.DjangoModelFactory):
@@ -96,3 +98,40 @@ class FAQsFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'home.FAQs'
+
+
+class NewsFactory(factory.django.DjangoModelFactory):
+    title = factory.Sequence(lambda n: 'title-{0}'.format(n))
+    content = factory.Sequence(lambda n: 'content-{0}'.format(n))
+
+    class Meta:
+        model = 'home.News'
+
+
+class SystemFactory(factory.django.DjangoModelFactory):
+    name = factory.Sequence(lambda n: 'name-{0}'.format(n))
+    summary = factory.Sequence(lambda n: 'summary-{0}'.format(n))
+    introduction = factory.Sequence(lambda n: 'introduction-{0}'.format(n))
+    feature = factory.Sequence(lambda n: 'feature-{0}'.format(n))
+    structure = 'test'
+
+    class Meta:
+        model = 'home.System'
+
+
+class IndustryLinkFactory(factory.django.DjangoModelFactory):
+    name = factory.Sequence(lambda n: 'name-{0}'.format(n))
+    link = factory.Sequence(lambda n: 'www.link-{0}.com'.format(n))
+    picture = 'test'
+
+    class Meta:
+        model = 'home.IndustryLink'
+
+
+def FileFactory():
+    file = io.BytesIO()
+    image = Image.new('RGBA', size=(100, 100), color=(155, 0, 0))
+    image.save(file, 'png')
+    file.name = 'test.png'
+    file.seek(0)
+    return file

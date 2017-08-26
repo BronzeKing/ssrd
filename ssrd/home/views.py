@@ -1,6 +1,5 @@
-from ssrd.contrib import ViewSet, APIView, V
-from ssrd.users.models import User, Group, Project
-from ssrd.home.models import AboutUs, FAQs, FeedBack, ServiceNet, ServicePromise, Recruitment, Product
+from ssrd.contrib import ViewSet, V
+from ssrd.home.models import AboutUs, FAQs, FeedBack, ServiceNet, ServicePromise, Recruitment, Product, IndustryLink, System, News
 from paraer import para_ok_or_400
 
 # Create your views here.
@@ -481,6 +480,225 @@ class ProductViewSet(ViewSet):
         'name': 'id',
         'description': '产品',
         'method': V.product,
+        'replace': 'obj'
+    }])
+    def retrieve(self, request, obj=None, **kwargs):
+        return self.result_class(data=obj)(serialize=True)
+
+
+class IndustryLinkViewSet(ViewSet):
+    """
+    行业链接
+    """
+    serializer_class = IndustryLink
+
+    def list(self, request, **kwargs):
+        """获取行业链接"""
+        obj = IndustryLink.objects.all().order_by('rank')
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'name',
+        'description': '名称',
+        'method': V.name,
+    }, {
+        'name': 'link',
+        'description': '行业链接',
+        'method': V.url,
+    }, {
+        'name': 'picture',
+        'description': '背景图片',
+        'method': V.file,
+        'type': 'file'
+    }])
+    def create(self, request, **kwargs):
+        obj = IndustryLink(**kwargs)
+        obj.save()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'id',
+        'description': '行业链接',
+        'method': V.industryLink,
+        'replace': 'obj'
+    }, {
+        'name': 'name',
+        'description': '产品名称',
+        'method': V.name,
+    }, {
+        'name': 'link',
+        'description': '行业链接',
+        'method': V.url,
+    }, {
+        'name': 'picture',
+        'description': '背景图片',
+        'method': V.file,
+        'type': 'file'
+    }])
+    def update(self, request, obj=None, **kwargs):
+        [setattr(obj, k, v) for k, v in kwargs.items() if v]
+        obj.save()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'id',
+        'description': '行业链接',
+        'method': V.industryLink,
+        'replace': 'obj'
+    }])
+    def destroy(self, request, obj=None, **kwargs):
+        obj.delete()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'id',
+        'description': '行业链接',
+        'method': V.industryLink,
+        'replace': 'obj'
+    }])
+    def retrieve(self, request, obj=None, **kwargs):
+        return self.result_class(data=obj)(serialize=True)
+
+
+class SystemViewSet(ViewSet):
+    """
+    系统展示
+    """
+    serializer_class = System
+
+    def list(self, request, **kwargs):
+        """获取系统展示"""
+        obj = System.objects.all().order_by('rank')
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'name',
+        'description': '名称',
+        'method': V.name,
+    }, {
+        'name': 'feature',
+        'description': '功能特性',
+    }, {
+        'name': 'introduction',
+        'description': '系统介绍',
+    }, {
+        'name': 'summary',
+        'description': '简介摘要',
+    }, {
+        'name': 'structure',
+        'description': '系统结构',
+        'method': V.file,
+        'type': 'file'
+    }])
+    def create(self, request, **kwargs):
+        obj = System(**kwargs)
+        obj.save()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'id',
+        'description': '系统',
+        'method': V.system,
+        'replace': 'obj'
+    }, {
+        'name': 'feature',
+        'description': '功能特性',
+    }, {
+        'name': 'introduction',
+        'description': '系统介绍',
+    }, {
+        'name': 'summary',
+        'description': '简介摘要',
+    }, {
+        'name': 'structure',
+        'description': '系统结构',
+        'method': V.file,
+        'type': 'file'
+    }])
+    def update(self, request, obj=None, **kwargs):
+        [setattr(obj, k, v) for k, v in kwargs.items() if v]
+        obj.save()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'id',
+        'description': '系统',
+        'method': V.system,
+        'replace': 'obj'
+    }])
+    def destroy(self, request, obj=None, **kwargs):
+        obj.delete()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'id',
+        'description': '系统',
+        'method': V.system,
+        'replace': 'obj'
+    }])
+    def retrieve(self, request, obj=None, **kwargs):
+        return self.result_class(data=obj)(serialize=True)
+
+
+class NewsViewSet(ViewSet):
+    """
+    最新公告
+    """
+    serializer_class = News
+
+    def list(self, request, **kwargs):
+        """获取系统展示"""
+        obj = News.objects.all().order_by('rank', 'created')
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'id',
+        'description': '新闻公告',
+        'method': V.news,
+        'replace': 'obj'
+    }, {
+        'name': 'title',
+        'description': '标题',
+    }, {
+        'name': 'content',
+        'description': '内容',
+    }])
+    def create(self, request, **kwargs):
+        obj = News(**kwargs)
+        obj.save()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'id',
+        'description': '新闻公告',
+        'method': V.news,
+        'replace': 'obj'
+    }, {
+        'name': 'title',
+        'description': '标题',
+    }, {
+        'name': 'content',
+        'description': '内容',
+    }])
+    def update(self, request, obj=None, **kwargs):
+        [setattr(obj, k, v) for k, v in kwargs.items() if v]
+        obj.save()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'id',
+        'description': '系统',
+        'method': V.news,
+        'replace': 'obj'
+    }])
+    def destroy(self, request, obj=None, **kwargs):
+        obj.delete()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'id',
+        'description': '系统',
+        'method': V.news,
         'replace': 'obj'
     }])
     def retrieve(self, request, obj=None, **kwargs):

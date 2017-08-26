@@ -188,9 +188,11 @@ QINIU_SECRET_KEY = env(
     "QINIU_SECRET_KEY") or 'Z2ztsscMNJZVZiZpDc8UCZnChMR46ncGQpuIrld9'
 QINIU_BUCKET_NAME = env("QINIU_BUCKET_NAME") or 'mumumu'
 QINIU_BUCKET_DOMAIN = env("QINIU_BUCKET_DOMAIN") or 'otjswwscq.bkt.clouddn.com'
-QINIU_SECURE_URL = env.bool("QINIU_SECURE_URL", False)
+with open('production.yml', 'r') as fd:
+    QINIU_SECURE_URL = bool('443:443' in fd.read())
+print(QINIU_SECURE_URL)
 STATIC_URL = QINIU_BUCKET_DOMAIN + '/static/'
-if 'production' in env("DJANGO_SETTINGS_MODULE", default=''):
+if 'production' in env("DJANGO_SETTINGS_MODULE", default='config.settings.local'):
     DEFAULT_FILE_STORAGE = 'qiniustorage.backends.QiniuMediaStorage'
     STATICFILES_STORAGE = 'qiniustorage.backends.QiniuStaticStorage'
 STATIC_URL = '/static/'

@@ -16,7 +16,7 @@ class UserTestCase(TestCase):
 
         self.data = {
             'create': 10,
-            'role': 4,
+            'role': 1,
         }
         self.assertList(1)
 

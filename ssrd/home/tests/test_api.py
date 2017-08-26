@@ -1,12 +1,12 @@
 from ssrd.contrib import TestCase
-from ssrd.home.tests.factories import CharityActivityFactory, ConsultationArticlesFactory, ProductFactory, RecruitmentFactory, ServicePromiseFactory, ServiceNetFactory, FeedBackFactory, AboutUsFactory, FAQsFactory
+from ssrd.home.tests import factories
 
 
 class AboutUsTestCase(TestCase):
     def setUp(self):
         super(AboutUsTestCase, self).setUp()
         self.baseurl = '/aboutus'
-        self.factory = AboutUsFactory
+        self.factory = factories.AboutUsFactory
         self.obj = self.factory()
 
     def test_list(self):
@@ -41,7 +41,7 @@ class FAQsTestCase(TestCase):
     def setUp(self):
         super(FAQsTestCase, self).setUp()
         self.baseurl = '/faqs'
-        self.factory = FAQsFactory
+        self.factory = factories.FAQsFactory
         self.obj = self.factory()
 
     def test_list(self):
@@ -66,7 +66,7 @@ class FeedBackTestCase(TestCase):
     def setUp(self):
         super(FeedBackTestCase, self).setUp()
         self.baseurl = '/feedBacks'
-        self.factory = FeedBackFactory
+        self.factory = factories.FeedBackFactory
         self.obj = self.factory()
 
     def test_list(self):
@@ -101,7 +101,7 @@ class ServiceNetTestCase(TestCase):
     def setUp(self):
         super(ServiceNetTestCase, self).setUp()
         self.baseurl = '/serviceNets'
-        self.factory = ServiceNetFactory
+        self.factory = factories.ServiceNetFactory
         self.obj = self.factory()
 
     def test_list(self):
@@ -138,7 +138,7 @@ class ServicePromiseTestCase(TestCase):
     def setUp(self):
         super(ServicePromiseTestCase, self).setUp()
         self.baseurl = '/servicePromises'
-        self.factory = ServicePromiseFactory
+        self.factory = factories.ServicePromiseFactory
         self.obj = self.factory()
 
     def test_list(self):
@@ -169,7 +169,7 @@ class RecruitmentTestCase(TestCase):
     def setUp(self):
         super(RecruitmentTestCase, self).setUp()
         self.baseurl = '/recruitments'
-        self.factory = RecruitmentFactory
+        self.factory = factories.RecruitmentFactory
         self.obj = self.factory()
 
     def test_list(self):
@@ -202,7 +202,7 @@ class ProductTestCase(TestCase):
     def setUp(self):
         super(ProductTestCase, self).setUp()
         self.baseurl = '/products'
-        self.factory = ProductFactory
+        self.factory = factories.ProductFactory
         self.obj = self.factory()
 
     def test_list(self):
@@ -225,5 +225,96 @@ class ProductTestCase(TestCase):
         self.data = {
             'name': 'name',
             'category': self.obj.category.id,
+        }
+        self.setBaseUrl(self.obj.id).asserter().assertResource()
+
+
+class NewsTestCase(TestCase):
+    def setUp(self):
+        super(NewsTestCase, self).setUp()
+        self.baseurl = '/news'
+        self.factory = factories.NewsFactory
+        self.obj = self.factory()
+
+    def test_list(self):
+        self.assertList()
+
+    def test_delete(self):
+        self.setBaseUrl(self.obj.id).asserter().assertResource()
+
+    def test_retrieve(self):
+        self.setBaseUrl(self.obj.id).asserter().assertResource()
+
+    def test_create(self):
+        self.data = {'title': 'title', 'content': 'content'}
+        self.asserter().assertResource()
+
+    def test_update(self):
+        self.data = {
+            'title': 'test',
+        }
+        self.setBaseUrl(self.obj.id).asserter().assertResource()
+
+
+class SystemTestCase(TestCase):
+    def setUp(self):
+        super(SystemTestCase, self).setUp()
+        self.baseurl = '/system'
+        self.factory = factories.SystemFactory
+        self.obj = self.factory()
+
+    def test_list(self):
+        self.assertList()
+
+    def test_delete(self):
+        self.setBaseUrl(self.obj.id).asserter().assertResource()
+
+    def test_retrieve(self):
+        self.setBaseUrl(self.obj.id).asserter().assertResource()
+
+    def test_create(self):
+        self.data = {
+            'name': 'name',
+            'summary': 'summary',
+            'introduction': 'introduction',
+            ' feature': 'feature',
+            'structure': factories.FileFactory()
+        }
+        self.asserter().assertResource()
+
+    def test_update(self):
+        self.data = {
+            'title': 'test',
+        }
+        self.setBaseUrl(self.obj.id).asserter().assertResource()
+
+
+class IndustryLinkTestCase(TestCase):
+    def setUp(self):
+        super(IndustryLinkTestCase, self).setUp()
+        self.baseurl = '/industryLink'
+        self.factory = factories.IndustryLinkFactory
+        self.obj = self.factory()
+
+    def test_list(self):
+        self.assertList()
+
+    def test_delete(self):
+        self.setBaseUrl(self.obj.id).asserter().assertResource()
+
+    def test_retrieve(self):
+        self.setBaseUrl(self.obj.id).asserter().assertResource()
+
+    def test_create(self):
+        self.data = {
+            'name': 'name',
+            'link': 'www.test.com',
+            'picture': factories.FileFactory()
+        }
+        self.asserter().assertResource()
+
+    def test_update(self):
+        self.data = {
+            'name': 'test',
         }
         self.setBaseUrl(self.obj.id).asserter().assertResource()

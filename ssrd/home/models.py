@@ -53,7 +53,7 @@ class AboutUs(models.Model):
 class FAQs(models.Model):
     questioin = models.TextField("问题")
     answer = models.TextField("回答")
-    rank = models.IntegerField('排序', default=0)
+    rank = models.IntegerField('排序', default=100)
 
     def __str__(self):
         return '<常见问答: ({}, {})>'.format(self.questioin, self.answer)
@@ -92,7 +92,7 @@ class ServiceNet(models.Model):
     mobile = models.IntegerField("联系手机")
     email = models.EmailField(_('email address'))
     address = models.CharField("联系地址", max_length=100)
-    rank = models.IntegerField('排序', default=0)
+    rank = models.IntegerField('排序', default=100)
 
     def __str__(self):
         return '<(服务网点, ({}, {}, {}, {}, {})>'.format(
@@ -113,7 +113,7 @@ class ServiceNet(models.Model):
 class ServicePromise(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
-    rank = models.IntegerField('排序', default=0)
+    rank = models.IntegerField('排序', default=100)
 
     def __str__(self):
         return '<服务承诺: ({}, {})>'.format(self.title, self.content)
@@ -186,3 +186,57 @@ class ConsultationArticles(models.Model):
 
 class CharityActivity(models.Model):
     pass
+
+
+class IndustryLink(models.Model):
+    name = models.CharField("名称", max_length=255)
+    picture = models.ImageField("背景图片", null=True)
+    link = models.TextField("行业链接")
+    rank = models.IntegerField("排序", default=100)
+
+    def data(self):
+        return dict(picture=self.picture.url, link=self.link, name=self.name)
+
+    def __str__(self):
+        return "<IndustryLink: {}, {}>".format(self.picture.url, self.link)
+
+    __repr__ = __str__
+
+
+class System(models.Model):
+    name = models.CharField("名称", max_length=255)
+    summary = models.TextField("简介摘要")
+    introduction = models.TextField("系统介绍")
+    feature = models.TextField("功能特性")
+    structure = models.ImageField("系统结构", null=True)
+    rank = models.IntegerField("排序", default=100)
+
+    def data(self):
+        return dict(
+            name=self.name,
+            summary=self.summary,
+            introduction=self.introduction,
+            feature=self.feature,
+            structure=self.structure.url)
+
+    def __str__(self):
+        return "<System: {}, {}>".format(self.name, self.structure.url)
+
+    __repr__ = __str__
+
+
+class News(models.Model):
+    title = models.TextField("标题")
+    content = models.TextField("内容")
+    created = models.DateTimeField("创建时间", auto_now_add=True)
+    rank = models.IntegerField("排序", default=100)
+
+    def data(self):
+        return dict(
+            title=self.title, content=self.content, created=self.created)
+
+    def __str__(self):
+        return "<News: {}, {}   {}>".format(self.title, self.content,
+                                            self.created)
+
+    __repr__ = __str__

@@ -1,6 +1,6 @@
 import re
-from ssrd.users.models import User, AuthorizeCode, Project, Invitation, Collect
-from ssrd.home.models import RecruitmentCategory, ProductCategory, AboutUs, FAQs, FeedBack, ServiceNet, ServicePromise, Recruitment, Product, ConsultationArticles, CharityActivity
+from ssrd.users import models as users
+from ssrd.home import models as home
 from ssrd import const
 from paraer import Valid as _Valid, MethodProxy
 
@@ -11,73 +11,85 @@ ORDER_STATUS = dict(const.ORDER_STATUS)
 
 
 class Valid(_Valid):
+    def news(self, pk):
+        self.msg = u'新闻公告不存在'
+        return home.News.objects.get(pk=pk)
+
+    def system(self, pk):
+        self.msg = u'系统介绍不存在'
+        return home.System.objects.get(pk=pk)
+
+    def industryLink(self, pk):
+        self.msg = u'行业介绍不存在'
+        return home.IndustryLink.objects.get(pk=pk)
+
     def recruitmentCategory(self, pk):
         self.msg = u'招贤纳士类别不存在'
-        return RecruitmentCategory.objects.get(pk=pk)
+        return home.RecruitmentCategory.objects.get(pk=pk)
 
     def productCategory(self, pk):
         self.msg = u'产品类别不存在'
-        return ProductCategory.objects.get(pk=pk)
+        return home.ProductCategory.objects.get(pk=pk)
 
     def aboutus(self, pk):
         self.msg = u'关于我们不存在'
-        return AboutUs.objects.get(pk=pk)
+        return home.AboutUs.objects.get(pk=pk)
 
     def faqs(self, pk):
         self.msg = u'FAQ不存在'
-        return FAQs.objects.get(pk=pk)
+        return home.FAQs.objects.get(pk=pk)
 
     def feedback(self, pk):
         self.msg = u'反馈不存在'
-        return FeedBack.objects.get(pk=pk)
+        return home.FeedBack.objects.get(pk=pk)
 
     def servicenet(self, pk):
         self.msg = u'服务网点不存在'
-        return ServiceNet.objects.get(pk=pk)
+        return home.ServiceNet.objects.get(pk=pk)
 
     def servicePromise(self, pk):
         self.msg = u'服务承诺不存在'
-        return ServicePromise.objects.get(pk=pk)
+        return home.ServicePromise.objects.get(pk=pk)
 
     def recruitment(self, pk):
         self.msg = u'招贤纳士不存在'
-        return Recruitment.objects.get(pk=pk)
+        return home.Recruitment.objects.get(pk=pk)
 
     def product(self, pk):
         self.msg = u'产品不存在'
-        return Product.objects.get(pk=pk)
+        return home.Product.objects.get(pk=pk)
 
     def consultationArticles(self, pk):
         self.msg = u'咨询我们不存在'
-        return ConsultationArticles.objects.get(pk=pk)
+        return home.ConsultationArticles.objects.get(pk=pk)
 
     def charityActivity(self, pk):
         self.msg = u'公益活动不存在'
-        return CharityActivity.objects.get(pk=pk)
+        return home.CharityActivity.objects.get(pk=pk)
 
     def user(self, pk):
         self.msg = u"用户不存在或已停用"
-        user = User.objects.get(id=pk)
+        user = users.User.objects.get(id=pk)
         return user
 
     def authorizecode(self, pk):
         self.msg = u"用户不存在或已停用"
-        ac = AuthorizeCode.objects.get(pk=pk)
+        ac = users.AuthorizeCode.objects.get(pk=pk)
         return ac
 
     def invitation(self, pk):
         self.msg = u"用户不存在或已停用"
-        obj = Invitation.objects.get(pk=pk)
+        obj = users.Invitation.objects.get(pk=pk)
         return obj
 
     def project(self, pk):
         self.msg = '项目不存在'
-        obj = Project.objects.get(pk=pk)
+        obj = users.Project.objects.get(pk=pk)
         return obj
 
     def collect(self, pk):
         self.msg = "收藏品不存在"
-        obj = Collect.objects.get(pk=pk)
+        obj = users.Collect.objects.get(pk=pk)
         return obj
 
     def role(self, value):
@@ -119,6 +131,9 @@ class Valid(_Valid):
     def file(self, obj):
         if not hasattr(obj, 'file'):
             self.msg = '必须为文件类型'
+        return
+
+    def url(self, string):
         return
 
     def num(self, num, n=1, bit=199, contain_0=True):
