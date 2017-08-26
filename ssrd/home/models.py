@@ -14,7 +14,11 @@ class RecruitmentCategory(models.Model):
     __repr__ = __str__
 
     def data(self):
-        return dict(name=self.name, created=self.created, updated=self.updated)
+        return dict(
+            name=self.name,
+            created=self.created,
+            updated=self.updated,
+            id=self.id)
 
 
 class ProductCategory(models.Model):
@@ -28,7 +32,11 @@ class ProductCategory(models.Model):
     __repr__ = __str__
 
     def data(self):
-        return dict(name=self.name, created=self.created, updated=self.updated)
+        return dict(
+            name=self.name,
+            created=self.created,
+            updated=self.updated,
+            id=self.id)
 
 
 class AboutUs(models.Model):
@@ -39,6 +47,7 @@ class AboutUs(models.Model):
 
     def data(self):
         return dict(
+            id=self.id,
             introduction=self.introduction,
             culture=self.culture,
             honour=self.honour,
@@ -60,7 +69,10 @@ class FAQs(models.Model):
 
     def data(self):
         return dict(
-            questioin=self.questioin, answer=self.answer, rank=self.rank)
+            questioin=self.questioin,
+            answer=self.answer,
+            rank=self.rank,
+            id=self.id)
 
 
 class FeedBack(models.Model):
@@ -79,6 +91,7 @@ class FeedBack(models.Model):
 
     def data(self):
         return dict(
+            id=sefl.id,
             name=self.name,
             mobile=self.mobile,
             email=self.email,
@@ -102,6 +115,7 @@ class ServiceNet(models.Model):
 
     def data(self):
         return dict(
+            id=self.id,
             name=self.name,
             linkman=self.linkman,
             mobile=self.mobile,
@@ -121,7 +135,8 @@ class ServicePromise(models.Model):
     __repr__ = __str__
 
     def data(self):
-        return dict(title=self.title, content=self.content, rank=self.rank)
+        return dict(
+            title=self.title, content=self.content, rank=self.rank, id=self.id)
 
 
 class Recruitment(models.Model):
@@ -142,6 +157,7 @@ class Recruitment(models.Model):
     def data(self):
         return dict(
             name=self.name,
+            id=self.id,
             salary=self.salary,
             detail=self.detail,
             category=self.category.data(),
@@ -165,6 +181,7 @@ class Product(models.Model):
     def data(self):
         return dict(
             name=self.name,
+            id=self.id,
             #  picture=self.picture,
             category=self.category.data(),
             created=self.created,
@@ -181,7 +198,7 @@ class ConsultationArticles(models.Model):
     __repr__ = __str__
 
     def data(self):
-        return dict(title=self.title, content=self.content)
+        return dict(title=self.title, content=self.content, id=self.id)
 
 
 class CharityActivity(models.Model):
@@ -195,7 +212,11 @@ class IndustryLink(models.Model):
     rank = models.IntegerField("排序", default=100)
 
     def data(self):
-        return dict(picture=self.picture.url, link=self.link, name=self.name)
+        return dict(
+            picture=self.picture.url,
+            link=self.link,
+            name=self.name,
+            id=self.id)
 
     def __str__(self):
         return "<IndustryLink: {}, {}>".format(self.picture.url, self.link)
@@ -214,6 +235,7 @@ class System(models.Model):
     def data(self):
         return dict(
             name=self.name,
+            id=self.id,
             summary=self.summary,
             introduction=self.introduction,
             feature=self.feature,
@@ -233,7 +255,10 @@ class News(models.Model):
 
     def data(self):
         return dict(
-            title=self.title, content=self.content, created=self.created)
+            id=self.id,
+            title=self.title,
+            content=self.content,
+            created=self.created)
 
     def __str__(self):
         return "<News: {}, {}   {}>".format(self.title, self.content,

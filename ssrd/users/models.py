@@ -53,6 +53,7 @@ class Group(models.Model):
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
+
     def __str__(self):
         return "<{}: {}>".format(self.name, self.created)
 
@@ -74,6 +75,7 @@ class Project(models.Model):
 
     def data(self):
         return dict(
+            id=self.id,
             user=self.user.data(),
             name=self.name,
             created=self.created,
@@ -166,6 +168,7 @@ class Collect(models.Model):
 
     def data(self):
         return dict(
+            id=self.id,
             project=self.project.data(),
             user=self.user.data(),
             created=self.created,
