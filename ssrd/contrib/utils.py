@@ -18,7 +18,8 @@ HTTP_HEADER_ENCODING = 'iso-8859-1'
 
 
 class Result(Result):
-    def __init__(self, data=None, errors=None, serializer=None, paginator=None):
+    def __init__(self, data=None, errors=None, serializer=None,
+                 paginator=None):
         self.errors = errors or []
         self._error = self.errors.append
         self.serializer = serializer
@@ -38,7 +39,8 @@ class Result(Result):
             data = None
         elif self.errors:
             data = dict(msg="Validation Error", errors=self.errors)
-        if isinstance(data, collections.Iterable) and not isinstance(data, dict):
+        if isinstance(data,
+                      collections.Iterable) and not isinstance(data, dict):
             if should_serialize:
                 data = [x.data() for x in data]
             data = self.paginator(data, paginate)
@@ -84,6 +86,7 @@ class TokenAuthentication(_TokenAuthentication):
             raise exceptions.AuthenticationFailed(_(u"无权限：管理员已注销当前用户"))
         return token.user, token
 
+
 class PageNumberPager(BasePagination):
     page_size = 5
     page_query_param = 'PageIndex'
@@ -119,15 +122,19 @@ def paginator(self, data, paginate=True):
     PageSize = request.GET.get('PageSize', '10')
     PageSize = PageSize.isdigit() and int(PageSize) or 10
     should_page = PageIndex.isdigit() and paginate
+    PageIndex = PageIndex.isdigit() and int(PageIndex) or 1
     RecordCount = len(data)
     PageCount = math.ceil(RecordCount / PageSize)
     result = dict(RecordCount=RecordCount, PageCount=PageCount, Records=data)
     if should_page:
         startRecord = (PageIndex - 1) * PageSize
-        endRecord = iTotalRecords if (iTotalRecords - startRecord < PageSize) else (startRecord + PageSize)
+        endRecord = PageCount if (PageCount - startRecord <
+                                  PageSize) else (startRecord + PageSize)
         data = data[startRecord:endRecord]
-        result = dict(RecordCount=RecordCount, PageCount=PageCount, Records=data)
+        result = dict(
+            RecordCount=RecordCount, PageCount=PageCount, Records=data)
     return result
+
 
 class ViewSet(_ViewSet):
     authentication_classes = (TokenAuthentication, )
@@ -137,10 +144,12 @@ class ViewSet(_ViewSet):
 
     @property
     def result_class(self):
-        return partial(self.__result_class, serializer=self.serializer_class, paginator=self.paginator)
+        return partial(
+            self.__result_class,
+            serializer=self.serializer_class,
+            paginator=self.paginator)
 
     paginator = paginator
-
 
 
 class APIView(_APIView):
@@ -151,8 +160,13 @@ class APIView(_APIView):
 
     @property
     def result_class(self):
-        return partial(self.__result_class, serializer=self.serializer_class, paginator=self.paginator)
+        return partial(
+            self.__result_class,
+            serializer=self.serializer_class,
+            paginator=self.paginator)
+
     paginator = paginator
+
 
 class UnSafeAPIView(_APIView):
     __result_class = Result

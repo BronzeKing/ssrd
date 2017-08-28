@@ -8,7 +8,7 @@ from ssrd.contrib import TokenView
 from paraer import get_swagger_view
 schema_view = get_swagger_view(title='ssrd')
 urlpatterns = [
-    url(r'^$', TemplateView.as_view(template_name='index.html'), name='home'),
+    url(r'^$', schema_view, name='home'),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
     url(r'^docs', schema_view),
     url(r'token$', TokenView.as_view()),

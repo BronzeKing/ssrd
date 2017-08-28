@@ -39,9 +39,9 @@ def get_reason(response):
 class TestCase(APITestCase):
 
     def setUp(self):
-        user, ok = User.objects.get_or_create(
+        self.user, ok = User.objects.get_or_create(
             username='root', email='root@h.com', password='123456', role=0)
-        token, ok = Token.objects.get_or_create(user=user)
+        token, ok = Token.objects.get_or_create(user=self.user)
         # cls.c.put = partial(cls.c.put, content_type='application/json')
         # cls.c.patch = partial(cls.c.patch, content_type='application/json')
         self.data = {}
@@ -49,7 +49,7 @@ class TestCase(APITestCase):
         self.token = 'Token ' + token.key
         self.c = APIClient(HTTP_AUTHORIZATION=self.token)
         self.c.credentials(HTTP_AUTHORIZATION=self.token)
-        self.c.force_authenticate(user=user)
+        self.c.force_authenticate(user=self.user)
 
     def asserter(self, status=200):
         method = self.data.pop(

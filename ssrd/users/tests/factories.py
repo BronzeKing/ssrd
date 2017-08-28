@@ -41,3 +41,12 @@ class CollectFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'users.Collect'
+
+
+class MessageFactory(factory.django.DjangoModelFactory):
+    title = factory.Sequence(lambda n: 'title-{0}'.format(n))
+    content = factory.Sequence(lambda n: 'content-{0}'.format(n))
+    userId = factory.Sequence(lambda n: n)
+
+    class Meta:
+        model = 'users.Message'

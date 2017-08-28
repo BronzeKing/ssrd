@@ -21,6 +21,8 @@ RUN sed -i 's/\r//' /entrypoint.sh \
     && chown django /entrypoint.sh \
     && chmod +x /gunicorn.sh \
     && chown django /gunicorn.sh
+    RUN apt-get install -y vim
+RUN wget https://raw.githubusercontent.com/drinksober/dotfiles/master/server.vimrc -O /root/.vimrc
 
 COPY . /app
 

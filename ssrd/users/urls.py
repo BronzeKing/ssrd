@@ -8,6 +8,7 @@ router.register(r'authorizecodes', views.AuthorizeCodeViewSet, base_name='author
 router.register(r'invitations', views.InvitationViewSet, base_name='invitations')
 router.register(r'projects', views.ProjectViewSet, base_name='projects')
 router.register(r'collects', views.CollectViewSet, base_name='collects')
+router.register(r'messages', views.MessageViewSet, base_name='messages')
 
 urlpatterns = [
     url(regex=r'^$', view=views.UserListView.as_view(), name='list'),

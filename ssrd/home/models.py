@@ -91,7 +91,7 @@ class FeedBack(models.Model):
 
     def data(self):
         return dict(
-            id=sefl.id,
+            id=self.id,
             name=self.name,
             mobile=self.mobile,
             email=self.email,

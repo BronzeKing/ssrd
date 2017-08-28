@@ -5,7 +5,7 @@ from paraer import para_ok_or_400, perm_ok_or_403
 
 from ssrd import const
 from ssrd.contrib import ViewSet, V, UnSafeAPIView
-from .models import User, AuthorizeCode, Invitation, Project, Collect
+from .models import User, AuthorizeCode, Invitation, Project, Collect, Message
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -420,7 +420,92 @@ class CollectViewSet(ViewSet):
         obj.delete()
         return self.result_class(obj)(serialize=True)
 
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.collect,
+        'description': '收藏品ID',
+        'replace': 'obj'
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['obj']),
+        'reason': '无权限删除此收藏'
+    }])
+    def retrieve(self, request, obj=None, **kwargs):
+        """
+        删除收藏
+        """
+        return self.result_class(obj)(serialize=True)
+
 
 class MessageViewSet(ViewSet):
-    def list(self, request):
-        pass
+    serializer_class = Message
+
+    @para_ok_or_400([{
+        'name': 'read',
+        'description': ("已读", ) + const.READ,
+    }])
+    def list(self, request, read=None, **kwargs):
+        """
+        获取登录用户的消息列表
+        """
+        query = dict(userId=request.user.id)
+        read and query.update(read=read)
+        objs = Message.objects.filter(**query).order_by('rank', '-created')
+        return self.result_class(objs)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'userId',
+        'description': '所属用户ID',
+        'method': V.user
+    }, {
+        'name': 'title',
+        'description': '标题',
+        'required': True
+    }, {
+        'name': 'content',
+        'description': '内容',
+        'required': True
+    }])
+    def create(self, request, title=None, user=None, content=None, **kwargs):
+        """
+        新建消息
+        """
+        user = user or request.user
+        obj = Message.objects.create(userId=user.id, title=title, content=content)
+        #  obj = Message.objects.bulk_create(
+        #  (Message(userId=x, title=title, content=content)
+        #  for x in User.objects.filter(role__gt=10)))
+        return self.result_class(obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.message,
+        'description': '消息ID',
+        'replace': 'obj'
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['obj']),
+        'reason': '无权限删除此消息'
+    }])
+    def destroy(self, request, obj=None, **kwargs):
+        """
+        删除消息
+        """
+        obj.delete()
+        return self.result_class(obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.message,
+        'description': '消息ID',
+        'replace': 'obj'
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['obj']),
+        'reason': '无权限删除此消息'
+    }])
+    def retrieve(self, request, obj=None, **kwargs):
+        """
+        获取消息
+        """
+        return self.result_class(obj)(serialize=True)

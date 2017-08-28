@@ -647,16 +647,11 @@ class NewsViewSet(ViewSet):
     serializer_class = News
 
     def list(self, request, **kwargs):
-        """获取系统展示"""
+        """获取新闻公告"""
         obj = News.objects.all().order_by('rank', 'created')
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
-        'description': '新闻公告',
-        'method': V.news,
-        'replace': 'obj'
-    }, {
         'name': 'title',
         'description': '标题',
     }, {
@@ -664,6 +659,9 @@ class NewsViewSet(ViewSet):
         'description': '内容',
     }])
     def create(self, request, **kwargs):
+        """
+        新建新闻公告
+        """
         obj = News(**kwargs)
         obj.save()
         return self.result_class(data=obj)(serialize=True)
@@ -681,25 +679,34 @@ class NewsViewSet(ViewSet):
         'description': '内容',
     }])
     def update(self, request, obj=None, **kwargs):
+        """
+        修改单条新闻公告
+        """
         [setattr(obj, k, v) for k, v in kwargs.items() if v]
         obj.save()
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
         'name': 'id',
-        'description': '系统',
+        'description': '新闻公告',
         'method': V.news,
         'replace': 'obj'
     }])
     def destroy(self, request, obj=None, **kwargs):
+        """
+        删除单条新闻公告
+        """
         obj.delete()
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
         'name': 'id',
-        'description': '系统',
+        'description': '新闻公告',
         'method': V.news,
         'replace': 'obj'
     }])
     def retrieve(self, request, obj=None, **kwargs):
+        """
+        获取单条新闻公告
+        """
         return self.result_class(data=obj)(serialize=True)

@@ -259,7 +259,7 @@ class NewsTestCase(TestCase):
 class SystemTestCase(TestCase):
     def setUp(self):
         super(SystemTestCase, self).setUp()
-        self.baseurl = '/system'
+        self.baseurl = '/systems'
         self.factory = factories.SystemFactory
         self.obj = self.factory()
 
@@ -292,7 +292,7 @@ class SystemTestCase(TestCase):
 class IndustryLinkTestCase(TestCase):
     def setUp(self):
         super(IndustryLinkTestCase, self).setUp()
-        self.baseurl = '/industryLink'
+        self.baseurl = '/industryLinks'
         self.factory = factories.IndustryLinkFactory
         self.obj = self.factory()
 

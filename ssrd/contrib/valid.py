@@ -11,6 +11,10 @@ ORDER_STATUS = dict(const.ORDER_STATUS)
 
 
 class Valid(_Valid):
+    def message(self, pk):
+        self.msg = u'消息不存在'
+        return users.Message.objects.get(pk=pk)
+
     def news(self, pk):
         self.msg = u'新闻公告不存在'
         return home.News.objects.get(pk=pk)
@@ -74,8 +78,8 @@ class Valid(_Valid):
 
     def authorizecode(self, pk):
         self.msg = u"用户不存在或已停用"
-        ac = users.AuthorizeCode.objects.get(pk=pk)
-        return ac
+        obj = users.AuthorizeCode.objects.get(pk=pk)
+        return obj
 
     def invitation(self, pk):
         self.msg = u"用户不存在或已停用"

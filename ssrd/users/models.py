@@ -53,7 +53,6 @@ class Group(models.Model):
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
-
     def __str__(self):
         return "<{}: {}>".format(self.name, self.created)
 
@@ -180,7 +179,24 @@ class Collect(models.Model):
     __repr__ = __str__
 
 
-class Message(object):
-    to = None
-    message = None
-    created = None
+class Message(models.Model):
+    userId = models.IntegerField("所属用户")
+    title = models.TextField("标题")
+    content = models.TextField("内容")
+    created = models.DateTimeField("创建时间", auto_now_add=True)
+    read = models.SmallIntegerField("已读", choices=const.READ, default=0)
+    rank = models.IntegerField("排序", default=100)
+
+    def data(self):
+        return dict(
+            id=self.id,
+            userId=self.userId,
+            title=self.title,
+            content=self.content,
+            read=self.read,
+            created=self.created)
+
+    def __str__(self):
+        return "<Message: {}, {}>".format(self.user, self.title)
+
+    __repr__ = __str__
