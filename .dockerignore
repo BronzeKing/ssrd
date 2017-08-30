@@ -3,3 +3,4 @@
 !.env
 !.pylintrc
 node_modules*
+fe/node_modules
