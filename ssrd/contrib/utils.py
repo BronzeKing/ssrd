@@ -12,12 +12,12 @@ from rest_framework.pagination import BasePagination
 from django.utils.six import text_type
 from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import ugettext as _
-from paraer import Result
+from paraer import Result as __Result
 
 HTTP_HEADER_ENCODING = 'iso-8859-1'
 
 
-class Result(Result):
+class Result(__Result):
     def __init__(self, data=None, errors=None, serializer=None,
                  paginator=None):
         self.errors = errors or []
@@ -43,10 +43,14 @@ class Result(Result):
                       collections.Iterable) and not isinstance(data, dict):
             if should_serialize:
                 data = [x.data() for x in data]
-            data = self.paginator(data, paginate)
+            data = self.paginator.paginate_queryset(
+                data, self.paginator.request, paginate=paginate)
         elif should_serialize:
             data = data.data()
         return Response(data, status=status, **kwargs)
+
+    def __bool__(self):
+        return not bool(self.errors)
 
 
 class TokenAuthentication(_TokenAuthentication):
@@ -91,9 +95,28 @@ class PageNumberPager(BasePagination):
     page_size = 5
     page_query_param = 'PageIndex'
     page_size_query_param = 'PageSize'
+    display_page_controls = False
 
-    def paginate_queryset(self, data, request, view=None):
-        return Response(get_paginator(data, request))
+    def paginate_queryset(self, data, request, view=None, paginate=True):
+        # 传了分页参数才做分页处理
+        paras = self.request.GET.get
+        PageIndex = paras('PageIndex', '')
+        PageSize = paras('PageSize', '10')
+        PageSize = PageSize.isdigit() and int(PageSize) or 10
+        should_page = PageIndex.isdigit() and paginate
+        PageIndex = PageIndex.isdigit() and int(PageIndex) or 1
+        RecordCount = len(data)
+        PageCount = math.ceil(RecordCount / PageSize)
+        result = dict(
+            RecordCount=RecordCount, PageCount=PageCount, Records=data)
+        if should_page:
+            startRecord = (PageIndex - 1) * PageSize
+            endRecord = PageCount if (PageCount - startRecord <
+                                      PageSize) else (startRecord + PageSize)
+            data = data[startRecord:endRecord]
+            result = dict(
+                RecordCount=RecordCount, PageCount=PageCount, Records=data)
+        return result
 
     def get_schema_fields(self, view):
         fields = [
@@ -115,27 +138,6 @@ class PageNumberPager(BasePagination):
         return fields
 
 
-def paginator(self, data, paginate=True):
-    request = self.request
-    # 传了分页参数才做分页处理
-    PageIndex = request.GET.get('PageIndex', '')
-    PageSize = request.GET.get('PageSize', '10')
-    PageSize = PageSize.isdigit() and int(PageSize) or 10
-    should_page = PageIndex.isdigit() and paginate
-    PageIndex = PageIndex.isdigit() and int(PageIndex) or 1
-    RecordCount = len(data)
-    PageCount = math.ceil(RecordCount / PageSize)
-    result = dict(RecordCount=RecordCount, PageCount=PageCount, Records=data)
-    if should_page:
-        startRecord = (PageIndex - 1) * PageSize
-        endRecord = PageCount if (PageCount - startRecord <
-                                  PageSize) else (startRecord + PageSize)
-        data = data[startRecord:endRecord]
-        result = dict(
-            RecordCount=RecordCount, PageCount=PageCount, Records=data)
-    return result
-
-
 class ViewSet(_ViewSet):
     authentication_classes = (TokenAuthentication, )
     permission_classes = (IsAuthenticated, )
@@ -144,12 +146,24 @@ class ViewSet(_ViewSet):
 
     @property
     def result_class(self):
+        paginator = self.paginator
+        paginator.request = self.request
         return partial(
             self.__result_class,
             serializer=self.serializer_class,
-            paginator=self.paginator)
+            paginator=paginator)
 
-    paginator = paginator
+    @property
+    def paginator(self):
+        """
+        The paginator instance associated with the view, or `None`.
+        """
+        if not hasattr(self, '_paginator'):
+            if self.pagination_class is None:
+                self._paginator = None
+            else:
+                self._paginator = self.pagination_class()
+        return self._paginator
 
 
 class APIView(_APIView):
@@ -160,12 +174,25 @@ class APIView(_APIView):
 
     @property
     def result_class(self):
+        paginator = self.paginator
+        paginator.request = self.request
         return partial(
             self.__result_class,
             serializer=self.serializer_class,
-            paginator=self.paginator)
+            paginator=paginator)
 
-    paginator = paginator
+    @property
+    def paginator(self):
+        """
+        The paginator instance associated with the view, or `None`.
+        """
+        if not hasattr(self, '_paginator'):
+            if self.pagination_class is None:
+                self._paginator = None
+            else:
+                self._paginator = self.pagination_class()
+                self._paginator.request = self.request
+        return self._paginator
 
 
 class UnSafeAPIView(_APIView):

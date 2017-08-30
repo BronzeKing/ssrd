@@ -131,24 +131,21 @@ class Valid(_Valid):
         if len(password) < 6:
             self.msg = "密码长度不能小于6位"
             return
+        return password
 
     def file(self, obj):
         if not hasattr(obj, 'file'):
             self.msg = '必须为文件类型'
-        return
+        return obj
 
     def url(self, string):
-        return
+        return string
 
     def num(self, num, n=1, bit=199, contain_0=True):
-        re_str = r'[%s-9][0-9]{0,%s}$' % (n, bit)
-        if re.match(re_str, num):
-            if contain_0:
-                return int(num)  # int(0) = 0， 但是布尔值还是False
-            else:
-                return int(num) or -1
         self.msg = "必须为数值类型"
-        return
+        if not num.isdigit():
+            return
+        return num
 
 
 V = MethodProxy(Valid)

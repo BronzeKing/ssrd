@@ -1,4 +1,5 @@
-from ssrd.contrib import ViewSet, V
+from ssrd.contrib import ViewSet, V, serializer
+from ssrd.contrib.serializer import Serializer
 from ssrd.home.models import AboutUs, FAQs, FeedBack, ServiceNet, ServicePromise, Recruitment, Product, IndustryLink, System, News
 from paraer import para_ok_or_400
 
@@ -6,7 +7,7 @@ from paraer import para_ok_or_400
 
 
 class AboutUsViewSet(ViewSet):
-    serializer_class = AboutUs
+    serializer_class = Serializer(AboutUs)
 
     def list(self, request):
         """
@@ -16,7 +17,7 @@ class AboutUsViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.aboutus,
         'description': '关于我们',
         'replace': 'obj',
@@ -57,7 +58,7 @@ class AboutUsViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.aboutus,
         'description': '关于我们',
         'replace': 'obj'
@@ -67,7 +68,7 @@ class AboutUsViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.aboutus,
         'description': '关于我们',
         'replace': 'obj'
@@ -77,7 +78,7 @@ class AboutUsViewSet(ViewSet):
 
 
 class FAQsViewSet(ViewSet):
-    serializer_class = FAQs
+    serializer_class = Serializer(FAQs)
 
     def list(self, request, **kwargs):
         """
@@ -99,7 +100,7 @@ class FAQsViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.faqs,
         'description': 'FAQ',
         'replace': 'obj'
@@ -116,7 +117,7 @@ class FAQsViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.faqs,
         'description': 'FAQ',
         'replace': 'obj'
@@ -126,17 +127,17 @@ class FAQsViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.faqs,
         'description': 'FAQ',
-        'replace': 'obj'
+        'replace': 'obj',
     }])
     def retrieve(self, request, obj=None, **kwargs):
         return self.result_class(data=obj)(serialize=True)
 
 
 class FeedBackViewSet(ViewSet):
-    serializer_class = FeedBack
+    serializer_class = Serializer(FeedBack)
 
     def list(self, request, **kwargs):
         """
@@ -164,7 +165,7 @@ class FeedBackViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.feedback,
         'description': '意见反馈',
         'replace': 'obj'
@@ -187,7 +188,7 @@ class FeedBackViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.feedback,
         'description': '意见反馈',
         'replace': 'obj'
@@ -197,7 +198,7 @@ class FeedBackViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.feedback,
         'description': '意见反馈',
         'replace': 'obj'
@@ -207,7 +208,7 @@ class FeedBackViewSet(ViewSet):
 
 
 class ServiceNetViewSet(ViewSet):
-    serializer_class = ServiceNet
+    serializer_class = Serializer(ServiceNet)
 
     def list(self, request, **kwargs):
         obj = ServiceNet.objects.all()
@@ -235,7 +236,7 @@ class ServiceNetViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.servicenet,
         'description': '服务网点',
         'replace': 'obj'
@@ -261,7 +262,7 @@ class ServiceNetViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.servicenet,
         'description': '服务网点',
         'replace': 'obj'
@@ -271,7 +272,7 @@ class ServiceNetViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.servicenet,
         'description': '服务网点',
         'replace': 'obj'
@@ -281,7 +282,7 @@ class ServiceNetViewSet(ViewSet):
 
 
 class ServicePromiseViewSet(ViewSet):
-    serializer_class = ServicePromise
+    serializer_class = Serializer(ServicePromise)
 
     def list(self, request, **kwargs):
         """
@@ -303,7 +304,7 @@ class ServicePromiseViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.servicePromise,
         'description': '服务承诺',
         'replace': 'obj'
@@ -320,7 +321,7 @@ class ServicePromiseViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.servicePromise,
         'description': '服务承诺',
         'replace': 'obj'
@@ -330,7 +331,7 @@ class ServicePromiseViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.servicePromise,
         'description': '服务承诺',
         'replace': 'obj'
@@ -343,7 +344,7 @@ class RecruitmentViewSet(ViewSet):
     """
     招贤纳士
     """
-    serializer_class = Recruitment
+    serializer_class = Serializer(Recruitment)
 
     def list(self, request, **kwargs):
         """获取招贤纳士"""
@@ -372,7 +373,7 @@ class RecruitmentViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.recruitment,
         'description': '招贤纳士',
         'replace': 'obj'
@@ -398,7 +399,7 @@ class RecruitmentViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.recruitment,
         'description': '招贤纳士',
         'replace': 'obj'
@@ -408,7 +409,7 @@ class RecruitmentViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'method': V.recruitment,
         'description': '招贤纳士',
         'replace': 'obj'
@@ -418,7 +419,7 @@ class RecruitmentViewSet(ViewSet):
 
 
 class ProductViewSet(ViewSet):
-    serializer_class = Product
+    serializer_class = Serializer(Product)
     """产品"""
 
     def list(self, request, **kwargs):
@@ -444,7 +445,7 @@ class ProductViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'description': '产品',
         'method': V.product,
         'replace': 'obj'
@@ -467,7 +468,7 @@ class ProductViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'description': '产品',
         'method': V.product,
         'replace': 'obj'
@@ -477,7 +478,7 @@ class ProductViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'description': '产品',
         'method': V.product,
         'replace': 'obj'
@@ -490,7 +491,7 @@ class IndustryLinkViewSet(ViewSet):
     """
     行业链接
     """
-    serializer_class = IndustryLink
+    serializer_class = Serializer(IndustryLink)
 
     def list(self, request, **kwargs):
         """获取行业链接"""
@@ -517,7 +518,7 @@ class IndustryLinkViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'description': '行业链接',
         'method': V.industryLink,
         'replace': 'obj'
@@ -541,7 +542,7 @@ class IndustryLinkViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'description': '行业链接',
         'method': V.industryLink,
         'replace': 'obj'
@@ -551,7 +552,7 @@ class IndustryLinkViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'description': '行业链接',
         'method': V.industryLink,
         'replace': 'obj'
@@ -564,7 +565,7 @@ class SystemViewSet(ViewSet):
     """
     系统展示
     """
-    serializer_class = System
+    serializer_class = Serializer(System)
 
     def list(self, request, **kwargs):
         """获取系统展示"""
@@ -596,7 +597,7 @@ class SystemViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'description': '系统',
         'method': V.system,
         'replace': 'obj'
@@ -621,7 +622,7 @@ class SystemViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'description': '系统',
         'method': V.system,
         'replace': 'obj'
@@ -631,7 +632,7 @@ class SystemViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'description': '系统',
         'method': V.system,
         'replace': 'obj'
@@ -644,7 +645,7 @@ class NewsViewSet(ViewSet):
     """
     最新公告
     """
-    serializer_class = News
+    serializer_class = Serializer(News)
 
     def list(self, request, **kwargs):
         """获取新闻公告"""
@@ -667,7 +668,7 @@ class NewsViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'description': '新闻公告',
         'method': V.news,
         'replace': 'obj'
@@ -687,7 +688,7 @@ class NewsViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'description': '新闻公告',
         'method': V.news,
         'replace': 'obj'
@@ -700,7 +701,7 @@ class NewsViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'id',
+        'name': 'pk',
         'description': '新闻公告',
         'method': V.news,
         'replace': 'obj'

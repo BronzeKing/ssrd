@@ -1,4 +1,6 @@
 import factory
+import io
+from PIL import Image
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -50,3 +52,12 @@ class MessageFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'users.Message'
+
+
+def FileFactory():
+    file = io.BytesIO()
+    image = Image.new('RGBA', size=(100, 100), color=(155, 0, 0))
+    image.save(file, 'png')
+    file.name = 'test.png'
+    file.seek(0)
+    return file

@@ -58,7 +58,7 @@ class ProjectTestCase(TestCase):
         self.assertList()
 
     def test_create(self):
-        self.data = {'name': 'create'}
+        self.data = {'name': 'create', 'picture': factories.FileFactory()}
         self.asserter().assertResource()
 
     def test_update(self):
@@ -140,7 +140,7 @@ class MessagesTestCase(TestCase):
         self.assertList()
 
     def test_create(self):
-        self.data = {'title': 'title', 'content': 'content', 'userId': 1}
+        self.data = {'title': 'title', 'content': 'content', 'userId': self.user.id}
         self.asserter().assertResource()
 
     def test_delete(self):

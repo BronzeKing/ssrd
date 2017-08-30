@@ -5,6 +5,7 @@ from paraer import para_ok_or_400, perm_ok_or_403
 
 from ssrd import const
 from ssrd.contrib import ViewSet, V, UnSafeAPIView
+from ssrd.contrib.serializer import Serializer
 from .models import User, AuthorizeCode, Invitation, Project, Collect, Message
 
 
@@ -90,14 +91,14 @@ def post(self,
 
 
 class UserView(UnSafeAPIView):
-    serializer_class = User
+    serializer_class = Serializer(User)
 
     post = post
     post.__doc__ = '新建用户'
 
 
 class UserViewSet(ViewSet):
-    serializer_class = User
+    serializer_class = Serializer(User)
 
     @para_ok_or_400([{
         'name': 'role',
@@ -193,7 +194,7 @@ class UserViewSet(ViewSet):
 
 
 class AuthorizeCodeViewSet(ViewSet):
-    serializer_class = AuthorizeCode
+    serializer_class = Serializer(AuthorizeCode)
 
     @para_ok_or_400([{
         'name': 'user',
@@ -263,7 +264,7 @@ class AuthorizeCodeViewSet(ViewSet):
 
 
 class InvitationViewSet(ViewSet):
-    serializer_class = Invitation
+    serializer_class = Serializer(Invitation)
 
     @para_ok_or_400([{
         'name': 'user',
@@ -281,7 +282,7 @@ class InvitationViewSet(ViewSet):
 
 
 class ProjectViewSet(ViewSet):
-    serializer_class = Project
+    serializer_class = Serializer(Project)
 
     @para_ok_or_400([{
         'name': 'stats',
@@ -334,7 +335,6 @@ class ProjectViewSet(ViewSet):
         'name': 'name',
         'description': '项目名称',
         'method': V.name,
-        'required': True
     }])
     @perm_ok_or_403([{
         'method': lambda r, k: r.user.has_permission(k['obj']),
@@ -378,7 +378,7 @@ class ProjectViewSet(ViewSet):
 
 
 class CollectViewSet(ViewSet):
-    serializer_class = Collect
+    serializer_class = Serializer(Collect)
 
     def list(self, request):
         """
@@ -438,7 +438,7 @@ class CollectViewSet(ViewSet):
 
 
 class MessageViewSet(ViewSet):
-    serializer_class = Message
+    serializer_class = Serializer(Message)
 
     @para_ok_or_400([{
         'name': 'read',
