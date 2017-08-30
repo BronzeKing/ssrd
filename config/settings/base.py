@@ -51,6 +51,7 @@ THIRD_PARTY_APPS = [
     'rest_framework.authtoken',
     'rest_framework_swagger',
     'crispy_forms',  # Form layouts
+    'social_django',
     'allauth',  # registration
     'allauth.account',  # registration
     'allauth.socialaccount',  # registration
@@ -83,6 +84,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware'
 ]
 
 # MIGRATIONS CONFIGURATION
@@ -270,6 +272,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'ssrd.contrib.auth.EmailBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
+    'social_core.backends.qq.QQOAuth2',
 ]
 
 # Some really nice defaults
@@ -330,3 +333,6 @@ EMAIL_PORT = env('EMAIL_PORT')
 SERVER_EMAIL = env('SERVER_EMAIL')
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS')
+
+SOCIAL_AUTH_QQ_KEY = '1106307739'
+SOCIAL_AUTH_QQ_SECRET = 'JIQClcx7r4XU2T4D'

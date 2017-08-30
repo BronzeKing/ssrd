@@ -49,9 +49,5 @@ django-rest-swagger
 # qiniu
 django-qiniu-storage
 
-
-
-
-
 # Your custom requirements go here
 paraer

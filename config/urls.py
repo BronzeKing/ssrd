@@ -17,6 +17,7 @@ urlpatterns = [
 
     # User management
     url(r'', include('ssrd.users.urls', namespace='users')),
+    url(r'', include('social.apps.django_app.urls', namespace='socail')),
     url(r'', include('ssrd.home.urls', namespace='home')),
     url(r'^accounts/', include('allauth.urls')),
 
