@@ -252,15 +252,15 @@ class AuthorizeCodeViewSet(ViewSet):
         'name': 'pk',
         'method': V.authorizecode,
         'description': '授权码ID',
-        'replace': 'ac'
+        'replace': 'obj'
     }])
     @perm_ok_or_403([{
         'method': lambda r, k: r.user.has_permission(k['ac']),
         'reason': '无权限更改此授权码'
     }])
-    def retrieve(self, request, ac=None, **kwargs):
+    def retrieve(self, request, obj=None, **kwargs):
         """获取单个授权码"""
-        return self.result_class(ac)(serialize=True)
+        return self.result_class(obj)(serialize=True)
 
 
 class InvitationViewSet(ViewSet):
