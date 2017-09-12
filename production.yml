@@ -26,35 +26,35 @@ services:
     ports:
       - "0.0.0.0:5000:5000"
 
-  nginx:
-    build: ./compose/nginx
-    depends_on:
-      - django
+  # nginx:
+    # build: ./compose/nginx
+    # depends_on:
+      # - django
 
-      - certbot
-    environment:
-      - MY_DOMAIN_NAME=api.mum5.cn
+      # - certbot
+    # environment:
+      # - MY_DOMAIN_NAME=api.mum5.cn
 
-    ports:
-      - "0.0.0.0:80:80"
+    # ports:
+      # - "0.0.0.0:80:80"
 
-      - "0.0.0.0:443:443"
-    volumes:
-      - ./compose/letsencrypt/etc:/etc/letsencrypt
-      - ./compose/letsencrypt/lib:/var/lib/letsencrypt
+      # - "0.0.0.0:443:443"
+    # volumes:
+      # - ./compose/letsencrypt/etc:/etc/letsencrypt
+      # - ./compose/letsencrypt/lib:/var/lib/letsencrypt
 
-  certbot:
-    image: quay.io/letsencrypt/letsencrypt
-    command: bash -c "sleep 6 && certbot certonly -n --standalone -d api.mum5.cn --test --agree-tos --email drinksober@foxmail.com --server https://acme-v01.api.letsencrypt.org/directory --rsa-key-size 4096 --verbose --keep-until-expiring --preferred-challenges http-01"
-    entrypoint: ""
-    volumes:
-      - ./compose/letsencrypt/etc:/etc/letsencrypt
-      - ./compose/letsencrypt/lib:/var/lib/letsencrypt
-    ports:
-      - "80"
-      - "443"
-    environment:
-      - TERM=xterm
+  # certbot:
+    # image: quay.io/letsencrypt/letsencrypt
+    # command: bash -c "sleep 6 && certbot certonly -n --standalone -d api.mum5.cn --test --agree-tos --email drinksober@foxmail.com --server https://acme-v01.api.letsencrypt.org/directory --rsa-key-size 4096 --verbose --keep-until-expiring --preferred-challenges http-01"
+    # entrypoint: ""
+    # volumes:
+      # - ./compose/letsencrypt/etc:/etc/letsencrypt
+      # - ./compose/letsencrypt/lib:/var/lib/letsencrypt
+    # ports:
+      # - "80"
+      # - "443"
+    # environment:
+      # - TERM=xterm
 
 
   redis:
