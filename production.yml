@@ -21,8 +21,6 @@ services:
       - redis
     command: bash -x ./compose/django/gunicorn.sh
     env_file: .env
-    volumes:
-      - .:/app
     ports:
       - "0.0.0.0:5000:5000"
 

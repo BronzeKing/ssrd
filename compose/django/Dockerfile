@@ -26,6 +26,7 @@ RUN wget https://raw.githubusercontent.com/drinksober/dotfiles/master/server.vim
 COPY . /app
 
 RUN pip install --no-cache-dir --trusted-host mirrors.aliyun.com --index-url http://mirrors.aliyun.com/pypi/simple/ -r /requirements/new.txt
+RUN pip install paraer
 RUN chown -R django /app
 
 #RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && apt install -y nodejs && npm config set registry https://registry.npm.taobao.org && cd /app/ssrd-fe && npm i

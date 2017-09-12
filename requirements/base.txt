@@ -46,8 +46,7 @@ redis>=2.10.5
 djangorestframework
 django-rest-swagger
 
-# qiniu
-django-qiniu-storage
 
 # Your custom requirements go here
-paraer
+# qiniu
+django-qiniu-storage

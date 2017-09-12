@@ -189,7 +189,7 @@ QINIU_ACCESS_KEY = env(
 QINIU_SECRET_KEY = env(
     "QINIU_SECRET_KEY") or 'Z2ztsscMNJZVZiZpDc8UCZnChMR46ncGQpuIrld9'
 QINIU_BUCKET_NAME = env("QINIU_BUCKET_NAME") or 'mumumu'
-QINIU_BUCKET_DOMAIN = env("QINIU_BUCKET_DOMAIN") or 'otjswwscq.bkt.clouddn.com'
+QINIU_BUCKET_DOMAIN = env("QINIU_BUCKET_DOMAIN") or 'static.mum5.cn'
 with open('production.yml', 'r') as fd:
     QINIU_SECURE_URL = bool('443:443' in fd.read())
 STATIC_URL = QINIU_BUCKET_DOMAIN + '/static/'
