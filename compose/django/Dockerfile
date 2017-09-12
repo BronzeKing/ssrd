@@ -11,8 +11,7 @@ RUN groupadd -r django \
 
 # Requirements have to be pulled and installed here, otherwise caching won't work
 COPY ./requirements /requirements
-RUN pip install --no-cache-dir --trusted-host mirrors.aliyun.com --index-url http://mirrors.aliyun.com/pypi/simple/ -r /requirements/production.txt \
-    && rm -rf /requirements
+RUN pip install --no-cache-dir --trusted-host mirrors.aliyun.com --index-url http://mirrors.aliyun.com/pypi/simple/ -r /requirements/production.txt
 
 COPY ./compose/django/gunicorn.sh ./compose/django/entrypoint.sh /
 RUN sed -i 's/\r//' /entrypoint.sh \
@@ -26,8 +25,7 @@ RUN wget https://raw.githubusercontent.com/drinksober/dotfiles/master/server.vim
 
 COPY . /app
 
-RUN pip install --no-cache-dir --trusted-host mirrors.aliyun.com --index-url http://mirrors.aliyun.com/pypi/simple/ -r /requirements/production.txt \
-    && rm -rf /requirements/new.txt
+RUN pip install --no-cache-dir --trusted-host mirrors.aliyun.com --index-url http://mirrors.aliyun.com/pypi/simple/ -r /requirements/new.txt
 RUN chown -R django /app
 
 #RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && apt install -y nodejs && npm config set registry https://registry.npm.taobao.org && cd /app/ssrd-fe && npm i
