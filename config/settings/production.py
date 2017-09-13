@@ -52,8 +52,14 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS += [
     'gunicorn',
+    'corsheaders'
 ]
+MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE
 
+CORS_ORIGIN_WHITELIST = (
+    'mum5.cn',
+    '127.0.0.1:3000'
+)
 # STORAGE CONFIGURATION
 # ------------------------------------------------------------------------------
 # Uploaded Media Files
