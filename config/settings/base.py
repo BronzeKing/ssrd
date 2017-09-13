@@ -299,7 +299,7 @@ ADMIN_URL = r'^admin/'
 
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
-REST_FRAMEWORK = {"DATETIME_FORMAT": "%s.%f"}
+REST_FRAMEWORK = {"DATETIME_FORMAT": "%s"}
 
 SWAGGER_SETTINGS = {
     'VERSION': '1.14.0',
@@ -337,3 +337,5 @@ EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS')
 
 SOCIAL_AUTH_QQ_KEY = '1106307739'
 SOCIAL_AUTH_QQ_SECRET = 'JIQClcx7r4XU2T4D'
+
+SWAGGER_SETTINGS = {'schemas': 'https'}

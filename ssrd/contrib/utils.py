@@ -42,11 +42,11 @@ class Result(__Result):
         if isinstance(data,
                       collections.Iterable) and not isinstance(data, dict):
             if should_serialize:
-                data = [x.data() for x in data]
+                data = self.serializer(data, many=True).data
             data = self.paginator.paginate_queryset(
                 data, self.paginator.request, paginate=paginate)
         elif should_serialize:
-            data = data.data()
+            data = self.serializer(data).data
         return Response(data, status=status, **kwargs)
 
     def __bool__(self):

@@ -255,7 +255,7 @@ class AuthorizeCodeViewSet(ViewSet):
         'replace': 'obj'
     }])
     @perm_ok_or_403([{
-        'method': lambda r, k: r.user.has_permission(k['ac']),
+        'method': lambda r, k: r.user.has_permission(k['obj']),
         'reason': '无权限更改此授权码'
     }])
     def retrieve(self, request, obj=None, **kwargs):
