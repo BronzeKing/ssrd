@@ -45,7 +45,7 @@ X_FRAME_OPTIONS = 'DENY'
 # See https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = env.list(
     'DJANGO_ALLOWED_HOSTS', default=[
-        'mumumu.cc',
+        'mum5.cn',
     ])
 ALLOWED_HOSTS = ["*"]
 # END SITE CONFIGURATION
@@ -56,6 +56,7 @@ INSTALLED_APPS += [
 ]
 MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE
 
+CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
     'mum5.cn',
     '127.0.0.1:3000'
