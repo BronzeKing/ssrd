@@ -192,9 +192,9 @@ QINIU_BUCKET_DOMAIN = env("QINIU_BUCKET_DOMAIN") or 'static.mum5.cn'
 with open('production.yml', 'r') as fd:
     QINIU_SECURE_URL = bool('443:443' in fd.read())
 STATIC_URL = QINIU_BUCKET_DOMAIN + '/static/'
-if 'production' in env("DJANGO_SETTINGS_MODULE", default='config.settings.local'):
-    DEFAULT_FILE_STORAGE = 'qiniustorage.backends.QiniuMediaStorage'
-    STATICFILES_STORAGE = 'qiniustorage.backends.QiniuStaticStorage'
+#  if 'production' in env("DJANGO_SETTINGS_MODULE", default='config.settings.local'):
+DEFAULT_FILE_STORAGE = 'qiniustorage.backends.QiniuMediaStorage'
+STATICFILES_STORAGE = 'qiniustorage.backends.QiniuStaticStorage'
 STATIC_URL = '/static/'
 # See: http://django-crispy-forms.readthedocs.io/en/latest/install.html#template-packs
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -222,7 +222,9 @@ MEDIA_ROOT = str(APPS_DIR('media'))
 PROTOTYPE_ROOT = str(ROOT_DIR('prototype'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
-MEDIA_URL = '/media/'
+MEDIA_URL = env("MEDIA_URL") or "/media/"
+#  MEDIA_URL = 'media/'
+
 
 # URL Configuration
 # ------------------------------------------------------------------------------
