@@ -143,26 +143,28 @@ class Recruitment(models.Model):
     """招贤纳士"""
     name = models.CharField("职位名称", max_length=100)
     salary = models.CharField("薪资待遇", max_length=50)
-    detail = models.TextField("职位简介")
-    category = models.ForeignKey(
-        RecruitmentCategory, verbose_name="职位类别", null=True)
+    jobDetail = models.TextField("职位简介")
+    address = models.CharField("地点", max_length=100, default='')
+    number = models.SmallIntegerField("招聘数量", default=1)
+    # category = models.ForeignKey(
+        # RecruitmentCategory, verbose_name="职位类别")
     created = models.DateTimeField("创建时间", auto_now_add=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
     def __str__(self):
-        return '<招贤纳士: {}, {}>'.format(self.name, 'asdself.category.name')
+        return '<招贤纳士: {}>'.format(self.name)
 
     __repr__ = __str__
 
-    def data(self):
-        return dict(
-            name=self.name,
-            id=self.id,
-            salary=self.salary,
-            detail=self.detail,
-            category=self.category.data(),
-            created=self.created,
-            updated=self.updated)
+    #  def data(self):
+        #  return dict(
+            #  name=self.name,
+            #  id=self.id,
+            #  salary=self.salary,
+            #  detail=self.detail,
+            #  # category=self.category.data(),
+            #  created=self.created,
+            #  updated=self.updated)
 
 
 class Product(models.Model):

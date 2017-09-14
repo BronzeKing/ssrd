@@ -31,6 +31,10 @@ class Valid(_Valid):
         self.msg = u'招贤纳士类别不存在'
         return home.RecruitmentCategory.objects.get(pk=pk)
 
+    def recruitment(self, pk):
+        self.msg = u'招贤纳士不存在'
+        return home.Recruitment.objects.get(pk=pk)
+
     def productCategory(self, pk):
         self.msg = u'产品类别不存在'
         return home.ProductCategory.objects.get(pk=pk)
@@ -54,10 +58,6 @@ class Valid(_Valid):
     def servicePromise(self, pk):
         self.msg = u'服务承诺不存在'
         return home.ServicePromise.objects.get(pk=pk)
-
-    def recruitment(self, pk):
-        self.msg = u'招贤纳士不存在'
-        return home.Recruitment.objects.get(pk=pk)
 
     def product(self, pk):
         self.msg = u'产品不存在'

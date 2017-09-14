@@ -1,11 +1,4 @@
 from rest_framework import serializers
-from ssrd.home import models as home
-
-
-# class FAQsSerializer(serializers.ModelSerializer):
-    # class Meta:
-        # model = home.FAQs
-        # exclude = ()
 
 
 def Serializer(Model):
@@ -13,5 +6,11 @@ def Serializer(Model):
         class Meta:
             model = Model
             exclude = ()
+
+        def to_representation(self, instance):
+            if hasattr(self.Meta.model, 'data'):
+                return instance.data()
+            return super(factory, self).to_representation(instance)
+
     factory.__name__ = Model._meta.object_name + 'Serializer'
     return factory

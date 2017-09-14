@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from ssrd.contrib import ViewSet, V, serializer
 from ssrd.contrib.serializer import Serializer
 from ssrd.home.models import AboutUs, FAQs, FeedBack, ServiceNet, ServicePromise, Recruitment, Product, IndustryLink, System, News
@@ -346,53 +348,88 @@ class RecruitmentViewSet(ViewSet):
     """
     serializer_class = Serializer(Recruitment)
 
-    def list(self, request, **kwargs):
+    @para_ok_or_400([{
+        'name': 'search',
+        'description': '搜索',
+    }])
+    def list(self, request, search=None, **kwargs):
         """获取招贤纳士"""
         obj = Recruitment.objects.all()
+        if search:
+            obj = obj.filter(
+                Q(name__contains=search | Q(salary__contains=search) | Q(
+                    detail__contains=search)))
         return self.result_class(data=obj)(serialize=True)
 
-    @para_ok_or_400([{
-        'name': 'name',
-        'description': '职位名称',
-        'method': V.name,
-    }, {
-        'name': 'salary',
-        'description': '薪资待遇',
-        'method': V.name,
-    }, {
-        'name': 'jobDetail',
-        'description': '职位简介'
-    }, {
-        'name': 'category',
-        'description': '职位类别',
-        'method': V.recruitmentCategory
-    }])
+    @para_ok_or_400([
+        {
+            'name': 'name',
+            'description': '职位名称',
+            'method': V.name,
+        },
+        {
+            'name': 'salary',
+            'description': '薪资待遇',
+            'method': V.name,
+        },
+        {
+            'name': 'jobDetail',
+            'description': '职位简介'
+        },
+        {
+            'name': 'address',
+            'description': '职位地点'
+        },
+        {
+            'name': 'number',
+            'description': '职位数量',
+            'method': V.num
+            # }, {
+            # 'name': 'category',
+            # 'description': '职位类别',
+            # 'method': V.recruitmentCategory
+        }
+    ])
     def create(self, request, **kwargs):
         obj = Recruitment(**kwargs)
         obj.save()
         return self.result_class(data=obj)(serialize=True)
 
-    @para_ok_or_400([{
-        'name': 'pk',
-        'method': V.recruitment,
-        'description': '招贤纳士',
-        'replace': 'obj'
-    }, {
-        'name': 'name',
-        'description': '职位名称',
-        'method': V.name,
-    }, {
-        'name': 'salary',
-        'description': '薪资待遇',
-        'method': V.name,
-    }, {
-        'name': 'jobDetail',
-        'description': '职位简介'
-    }, {
-        'name': 'category',
-        'description': '职位类别',
-        'method': V.recruitmentCategory
-    }])
+    @para_ok_or_400([
+        {
+            'name': 'pk',
+            'method': V.recruitment,
+            'description': '招贤纳士',
+            'replace': 'obj'
+        },
+        {
+            'name': 'name',
+            'description': '职位名称',
+            'method': V.name,
+        },
+        {
+            'name': 'salary',
+            'description': '薪资待遇',
+            'method': V.name,
+        },
+        {
+            'name': 'jobDetail',
+            'description': '职位简介'
+        },
+        {
+            'name': 'address',
+            'description': '职位地点'
+        },
+        {
+            'name': 'number',
+            'description': '职位数量',
+            'method': V.num
+            # }, {
+            # 'name': 'category',
+            # 'description': '职位类别',
+            # 'method': V.recruitmentCategory
+        }
+    ])
     def update(self, request, obj=None, **kwargs):
         [setattr(obj, k, v) for k, v in kwargs.items() if v]
         obj.save()
