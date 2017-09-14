@@ -50,3 +50,8 @@ django-rest-swagger
 # Your custom requirements go here
 # qiniu
 django-qiniu-storage
+
+social-auth-app-django
+mongoengine
+python-social-auth[django]
+python-social-auth[django-mongoengine]

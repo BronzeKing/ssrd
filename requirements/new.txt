@@ -1,4 +1,0 @@
-social-auth-app-django
-mongoengine
-python-social-auth[django]
-python-social-auth[django-mongoengine]
