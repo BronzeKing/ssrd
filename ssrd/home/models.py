@@ -147,7 +147,7 @@ class Recruitment(models.Model):
     address = models.CharField("地点", max_length=100, default='')
     number = models.SmallIntegerField("招聘数量", default=1)
     # category = models.ForeignKey(
-        # RecruitmentCategory, verbose_name="职位类别")
+    # RecruitmentCategory, verbose_name="职位类别")
     created = models.DateTimeField("创建时间", auto_now_add=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
@@ -157,14 +157,15 @@ class Recruitment(models.Model):
     __repr__ = __str__
 
     #  def data(self):
-        #  return dict(
-            #  name=self.name,
-            #  id=self.id,
-            #  salary=self.salary,
-            #  detail=self.detail,
-            #  # category=self.category.data(),
-            #  created=self.created,
-            #  updated=self.updated)
+
+#  return dict(
+#  name=self.name,
+#  id=self.id,
+#  salary=self.salary,
+#  detail=self.detail,
+#  # category=self.category.data(),
+#  created=self.created,
+#  updated=self.updated)
 
 
 class Product(models.Model):
@@ -265,5 +266,27 @@ class News(models.Model):
     def __str__(self):
         return "<News: {}, {}   {}>".format(self.title, self.content,
                                             self.created)
+
+    __repr__ = __str__
+
+
+class Job(models.Model):
+    name = models.CharField("姓名", max_length=100)
+    job = models.TextField("职位", max_length=100)
+    mobile = models.IntegerField("手机号码", blank=True)
+    email = models.CharField("邮箱", max_length=100)
+    attatchment = models.FileField("附件")
+    created = models.DateTimeField("创建时间", auto_now_add=True)
+
+    def data(self):
+        return dict(
+            id=self.id,
+            name=self.name,
+            mobile=self.mobile,
+            created=self.created,
+            email=self.email)
+
+    def __str__(self):
+        return "<job: {}   {}>".format(self.name, self.job)
 
     __repr__ = __str__

@@ -183,9 +183,12 @@ class RecruitmentTestCase(TestCase):
 
     def test_create(self):
         self.data = {
-            'title': 'title',
-            'content': 'content',
-            'category': self.obj.category.id
+            'name': 'name',
+            'salary': 'salary',
+            'jobDetail': 'jobDetail',
+            'address': 'address',
+            'number': 3
+            #  'category': self.obj.category.id
         }
         self.asserter().assertResource()
 
@@ -318,3 +321,21 @@ class IndustryLinkTestCase(TestCase):
             'name': 'test',
         }
         self.setBaseUrl(self.obj.id).asserter().assertResource()
+
+
+class JobTestCase(TestCase):
+    def setUp(self):
+        super(JobTestCase, self).setUp()
+        self.baseurl = '/jobs'
+        self.factory = factories.JobFactory
+        self.obj = self.factory()
+
+    def test_create(self):
+        self.data = {
+            'name': '张三',
+            'job': '项目工程师',
+            'mobile': 1234567,
+            'email': 'test@root.h',
+            'attatchment': factories.FileFactory()
+        }
+        self.asserter().assertResource()

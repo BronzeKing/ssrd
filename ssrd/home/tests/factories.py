@@ -44,8 +44,10 @@ class ProductFactory(factory.django.DjangoModelFactory):
 class RecruitmentFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: 'name-{0}'.format(n))
     salary = factory.Sequence(lambda n: 'salary-{0}'.format(n))
-    detail = factory.Sequence(lambda n: 'detail-{0}'.format(n))
-    category = factory.SubFactory(RecruitmentCategoryFactory)
+    jobDetail = factory.Sequence(lambda n: 'detail-{0}'.format(n))
+    address = factory.Sequence(lambda n: 'address-{0}'.format(n))
+    number = factory.Sequence(lambda n: n)
+    #  category = factory.SubFactory(RecruitmentCategoryFactory)
 
     class Meta:
         model = 'home.Recruitment'
@@ -126,6 +128,16 @@ class IndustryLinkFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'home.IndustryLink'
+
+
+class JobFactory(factory.django.DjangoModelFactory):
+    name = factory.Sequence(lambda n: 'name-{0}'.format(n))
+    job = factory.Sequence(lambda n: 'job-{0}.com'.format(n))
+    mobile = factory.Sequence(lambda n: n)
+    email = factory.Sequence(lambda n: '{}@h.com'.format(n))
+
+    class Meta:
+        model = 'home.Job'
 
 
 def FileFactory():

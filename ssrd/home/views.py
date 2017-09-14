@@ -3,6 +3,7 @@ from django.db.models import Q
 from ssrd.contrib import ViewSet, V, serializer
 from ssrd.contrib.serializer import Serializer
 from ssrd.home.models import AboutUs, FAQs, FeedBack, ServiceNet, ServicePromise, Recruitment, Product, IndustryLink, System, News
+from ssrd.home import models as m
 from paraer import para_ok_or_400
 
 # Create your views here.
@@ -358,7 +359,7 @@ class RecruitmentViewSet(ViewSet):
         if search:
             obj = obj.filter(
                 Q(name__contains=search | Q(salary__contains=search) | Q(
-                    detail__contains=search)))
+                    jobDetail__contains=search)))
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([
@@ -747,4 +748,37 @@ class NewsViewSet(ViewSet):
         """
         获取单条新闻公告
         """
+        return self.result_class(data=obj)(serialize=True)
+
+
+class JobViewSet(ViewSet):
+    """
+    职位申请
+    """
+    serializer_class = Serializer(m.Job)
+
+    @para_ok_or_400([{
+        'name': 'name',
+        'description': '姓名',
+    }, {
+        'name': 'job',
+        'description': '职位',
+    }, {
+        'name': 'mobile',
+        'description': '电话',
+        'methid': V.num
+    }, {
+        'name': 'email',
+        'description': '邮箱',
+    }, {
+        'name': 'attatchment',
+        'description': '附件',
+        'type': 'file',
+        'method': V.file,
+        'required': True
+    }])
+    def create(self, request, **kwargs):
+        """职位申请"""
+        obj = m.Job(**kwargs)
+        obj.save()
         return self.result_class(data=obj)(serialize=True)
