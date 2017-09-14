@@ -11,6 +11,10 @@ ORDER_STATUS = dict(const.ORDER_STATUS)
 
 
 class Valid(_Valid):
+    def document(self, pk):
+        self.msg = "文档不存在"
+        return home.Document.objects.get(pk=pk)
+
     def message(self, pk):
         self.msg = u'消息不存在'
         return users.Message.objects.get(pk=pk)
@@ -134,9 +138,9 @@ class Valid(_Valid):
         return password
 
     def file(self, obj):
-        if not hasattr(obj, 'file'):
-            self.msg = '必须为文件类型'
-        return obj
+        self.msg = '必须为文件类型'
+        if hasattr(obj, 'file'):
+            return obj
 
     def url(self, string):
         return string

@@ -25,3 +25,5 @@ ENGINEER_ATTACHMENT = (('admission', '进场凭证'), ('implement', '施工凭�
                        ('complete', '竣工凭证'), ('checked', '验收凭证'), ('other',
                                                                    '其他'))
 READ = (("0", "未读"), ("1", "已读"))
+
+SOURCES = ((0, "荣誉资质"), (1, "合作伙伴"))

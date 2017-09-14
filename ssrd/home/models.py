@@ -1,8 +1,9 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from ssrd import const
 
-# Create your models here.
+
 class RecruitmentCategory(models.Model):
     name = models.CharField("职位名称", max_length=50)
     created = models.DateTimeField("创建时间", auto_now_add=True)
@@ -158,6 +159,7 @@ class Recruitment(models.Model):
 
     #  def data(self):
 
+
 #  return dict(
 #  name=self.name,
 #  id=self.id,
@@ -276,17 +278,29 @@ class Job(models.Model):
     mobile = models.IntegerField("手机号码", blank=True)
     email = models.CharField("邮箱", max_length=100)
     attatchment = models.FileField("附件")
-    created = models.DateTimeField("创建时间", auto_now_add=True)
+    updated = models.DateTimeField("更新时间", auto_now=True)
 
     def data(self):
         return dict(
             id=self.id,
             name=self.name,
             mobile=self.mobile,
-            created=self.created,
+            created=self.updated,
             email=self.email)
 
     def __str__(self):
         return "<job: {}   {}>".format(self.name, self.job)
+
+    __repr__ = __str__
+
+
+class Document(models.Model):
+    name = models.CharField("姓名", max_length=100)
+    source = models.SmallIntegerField("来源", choices=const.SOURCES)
+    file = models.FileField("文件", max_length=100)
+    updated = models.DateTimeField("更新时间", auto_now=True)
+
+    def __str__(self):
+        return "<Document: {}   {}>".format(self.name, self.source)
 
     __repr__ = __str__

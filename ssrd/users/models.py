@@ -20,7 +20,7 @@ class User(AbstractUser):
     name = models.CharField(_('Name of User'), blank=True, max_length=255)
 
     mobile = models.IntegerField(_("Mobile Phone"), blank=True, default=0)
-    role = models.IntegerField("用户权限", choices=const.ROLES, default=1)
+    role = models.SmallIntegerField("用户权限", choices=const.ROLES, default=1)
 
     def get_absolute_url(self):
         return reverse('users:detail', kwargs={'username': self.username})
@@ -67,7 +67,7 @@ class Project(models.Model):
         related_name='projects',
         default=1)
     name = models.CharField("项目名称", max_length=50, unique=True)
-    status = models.IntegerField("项目状态", choices=const.ORDER_STATUS, default=1)
+    status = models.SmallIntegerField("项目状态", choices=const.ORDER_STATUS, default=1)
     picture = models.ImageField("背景图片", null=True)
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
@@ -98,7 +98,7 @@ class AuthorizeCode(models.Model):
         verbose_name="所属用户",
         related_name="authorizecodes")
     code = models.CharField("授权码", max_length=40, default=generate_key)
-    status = models.IntegerField("授权码状态", choices=const.STATUS, default=1)
+    status = models.SmallIntegerField("授权码状态", choices=const.STATUS, default=1)
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 

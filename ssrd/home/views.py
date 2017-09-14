@@ -1,9 +1,10 @@
 from django.db.models import Q
 
-from ssrd.contrib import ViewSet, V, serializer
+from ssrd.contrib import ViewSet, V
 from ssrd.contrib.serializer import Serializer
 from ssrd.home.models import AboutUs, FAQs, FeedBack, ServiceNet, ServicePromise, Recruitment, Product, IndustryLink, System, News
 from ssrd.home import models as m
+from ssrd import const
 from paraer import para_ok_or_400
 
 # Create your views here.
@@ -781,4 +782,89 @@ class JobViewSet(ViewSet):
         """职位申请"""
         obj = m.Job(**kwargs)
         obj.save()
+        return self.result_class(data=obj)(serialize=True)
+
+
+class DocumentViewSet(ViewSet):
+    """
+    文档
+    """
+    serializer_class = Serializer(m.Document)
+
+    @para_ok_or_400([{
+        'name': 'source',
+        'description': dict(const.SOURCES, description='来源'),
+        'required': True
+    }])
+    def list(self, request, source=None, **kwargs):
+        """获取文档列表"""
+        obj = m.Document.objects.filter(source=source)
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'name',
+        'description': '名称',
+    }, {
+        'name': 'source',
+        'description': dict(const.SOURCES, description='来源'),
+    }, {
+        'name': 'file',
+        'description': '文件',
+        'type': 'file',
+        'method': V.file,
+        'required': True
+    }])
+    def create(self, request, **kwargs):
+        """新建文档"""
+        obj = m.Document(**kwargs)
+        obj.save()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.document,
+        'description': '文档',
+        'replace': 'obj'
+    }, {
+        'name': 'name',
+        'description': '名称',
+    }, {
+        'name': 'source',
+        'description': dict(const.SOURCES, description='来源'),
+    }, {
+        'name': 'file',
+        'description': '文件',
+        'type': 'file',
+        'method': V.file,
+        'required': True
+    }])
+    def update(self, request, obj, **kwargs):
+        """更新文档"""
+        [setattr(obj, k, v) for k, v in kwargs.items() if v]
+        obj.save()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'description': '文档',
+        'method': V.document,
+        'replace': 'obj'
+    }])
+    def destroy(self, request, obj=None, **kwargs):
+        """
+        删除单条文档
+        """
+        obj.delete()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'description': '文档',
+        'method': V.document,
+        'replace': 'obj'
+    }])
+    def retrieve(self, request, obj=None, **kwargs):
+        """
+        获取文档
+        """
         return self.result_class(data=obj)(serialize=True)

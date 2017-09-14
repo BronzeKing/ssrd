@@ -7,6 +7,7 @@ from . import views
 router = DefaultRouter(trailing_slash=False)
 
 router.register(r'aboutus', views.AboutUsViewSet, base_name='aboutus')
+router.register(r'documents', views.DocumentViewSet, base_name='documents')
 router.register(r'faqs', views.FAQsViewSet, base_name='faqs')
 router.register(r'jobs', views.JobViewSet, base_name='jobs')
 router.register(r'feedBacks', views.FeedBackViewSet, base_name='feedBacks')

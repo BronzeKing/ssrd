@@ -47,6 +47,7 @@ class RecruitmentFactory(factory.django.DjangoModelFactory):
     jobDetail = factory.Sequence(lambda n: 'detail-{0}'.format(n))
     address = factory.Sequence(lambda n: 'address-{0}'.format(n))
     number = factory.Sequence(lambda n: n)
+
     #  category = factory.SubFactory(RecruitmentCategoryFactory)
 
     class Meta:
@@ -138,6 +139,14 @@ class JobFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = 'home.Job'
+
+
+class DocumentFactory(factory.django.DjangoModelFactory):
+    name = factory.Sequence(lambda n: 'name-{0}'.format(n))
+    source = 1
+
+    class Meta:
+        model = 'home.Document'
 
 
 def FileFactory():

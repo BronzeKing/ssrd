@@ -184,9 +184,9 @@ TEMPLATES = [
 ]
 
 QINIU_ACCESS_KEY = env(
-    "QINIU_ACCESS_KEY") or 'NtO1B6ILEpI33oQq1NpiCSAzpgaASsrmmJzNQsNG'
+    "QINIU_ACCESS_KEY")
 QINIU_SECRET_KEY = env(
-    "QINIU_SECRET_KEY") or 'Z2ztsscMNJZVZiZpDc8UCZnChMR46ncGQpuIrld9'
+    "QINIU_SECRET_KEY")
 QINIU_BUCKET_NAME = env("QINIU_BUCKET_NAME") or 'mumumu'
 QINIU_BUCKET_DOMAIN = env("QINIU_BUCKET_DOMAIN") or 'static.mum5.cn'
 with open('production.yml', 'r') as fd:

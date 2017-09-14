@@ -339,3 +339,37 @@ class JobTestCase(TestCase):
             'attatchment': factories.FileFactory()
         }
         self.asserter().assertResource()
+
+
+class DocumentTestCase(TestCase):
+    def setUp(self):
+        super(DocumentTestCase, self).setUp()
+        self.baseurl = '/documents'
+        self.factory = factories.DocumentFactory
+        self.obj = self.factory()
+
+    def test_create(self):
+        self.data = {
+            'name': 'document',
+            'source': '0',
+            'file': factories.FileFactory()
+        }
+        self.asserter().assertResource()
+
+    def test_list(self):
+        self.data = dict(source=1)
+        self.assertList()
+
+    def test_delete(self):
+        self.setBaseUrl(self.obj.id).asserter().assertResource()
+
+    def test_retrieve(self):
+        self.setBaseUrl(self.obj.id).asserter().assertResource()
+
+    def test_update(self):
+        self.data = {
+            'name': 'document',
+            'source': '0',
+            'file': factories.FileFactory()
+        }
+        self.setBaseUrl(self.obj.id).asserter().assertResource()
