@@ -27,8 +27,11 @@ def main():
     if not os.environ.get('VIRTUAL_ENV'):
         print('\n没有进入虚拟环境\n')
     if 'server' not in path:
-        from django import setup
-        setup()
+        try:
+            from django import setup
+            setup()
+        except ImportError:
+            pass
     func = import_module(path)
     func(*args)
 
