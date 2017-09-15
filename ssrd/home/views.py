@@ -367,7 +367,6 @@ class RecruitmentViewSet(ViewSet):
         {
             'name': 'name',
             'description': '职位名称',
-            'method': V.name,
         },
         {
             'name': 'salary',
@@ -385,7 +384,6 @@ class RecruitmentViewSet(ViewSet):
         {
             'name': 'number',
             'description': '职位数量',
-            'method': V.num
             # }, {
             # 'name': 'category',
             # 'description': '职位类别',
@@ -407,7 +405,6 @@ class RecruitmentViewSet(ViewSet):
         {
             'name': 'name',
             'description': '职位名称',
-            'method': V.name,
         },
         {
             'name': 'salary',
@@ -425,7 +422,6 @@ class RecruitmentViewSet(ViewSet):
         {
             'name': 'number',
             'description': '职位数量',
-            'method': V.num
             # }, {
             # 'name': 'category',
             # 'description': '职位类别',

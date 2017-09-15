@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.conf.urls import include, url
-from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
@@ -20,11 +19,8 @@ urlpatterns = [
     url(r'', include('social.apps.django_app.urls', namespace='socail')),
     url(r'', include('ssrd.home.urls', namespace='home')),
     url(r'^accounts/', include('allauth.urls')),
-
     # Your stuff: custom urls includes go here
-
-
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static('/prototype/', document_root=settings.PROTOTYPE_ROOT)
+]
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit

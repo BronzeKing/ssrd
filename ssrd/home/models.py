@@ -146,7 +146,7 @@ class Recruitment(models.Model):
     salary = models.CharField("薪资待遇", max_length=50)
     jobDetail = models.TextField("职位简介")
     address = models.CharField("地点", max_length=100, default='')
-    number = models.SmallIntegerField("招聘数量", default=1)
+    number = models.CharField("招聘数量", max_length=20, default='1')
     # category = models.ForeignKey(
     # RecruitmentCategory, verbose_name="职位类别")
     created = models.DateTimeField("创建时间", auto_now_add=True)

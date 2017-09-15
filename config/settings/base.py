@@ -13,6 +13,7 @@ ROOT_DIR = environ.Path(
     __file__) - 3  # (ssrd/config/settings/base.py - 3 = ssrd/)
 APPS_DIR = ROOT_DIR.path('ssrd')
 BASE_DIR = str(ROOT_DIR)
+FE_DIR = ROOT_DIR.path('fe')
 
 # Load operating system environment variables and then prepare to use them
 env = environ.Env()
@@ -191,23 +192,20 @@ QINIU_BUCKET_NAME = env("QINIU_BUCKET_NAME") or 'mumumu'
 QINIU_BUCKET_DOMAIN = env("QINIU_BUCKET_DOMAIN") or 'static.mum5.cn'
 with open('production.yml', 'r') as fd:
     QINIU_SECURE_URL = bool('443:443' in fd.read())
-STATIC_URL = QINIU_BUCKET_DOMAIN + '/static/'
 #  if 'production' in env("DJANGO_SETTINGS_MODULE", default='config.settings.local'):
 DEFAULT_FILE_STORAGE = 'qiniustorage.backends.QiniuMediaStorage'
 STATICFILES_STORAGE = 'qiniustorage.backends.QiniuStaticStorage'
-STATIC_URL = '/static/'
 # See: http://django-crispy-forms.readthedocs.io/en/latest/install.html#template-packs
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # STATIC FILE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = 'staticfiles'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = [str(APPS_DIR.path('static'))]
+STATICFILES_DIRS = [str(APPS_DIR.path('static')), str(FE_DIR.path('dist'))]
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [
@@ -218,12 +216,12 @@ STATICFILES_FINDERS = [
 # MEDIA CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-MEDIA_ROOT = str(APPS_DIR('media'))
-PROTOTYPE_ROOT = str(ROOT_DIR('prototype'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
-MEDIA_URL = env("MEDIA_URL") or "/media/"
-#  MEDIA_URL = 'media/'
+STATIC_URL = (QINIU_SECURE_URL and 'https://' or 'http://') + QINIU_BUCKET_DOMAIN + '/'
+MEDIA_URL = STATIC_URL.replace('static', 'media')
+MEDIA_ROOT = ''
+STATIC_ROOT = '/'
 
 
 # URL Configuration
