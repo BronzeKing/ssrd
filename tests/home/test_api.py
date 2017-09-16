@@ -1,5 +1,4 @@
-from ssrd.contrib import TestCase
-from ssrd.home.tests import factories
+from tests import factories, TestCase
 
 
 class AboutUsTestCase(TestCase):

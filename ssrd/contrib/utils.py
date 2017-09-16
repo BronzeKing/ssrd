@@ -101,17 +101,18 @@ class PageNumberPager(BasePagination):
         # 传了分页参数才做分页处理
         paras = self.request.GET.get
         PageIndex = paras('PageIndex', '')
-        PageSize = paras('PageSize', '10')
-        PageSize = PageSize.isdigit() and int(PageSize) or 10
-        should_page = PageIndex.isdigit() and paginate
-        PageIndex = PageIndex.isdigit() and int(PageIndex) or 1
+        PageSize = paras('PageSize', '')
+        should_page = PageIndex.isdigit() and PageSize.isdigit() and paginate
+        if should_page:
+            PageSize = int(PageSize)
+            PageIndex = int(PageIndex) or 1
         RecordCount = len(data)
         PageCount = math.ceil(RecordCount / PageSize)
         result = dict(
             RecordCount=RecordCount, PageCount=PageCount, Records=data)
         if should_page:
             startRecord = (PageIndex - 1) * PageSize
-            endRecord = PageCount if (PageCount - startRecord <
+            endRecord = RecordCount if ((PageCount - startRecord) <
                                       PageSize) else (startRecord + PageSize)
             data = data[startRecord:endRecord]
             result = dict(

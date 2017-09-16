@@ -1,5 +1,4 @@
-from ssrd.contrib import TestCase
-from ssrd.users.tests import factories
+from tests import factories, TestCase
 
 
 class UserTestCase(TestCase):

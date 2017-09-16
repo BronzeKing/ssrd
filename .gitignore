@@ -25,6 +25,7 @@ compose/nginx/dhparams.pem
 *.py[cod]
 __pycache__
 
+data
 .env
 docker-compose.yml
 # Logs
