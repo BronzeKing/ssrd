@@ -757,6 +757,7 @@ class JobViewSet(ViewSet):
     @para_ok_or_400([{
         'name': 'name',
         'description': '姓名',
+        'method': V.name
     }, {
         'name': 'job',
         'description': '职位',
@@ -767,6 +768,7 @@ class JobViewSet(ViewSet):
     }, {
         'name': 'email',
         'description': '邮箱',
+        'method': V.email
     }, {
         'name': 'attatchment',
         'description': '附件',

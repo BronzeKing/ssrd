@@ -103,9 +103,8 @@ class PageNumberPager(BasePagination):
         PageIndex = paras('PageIndex', '')
         PageSize = paras('PageSize', '')
         should_page = PageIndex.isdigit() and PageSize.isdigit() and paginate
-        if should_page:
-            PageSize = int(PageSize)
-            PageIndex = int(PageIndex) or 1
+        PageSize = PageSize.isdigit() and int(PageSize) or 10
+        PageIndex = PageIndex.isdigit() and int(PageIndex) or 1
         RecordCount = len(data)
         PageCount = math.ceil(RecordCount / PageSize)
         result = dict(

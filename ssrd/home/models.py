@@ -304,3 +304,22 @@ class Document(models.Model):
         return "<Document: {}   {}>".format(self.name, self.source)
 
     __repr__ = __str__
+
+
+class SystemDemonstration(models.Model):
+    title = models.CharField("标题", max_length=255)
+    summary = models.TextField("摘要")
+    description = models.TextField("描述")
+    address = models.CharField("工程地址", max_length=100)
+    content = models.TextField("工程内容")
+    picture = models.ImageField("背景图片")
+    picture1 = models.ImageField("背景图片小图1")
+    picture2 = models.ImageField("背景图片小图2")
+    picture3 = models.ImageField("背景图片小图3")
+    created = models.DateField("项目时间", default='2017-09-15')
+    updated = models.DateTimeField("更新时间", auto_now=True)
+
+    def __str__(self):
+        return "<SystemDemonstration: {}   {}>".format(self.title, self.summary)
+
+    __repr__ = __str__
