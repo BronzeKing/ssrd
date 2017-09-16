@@ -866,3 +866,15 @@ class DocumentViewSet(ViewSet):
         获取文档
         """
         return self.result_class(data=obj)(serialize=True)
+
+
+class SystemDemonstrationViewSet(ViewSet):
+    """
+    文档
+    """
+    serializer_class = Serializer(m.SystemDemonstration)
+
+    def list(self, request, **kwargs):
+        """获取案例展示"""
+        obj = m.SystemDemonstration.objects.all()
+        return self.result_class(data=obj)(serialize=True)

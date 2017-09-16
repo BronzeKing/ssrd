@@ -140,11 +140,14 @@ class ServicePromise(models.Model):
             title=self.title, content=self.content, rank=self.rank, id=self.id)
 
 
+class Recruitment:
+    pass
 class Recruitment(models.Model):
     """招贤纳士"""
     name = models.CharField("职位名称", max_length=100)
     salary = models.CharField("薪资待遇", max_length=50)
     jobDetail = models.TextField("职位简介")
+    jobResponsibilities = models.TextField("岗位职责")
     address = models.CharField("地点", max_length=100, default='')
     number = models.CharField("招聘数量", max_length=20, default='1')
     # category = models.ForeignKey(

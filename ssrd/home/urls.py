@@ -11,13 +11,23 @@ router.register(r'documents', views.DocumentViewSet, base_name='documents')
 router.register(r'faqs', views.FAQsViewSet, base_name='faqs')
 router.register(r'jobs', views.JobViewSet, base_name='jobs')
 router.register(r'feedBacks', views.FeedBackViewSet, base_name='feedBacks')
-router.register(r'serviceNets', views.ServiceNetViewSet, base_name='serviceNets')
-router.register(r'servicePromises', views.ServicePromiseViewSet, base_name='servicePromises')
-router.register(r'recruitments', views.RecruitmentViewSet, base_name='recruitments')
+router.register(
+    r'serviceNets', views.ServiceNetViewSet, base_name='serviceNets')
+router.register(
+    r'servicePromises',
+    views.ServicePromiseViewSet,
+    base_name='servicePromises')
+router.register(
+    r'recruitments', views.RecruitmentViewSet, base_name='recruitments')
 router.register(r'products', views.ProductViewSet, base_name='products')
-router.register(r'industryLinks', views.IndustryLinkViewSet, base_name='industryLinks')
+router.register(
+    r'industryLinks', views.IndustryLinkViewSet, base_name='industryLinks')
 router.register(r'systems', views.SystemViewSet, base_name='systems')
 router.register(r'news', views.NewsViewSet, base_name='news')
+router.register(
+    r'systemDemonstrations',
+    views.SystemDemonstrationViewSet,
+    base_name='systemDemonstrations')
 urlpatterns = [
     url(r'', include(router.urls)),
 ]
