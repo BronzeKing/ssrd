@@ -1,4 +1,5 @@
 .*
+!.env
 !.coveragerc
 !.pylintrc
 node_modules*

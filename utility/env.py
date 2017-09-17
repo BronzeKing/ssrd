@@ -1,14 +1,16 @@
-# encoding: utf-8
+def parse(filename):
+    try:
+        with open(filename, 'r') as fd:
+            data = [x.split('=', 1) for x in fd.read().splitlines() if x]
+            data = {x[0]: x[1] for x in data if len(x) == 2}
+    except Exception as e:
+        print(e)
+        data = {}
+    return data
 
 
 def replace(old='.env', new='.newenv'):
-    try:
-        with open('.newenv', 'r') as new:
-            new = [x.split('=', 1) for x in new.read().splitlines() if x]
-            new = {x[0]: x[1] for x in new}
-    except Exception as e:
-        print(e)
-        new = {}
+    new = parse('.newenv')
     lines = []
     with open('.env', 'r') as old:
         for line in old.read().splitlines():
