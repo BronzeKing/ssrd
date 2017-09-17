@@ -140,8 +140,6 @@ class ServicePromise(models.Model):
             title=self.title, content=self.content, rank=self.rank, id=self.id)
 
 
-class Recruitment:
-    pass
 class Recruitment(models.Model):
     """招贤纳士"""
     name = models.CharField("职位名称", max_length=100)
@@ -323,6 +321,7 @@ class SystemDemonstration(models.Model):
     updated = models.DateTimeField("更新时间", auto_now=True)
 
     def __str__(self):
-        return "<SystemDemonstration: {}   {}>".format(self.title, self.summary)
+        return "<SystemDemonstration: {}   {}>".format(self.title,
+                                                       self.summary)
 
     __repr__ = __str__
