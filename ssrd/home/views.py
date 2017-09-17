@@ -359,8 +359,8 @@ class RecruitmentViewSet(ViewSet):
         obj = Recruitment.objects.all()
         if search:
             obj = obj.filter(
-                Q(name__contains=search | Q(salary__contains=search) | Q(
-                    jobDetail__contains=search)))
+                Q(name__contains=search) | Q(salary__contains=search) | Q(
+                    jobDetail__contains=search) | Q(jobResponsibilities__contains=search))
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([
