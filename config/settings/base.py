@@ -13,7 +13,6 @@ ROOT_DIR = environ.Path(
     __file__) - 3  # (ssrd/config/settings/base.py - 3 = ssrd/)
 APPS_DIR = ROOT_DIR.path('ssrd')
 BASE_DIR = str(ROOT_DIR)
-FE_DIR = ROOT_DIR.path('fe')
 
 # Load operating system environment variables and then prepare to use them
 env = environ.Env()
@@ -205,7 +204,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = [str(APPS_DIR.path('static')), str(FE_DIR.path('dist'))]
+STATICFILES_DIRS = [str(APPS_DIR.path('static'))]
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [

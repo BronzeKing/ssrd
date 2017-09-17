@@ -36,4 +36,6 @@ USER django
 
 WORKDIR /app
 
+RUN python /app/manage.py collectstatic --noinput
+
 ENTRYPOINT ["/entrypoint.sh"]
