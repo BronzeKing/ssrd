@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 from django.views import defaults as default_views
 from ssrd.contrib import TokenView
 from paraer import get_swagger_view
-swagger_url = not settings.DEBUG and 'https://api.mum5.cn' or None
+swagger_url = not settings.DEBUG and 'https://api.mum5.cn/' or None
 schema_view = get_swagger_view(title='ssrd', url=swagger_url)
 urlpatterns = [
     url(r'^$', schema_view, name='home'),
