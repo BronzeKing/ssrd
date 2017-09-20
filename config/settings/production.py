@@ -8,6 +8,9 @@ Production Configurations
 
 """
 
+import os
+import raven
+
 from .base import *  # noqa
 
 # SECRET CONFIGURATION
@@ -53,7 +56,8 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS += [
     'gunicorn',
-    'corsheaders'
+    'corsheaders',
+    'raven.contrib.django.raven_compat'
 ]
 MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE
 
@@ -192,3 +196,9 @@ ADMIN_URL = env('DJANGO_ADMIN_URL')
 
 # Your production stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+RAVEN_CONFIG = {
+    'dsn': 'https://31139168252547efbcfc1f3bd9c0b4c7:aa9420c210c14d3cb57c6aefcafefe2d@sentry.io/219562',
+    # If you are using git, you can also automatically configure the
+    # release based on the git info.
+    'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
+}

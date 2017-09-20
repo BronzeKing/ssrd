@@ -18,3 +18,4 @@ Collectfast==0.5.2
 # -------------------------------------------------------
 django-anymail==0.11
 django-cors-headers
+raven
