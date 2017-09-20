@@ -197,8 +197,8 @@ ADMIN_URL = env('DJANGO_ADMIN_URL')
 # Your production stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
 RAVEN_CONFIG = {
-    'dsn': 'https://31139168252547efbcfc1f3bd9c0b4c7:aa9420c210c14d3cb57c6aefcafefe2d@sentry.io/219562',
+    'dsn': 'https://75710b6ea670418fbfb735b9f94b1aac:bc9e43dada5b4762acf2b2772ec85cfa@sentry.io/219602',
     # If you are using git, you can also automatically configure the
     # release based on the git info.
-    'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
+    'release': 'ssrd'
 }
