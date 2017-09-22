@@ -6,6 +6,7 @@ from ssrd.home.models import AboutUs, FAQs, FeedBack, ServiceNet, ServicePromise
 from ssrd.home import models as m
 from ssrd import const
 from paraer import para_ok_or_400
+from ssrd.contrib.utils import send_mail
 
 # Create your views here.
 
@@ -776,10 +777,14 @@ class JobViewSet(ViewSet):
         'method': V.file,
         'required': True
     }])
-    def create(self, request, **kwargs):
+    def create(self, request, name=None, job=None, mobile=None, email=None, attatchment=None, **kwargs):
         """职位申请"""
-        obj = m.Job(**kwargs)
+        obj = m.Job(name=name, job=job, mobile=mobile, email=email, attatchment=attatchment)
         obj.save()
+        subject = "求职简历"
+        content = "职位申请：\n岗位：{}\n姓名：{}\n手机：{}\n邮箱：{}\n附件为\n{}".format(job, name, mobile, email, obj.attatchment.url)
+        send_mail(subject, content, "ssrdhr@foxmail.com")
+        send_mail(subject, content, "drinks.huang@hypers.com")
         return self.result_class(data=obj)(serialize=True)
 
 

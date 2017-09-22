@@ -1,6 +1,10 @@
 import collections
 import math
 from functools import partial
+
+import smtplib
+from email.mime.text import MIMEText
+
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication as _TokenAuthentication
 from rest_framework.viewsets import ViewSet as _ViewSet
@@ -12,6 +16,8 @@ from rest_framework.pagination import BasePagination
 from django.utils.six import text_type
 from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import ugettext as _
+from django.conf import settings
+
 from paraer import Result as __Result
 
 HTTP_HEADER_ENCODING = 'iso-8859-1'
@@ -112,7 +118,7 @@ class PageNumberPager(BasePagination):
         if should_page:
             startRecord = (PageIndex - 1) * PageSize
             endRecord = RecordCount if ((PageCount - startRecord) <
-                                      PageSize) else (startRecord + PageSize)
+                                        PageSize) else (startRecord + PageSize)
             data = data[startRecord:endRecord]
             result = dict(
                 RecordCount=RecordCount, PageCount=PageCount, Records=data)
@@ -201,3 +207,18 @@ class UnSafeAPIView(_APIView):
     @property
     def result_class(self):
         return partial(self.__result_class, serializer=self.serializer_class)
+
+
+def send_mail(subject, message, to):
+    msg = MIMEText(message)
+    msg["Subject"] = subject
+    msg["From"] = settings.DEFAULT_FROM_EMAIL
+    msg["To"] = to
+    try:
+        s = smtplib.SMTP_SSL("smtp.qq.com", 465)
+        s.login(settings.DEFAULT_FROM_EMAIL, settings.EMAIL_HOST_PASSWORD)
+        s.sendmail(settings.DEFAULT_FROM_EMAIL, to, msg.as_string())
+        s.quit()
+        print("Success!")
+    except smtplib.SMTPException as e:
+        print("Falied,%s" % e)
