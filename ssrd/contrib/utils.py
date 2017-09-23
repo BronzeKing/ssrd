@@ -214,6 +214,9 @@ def send_mail(subject, message, to):
     msg["Subject"] = subject
     msg["From"] = settings.DEFAULT_FROM_EMAIL
     msg["To"] = to
+    if settings.DEBUG:
+        print('测试时默认不发邮件')
+        return
     try:
         s = smtplib.SMTP_SSL("smtp.qq.com", 465)
         s.login(settings.DEFAULT_FROM_EMAIL, settings.EMAIL_HOST_PASSWORD)

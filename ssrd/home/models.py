@@ -79,7 +79,7 @@ class FAQs(models.Model):
 class FeedBack(models.Model):
     """意见反馈"""
     name = models.CharField("姓名", max_length=50)
-    mobile = models.IntegerField("手机号码", blank=True)
+    mobile = models.CharField("手机号码", blank=True, max_length=11)
     email = models.EmailField("邮箱", blank=True)
     content = models.TextField("反馈内容")
     created = models.DateTimeField("创建时间", auto_now_add=True)
@@ -103,7 +103,7 @@ class FeedBack(models.Model):
 class ServiceNet(models.Model):
     name = models.CharField("网点名称", max_length=50)
     linkman = models.CharField("联系人", max_length=50)
-    mobile = models.IntegerField("联系手机")
+    mobile = models.CharField("联系手机", max_length=11)
     email = models.EmailField(_('email address'))
     address = models.CharField("联系地址", max_length=100)
     rank = models.IntegerField('排序', default=100)
@@ -276,7 +276,7 @@ class News(models.Model):
 class Job(models.Model):
     name = models.CharField("姓名", max_length=100)
     job = models.TextField("职位", max_length=100)
-    mobile = models.IntegerField("手机号码", blank=True)
+    mobile = models.CharField("手机号码", blank=True, max_length=11)
     email = models.CharField("邮箱", max_length=100)
     attatchment = models.FileField("附件")
     updated = models.DateTimeField("更新时间", auto_now=True)

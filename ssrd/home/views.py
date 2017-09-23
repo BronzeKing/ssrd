@@ -156,6 +156,7 @@ class FeedBackViewSet(ViewSet):
         'description': '姓名'
     }, {
         'name': 'mobile',
+        'methid': V.mobile,
         'description': '联系号码'
     }, {
         'name': 'email',
@@ -179,6 +180,7 @@ class FeedBackViewSet(ViewSet):
         'description': '姓名'
     }, {
         'name': 'mobile',
+        'method': V.mobile,
         'description': '联系号码'
     }, {
         'name': 'email',
@@ -224,6 +226,7 @@ class ServiceNetViewSet(ViewSet):
         'description': '网点名称'
     }, {
         'name': 'mobile',
+        'method': V.mobile,
         'description': '联系号码'
     }, {
         'name': 'linkmap',
@@ -253,6 +256,7 @@ class ServiceNetViewSet(ViewSet):
         'description': '联系人'
     }, {
         'name': 'mobile',
+        'method': V.mobile,
         'description': '联系号码'
     }, {
         'name': 'email',
@@ -765,7 +769,7 @@ class JobViewSet(ViewSet):
     }, {
         'name': 'mobile',
         'description': '电话',
-        'methid': V.num
+        'method': V.mobile
     }, {
         'name': 'email',
         'description': '邮箱',

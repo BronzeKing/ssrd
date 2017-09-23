@@ -1,4 +1,3 @@
-import re
 from ssrd.users import models as users
 from ssrd.home import models as home
 from ssrd import const
@@ -124,10 +123,12 @@ class Valid(_Valid):
         return name.strip()
 
     def email(self, email):
+        self.msg = '邮箱格式不正确'
         if const.RE_EMAIL.match(email):
             return email.strip()
 
     def username(self, username):
+        self.msg = '名称不能包含特殊字符'
         if const.RE_NAME(username):
             return username.strip()
 
@@ -148,6 +149,12 @@ class Valid(_Valid):
     def num(self, num, n=1, bit=199, contain_0=True):
         self.msg = "必须为数值类型"
         if not num.isdigit():
+            return
+        return num
+
+    def mobile(self, num):
+        self.msg = "手机号码必须为11位整数"
+        if not len(num) == 11 and not all(x.isdigit() for x in num):
             return
         return num
 
