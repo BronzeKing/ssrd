@@ -12,10 +12,10 @@ gunicorn==19.7.1
 # Static and Media Storage
 # ------------------------------------------------
 django-storages-redux==1.3.3
-Collectfast==0.5.2
 
 # Email backends for Mailgun, Postmark, SendGrid and more
 # -------------------------------------------------------
-django-anymail==0.11
 django-cors-headers
 raven
+paraer
+django-rest-framework-social-oauth2

@@ -1,12 +1,11 @@
 from django.db.models import Q
 
-from ssrd.contrib import ViewSet, V
+from ssrd.contrib import ViewSet, V, send_mail
 from ssrd.contrib.serializer import Serializer
 from ssrd.home.models import AboutUs, FAQs, FeedBack, ServiceNet, ServicePromise, Recruitment, Product, IndustryLink, System, News
 from ssrd.home import models as m
 from ssrd import const
 from paraer import para_ok_or_400
-from ssrd.contrib.utils import send_mail
 
 # Create your views here.
 

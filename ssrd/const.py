@@ -23,3 +23,4 @@ ENGINEER_ATTACHMENT = (('admission', '进场凭证'), ('implement', '施工凭�
 READ = (("0", "未读"), ("1", "已读"))
 
 SOURCES = ((0, "荣誉资质"), (1, "合作伙伴"))
+CredentialKeyMap = dict((('email', "邮箱"), ('mobile', "手机")))

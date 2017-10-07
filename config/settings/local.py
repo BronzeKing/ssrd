@@ -26,8 +26,8 @@ SECRET_KEY = env('DJANGO_SECRET_KEY', default='e;Kw&CNh${oO.DA?yKVP-T*jdibwa31E}
 # ------------------------------------------------------------------------------
 
 
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND',
-                    default='django.core.mail.backends.console.EmailBackend')
+#  EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND',
+                    #  default='django.core.mail.backends.console.EmailBackend')
 
 
 # CACHING
@@ -39,10 +39,6 @@ CACHES = {
     }
 }
 
-# django-debug-toolbar
-# ------------------------------------------------------------------------------
-# MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware', ]
-# INSTALLED_APPS += ['debug_toolbar', ]
 
 INTERNAL_IPS = ['127.0.0.1', '10.0.2.2', ]
 

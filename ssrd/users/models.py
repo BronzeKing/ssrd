@@ -1,5 +1,6 @@
 import os
 import binascii
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -19,7 +20,7 @@ class User(AbstractUser):
     # around the globe.
     name = models.CharField(_('Name of User'), blank=True, max_length=255)
 
-    mobile = models.IntegerField(_("Mobile Phone"), blank=True, default=0)
+    mobile = models.CharField(_("Mobile Phone"), blank=True, default='', max_length=11)
     role = models.SmallIntegerField("用户权限", choices=const.ROLES, default=1)
 
     def get_absolute_url(self):
@@ -67,7 +68,8 @@ class Project(models.Model):
         related_name='projects',
         default=1)
     name = models.CharField("项目名称", max_length=50, unique=True)
-    status = models.SmallIntegerField("项目状态", choices=const.ORDER_STATUS, default=1)
+    status = models.SmallIntegerField(
+        "项目状态", choices=const.ORDER_STATUS, default=1)
     picture = models.ImageField("背景图片", null=True)
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
@@ -93,7 +95,7 @@ class AuthorizeCode(models.Model):
         verbose_name="授权码对应用户",
         related_name="authorizecode",
         on_delete=models.CASCADE)
-    creator = models.ForeignKey(
+    creator = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         verbose_name="所属用户",
         related_name="authorizecodes")
@@ -126,24 +128,16 @@ class AuthorizeCode(models.Model):
 
 class Invitation(models.Model):
     code = models.CharField("邀请码", max_length=40, default=generate_key)
-    user = models.OneToOneField(
+    creator = models.OneToOneField(
         settings.AUTH_USER_MODEL,
-        verbose_name="邀请码对应用户",
-        related_name="invitation")
-    creator = models.ForeignKey(
+        verbose_name="邀请码所属用户",
+        related_name="invitations", on_delete=models.CASCADE)
+    users = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        verbose_name="所属用户",
-        related_name="invitations")
+        related_name="Invitation",
+        verbose_name="受邀用户")
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
-
-    def data(self):
-        return dict(
-            code=self.code,
-            user=self.user.data(),
-            creator=self.creator.data(),
-            created=self.created,
-            updated=self.updated)
 
     def __str__(self):
         return "<Invitation: {}, {}, {}>".format(self.user, self.creator,

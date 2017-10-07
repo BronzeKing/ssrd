@@ -1,98 +1,180 @@
+import collections
+from functools import partial
+import math
+
+from rest_framework.viewsets import ViewSet as _ViewSet
+from rest_framework.views import APIView as _APIView
+from rest_framework.compat import coreapi
+from rest_framework.pagination import BasePagination
 from rest_framework.authtoken.models import Token
-from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import serializers
-from rest_framework import parsers, renderers
-from django.utils.translation import ugettext as _
-from django.contrib.auth import authenticate, get_user_model
+from rest_framework.authentication import (BasicAuthentication,
+                                           SessionAuthentication, TokenAuthentication)
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.conf import settings
 
-from paraer import para_ok_or_400
-from . import V, Result
-
-
-class AuthTokenSerializer(serializers.Serializer):
-    email = serializers.CharField(label=_("Email"))
-    password = serializers.CharField(
-        label=_("Password"), style={'input_type': 'password'})
-
-    def validate(self, attrs):
-        email = attrs.get('email', '').lower()
-        password = attrs.get('password')
-
-        if email and password:
-            user = authenticate(email=email, password=password)
-
-            if user:
-                # From Django 1.10 onwards the `authenticate` call simply
-                # returns `None` for is_active=False users.
-                # (Assuming the default `ModelBackend` authentication backend.)
-                if not user.is_authenticated():
-                    msg = _('User account is disabled.')
-                    raise serializers.ValidationError(
-                        msg, code='authorization')
-            else:
-                msg = _('Unable to log in with provided credentials.')
-                raise serializers.ValidationError(msg, code='authorization')
-        else:
-            msg = _('Must include "email " and "password".')
-            raise serializers.ValidationError(msg, code='authorization')
-
-        attrs['user'] = user
-        return attrs
+from paraer import Result as __Result
 
 
-class TokenView(APIView):
+class Result(__Result):
+    def __init__(self, data=None, errors=None, serializer=None,
+                 paginator=None):
+        self.errors = errors or []
+        self._error = self.errors.append
+        self.serializer = serializer
+        self.dataset = data
+        self.paginator = paginator
+
+    def response(self, status, serialize=False, paginate=True, **kwargs):
+        """
+        serialize: 是否需要序列化
+        paginate: 是否需要分页
+        """
+        should_serialize = self.serializer and serialize
+        data = self.dataset
+        if status == 403:
+            data = dict(msg="Permission Deny", reason=self.msg)
+        elif status == 204:
+            data = None
+        elif self.errors:
+            data = dict(msg="Validation Error", errors=self.errors)
+        if isinstance(data,
+                      collections.Iterable) and not isinstance(data, dict):
+            if should_serialize:
+                data = self.serializer(data, many=True).data
+            data = self.paginator.paginate_queryset(
+                data, self.paginator.request, paginate=paginate)
+        elif should_serialize:
+            data = self.serializer(data).data
+        return Response(data, status=status, **kwargs)
+
+    def redirect(self, url):
+        return Response(dict(url=url), status=302)
+
+    def __bool__(self):
+        return not bool(self.errors)
+
+
+class PageNumberPager(BasePagination):
+    page_size = 5
+    page_query_param = 'PageIndex'
+    page_size_query_param = 'PageSize'
+    display_page_controls = False
+
+    def paginate_queryset(self, data, request, view=None, paginate=True):
+        # 传了分页参数才做分页处理
+        paras = self.request.GET.get
+        PageIndex = paras('PageIndex', '')
+        PageSize = paras('PageSize', '')
+        should_page = PageSize.isdigit() and paginate
+        PageSize = PageSize.isdigit() and int(PageSize) or 10
+        PageIndex = PageIndex.isdigit() and int(PageIndex) or 1
+        RecordCount = len(data)
+        PageCount = math.ceil(RecordCount / PageSize)
+        result = dict(
+            RecordCount=RecordCount, PageCount=PageCount, Records=data)
+        if should_page:
+            startRecord = (PageIndex - 1) * PageSize
+            endRecord = RecordCount if ((PageCount - startRecord) <
+                                        PageSize) else (startRecord + PageSize)
+            data = data[startRecord:endRecord]
+            result = dict(
+                RecordCount=RecordCount, PageCount=PageCount, Records=data)
+        return result
+
+    def get_schema_fields(self, view):
+        fields = [
+            coreapi.Field(
+                name=self.page_query_param,
+                required=False,
+                location='query',
+                description=u'分页参数：当为空时，获取全量数据',
+                type='integer')
+        ]
+        if self.page_size_query_param is not None:
+            fields.append(
+                coreapi.Field(
+                    name=self.page_size_query_param,
+                    required=False,
+                    location='query',
+                    description=u'分页参数：当为空时，获取全量数据',
+                    type='integer'))
+        return fields
+
+
+TokenAuthentication.keyword = 'Bearer'
+
+
+class ViewSet(_ViewSet):
     permission_classes = ()
-    serializer_class = AuthTokenSerializer
-    authentication_classes = ()
-    parser_classes = (parsers.FormParser, parsers.MultiPartParser,
-                      parsers.JSONParser, )
-    renderer_classes = (renderers.JSONRenderer, )
-    result_class = Result
+    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
+    pagination_class = PageNumberPager
+    __result_class = Result
+    serializer_class = None
 
-    @para_ok_or_400([{
-        'name': 'email',
-        'method': V.email,
-        'description': '用户邮箱'
-    }, {
-        'name': 'password',
-        'description': '用户密码',
-        'method': V.password
-    }])
-    def post(self, request, *args, **kwargs):
+    @property
+    def result_class(self):
+        paginator = self.paginator
+        paginator.request = self.request
+        return partial(
+            self.__result_class,
+            serializer=self.serializer_class,
+            paginator=paginator)
+
+    @property
+    def paginator(self):
         """
-        获取用户token
+        The paginator instance associated with the view, or `None`.
         """
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key})
-
-
-class EmailBackend(object):
-    """
-    Authenticates against settings.AUTH_USER_MODEL.
-    """
-
-    def authenticate(self, email=None, username=None, password=None, **kwargs):
-        email = email or username or ''
-        UserModel = get_user_model()
-        user = None
-        try:
-            user = UserModel.objects.get(email=email.lower())
-            if user.check_password(password):
-                return user
+        if not hasattr(self, '_paginator'):
+            if self.pagination_class is None:
+                self._paginator = None
             else:
-                user = None
-        except UserModel.DoesNotExist as e:
-            user = None
+                self._paginator = self.pagination_class()
+        return self._paginator
 
-        return user
 
-    def get_user(self, user_id):
-        UserModel = get_user_model()
-        try:
-            return UserModel._default_manager.get(pk=user_id)
-        except UserModel.DoesNotExist:
-            return None
+class APIView(_APIView):
+    permission_classes = ()
+    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
+    pagination_class = PageNumberPager
+    __result_class = Result
+    serializer_class = None
+
+    @property
+    def result_class(self):
+        paginator = self.paginator
+        paginator.request = self.request
+        return partial(
+            self.__result_class,
+            serializer=self.serializer_class,
+            paginator=paginator)
+
+    @property
+    def paginator(self):
+        """
+        The paginator instance associated with the view, or `None`.
+        """
+        if not hasattr(self, '_paginator'):
+            if self.pagination_class is None:
+                self._paginator = None
+            else:
+                self._paginator = self.pagination_class()
+                self._paginator.request = self.request
+        return self._paginator
+
+
+class UnAuthView(_APIView):
+    serializer_class = None
+    __result_class = Result
+
+    @property
+    def result_class(self):
+        return partial(self.__result_class, serializer=self.serializer_class)
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)

@@ -184,7 +184,7 @@ class AuthorizeCodeFactory(factory.django.DjangoModelFactory):
 
 
 class InvitationFactory(factory.django.DjangoModelFactory):
-    user = factory.SubFactory(UserFactory)
+    users = factory.SubFactory(UserFactory)
     creator = factory.SubFactory(UserFactory)
 
     class Meta:

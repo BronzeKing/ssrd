@@ -50,24 +50,15 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_swagger',
-    'crispy_forms',  # Form layouts
     'social_django',
-    'allauth',  # registration
-    'allauth.account',  # registration
-    'allauth.socialaccount',  # registration
-    'allauth.socialaccount.providers.weixin',
 ]
-SOCIALACCOUNT_PROVIDERS = {
-    'weixin': {
-        'AUTHORIZE_URL': 'https://open.weixin.qq.com/connect/qrconnect'
-    }
-}
 
 # Apps specific for this project go here.
 LOCAL_APPS = [
     # custom users app
     'ssrd.users.apps.UsersConfig',
     'ssrd.home',
+    'ssrd.accounts',
     # Your stuff: custom apps go here
 ]
 
@@ -84,7 +75,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware'
 ]
 
 # MIGRATIONS CONFIGURATION
@@ -177,16 +167,16 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
                 # Your stuff: custom template context processors go here
             ],
         },
     },
 ]
 
-QINIU_ACCESS_KEY = env(
-    "QINIU_ACCESS_KEY")
-QINIU_SECRET_KEY = env(
-    "QINIU_SECRET_KEY")
+QINIU_ACCESS_KEY = env("QINIU_ACCESS_KEY")
+QINIU_SECRET_KEY = env("QINIU_SECRET_KEY")
 QINIU_BUCKET_NAME = env("QINIU_BUCKET_NAME") or 'mumumu'
 QINIU_BUCKET_DOMAIN = env("QINIU_BUCKET_DOMAIN") or 'static.mum5.cn'
 QINIU_SECURE_URL = True
@@ -216,11 +206,11 @@ STATICFILES_FINDERS = [
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-root
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
-STATIC_URL = (QINIU_SECURE_URL and 'https://' or 'http://') + QINIU_BUCKET_DOMAIN + '/'
+STATIC_URL = (QINIU_SECURE_URL and 'https://'
+              or 'http://') + QINIU_BUCKET_DOMAIN + '/'
 MEDIA_URL = STATIC_URL.replace('static', 'media')
 MEDIA_ROOT = ''
 STATIC_ROOT = '/'
-
 
 # URL Configuration
 # ------------------------------------------------------------------------------
@@ -266,10 +256,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # AUTHENTICATION CONFIGURATION
 # ------------------------------------------------------------------------------
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'ssrd.contrib.auth.EmailBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+    'social_core.backends.open_id.OpenIdAuth',
+    'social_core.backends.weixin.WeixinOAuth2',
+    'social_core.backends.weibo.WeiboOAuth2',
     'social_core.backends.qq.QQOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+    'aspect.backend.custom.Backend',
 ]
 
 # Some really nice defaults
@@ -286,7 +278,7 @@ SOCIALACCOUNT_ADAPTER = 'ssrd.users.adapters.SocialAccountAdapter'
 # Select the correct user model
 AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = 'users:redirect'
-LOGIN_URL = 'account_login'
+LOGIN_URL = 'login'
 
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
@@ -296,7 +288,9 @@ ADMIN_URL = r'^admin/'
 
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
-REST_FRAMEWORK = {"DATETIME_FORMAT": "%s"}
+REST_FRAMEWORK = {
+    "DATETIME_FORMAT": "%s",
+}
 
 SWAGGER_SETTINGS = {
     'VERSION': '1.14.0',
@@ -307,7 +301,7 @@ SWAGGER_SETTINGS = {
         },
         'apiKey': {
             'type': 'apiKey',
-            'name': 'identify',
+            'name': 'Authorization',
             'in': 'header'
         }
     },
@@ -321,7 +315,7 @@ SWAGGER_SETTINGS = {
 }
 ALLOWED_HOSTS = ["*"]
 
-PARAER_APIVIEW = 'ssrd.contrib.utils.APIView'
+PARAER_APIVIEW = 'ssrd.contrib.APIView'
 
 APPEND_SLASH = False
 EMAIL_HOST = env('EMAIL_HOST')
@@ -335,4 +329,25 @@ EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS')
 SOCIAL_AUTH_QQ_KEY = '1106307739'
 SOCIAL_AUTH_QQ_SECRET = 'JIQClcx7r4XU2T4D'
 
-SWAGGER_SETTINGS = {'schemas': 'https'}
+SOCIAL_AUTH_WEIBO_KEY = '3967682048'
+SOCIAL_AUTH_WEIBO_SECRET = '6196884b82a19b5bf81768a74f7d593c'
+
+CREDENTIAL_CONFIRMATION_EXPIRE_DAYS = 3
+CONFIRMATION_COOLDOWN = 3 * 60
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env("REDIS_HOST") or "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CONNECTION_POOL_KWARGS": {
+                "max_connections": 100
+            }
+        }
+    }
+}
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+CSRF_COOKIE_HTTPONLY = SESSION_COOKIE_HTTPONLY = False
+SOCIAL_AUTH_URL_NAMESPACE = 'social'

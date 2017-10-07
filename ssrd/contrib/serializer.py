@@ -12,5 +12,7 @@ def Serializer(Model):
                 return instance.data()
             return super(factory, self).to_representation(instance)
 
+    if not hasattr(Model, '_meta'):
+        return
     factory.__name__ = Model._meta.object_name + 'Serializer'
     return factory

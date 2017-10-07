@@ -1,19 +1,15 @@
 from django.conf import settings
+from django.test import RequestFactory
 
-import smtplib
-from email.mime.text import MIMEText
+from ssrd.users.models import User
+from ssrd.accounts.models import Credential
+from allauth.utils import build_absolute_uri
 
 
-def main(subject, message, to):
-    msg = MIMEText(message)
-    msg["Subject"] = subject
-    msg["From"] = settings.DEFAULT_FROM_EMAIL
-    msg["To"] = to
-    try:
-        s = smtplib.SMTP_SSL("smtp.qq.com", 465)
-        s.login(settings.DEFAULT_FROM_EMAIL, settings.EMAIL_HOST_PASSWORD)
-        s.sendmail(settings.DEFAULT_FROM_EMAIL, to, msg.as_string())
-        s.quit()
-        print("Success!")
-    except smtplib.SMTPException as e:
-        print("Falied,%s" % e)
+def main():
+    user = User.objects.last()
+    request = RequestFactory()
+    request.user = user
+    response = request.get('/users')
+    credential, ok = Credential.objects.get_or_create(user=user, key=0)
+    credential.send_confirmation(request, signup=True)

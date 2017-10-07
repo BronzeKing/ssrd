@@ -1,53 +1,18 @@
-from django.core.urlresolvers import reverse
-from django.views.generic import DetailView, ListView, RedirectView, UpdateView
+from django.views.generic import RedirectView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from paraer import para_ok_or_400, perm_ok_or_403
 
 from ssrd import const
-from ssrd.contrib import ViewSet, V, UnSafeAPIView
+from ssrd.contrib import ViewSet, V, UnAuthView
 from ssrd.contrib.serializer import Serializer
 from .models import User, AuthorizeCode, Invitation, Project, Collect, Message
-
-
-class UserDetailView(LoginRequiredMixin, DetailView):
-    model = User
-    # These next two lines tell the view to index lookups by username
-    slug_field = 'username'
-    slug_url_kwarg = 'username'
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False
 
     def get_redirect_url(self):
-        return reverse(
-            'users:detail', kwargs={'username': self.request.user.username})
-
-
-class UserUpdateView(LoginRequiredMixin, UpdateView):
-
-    fields = [
-        'name',
-    ]
-
-    # we already imported User in the view code above, remember?
-    model = User
-
-    # send the user back to their own page after a successful update
-    def get_success_url(self):
-        return reverse(
-            'users:detail', kwargs={'username': self.request.user.username})
-
-    def get_object(self):
-        # Only get the User record for the user making the request
-        return User.objects.get(username=self.request.user.username)
-
-
-class UserListView(LoginRequiredMixin, ListView):
-    model = User
-    # These next two lines tell the view to index lookups by username
-    slug_field = 'username'
-    slug_url_kwarg = 'username'
+        return '{}/{}'.format('/users', self.request.user.id)
 
 
 @para_ok_or_400([{
@@ -90,7 +55,7 @@ def post(self,
     return result.data(user)(serialize=True)
 
 
-class UserView(UnSafeAPIView):
+class UserView(UnAuthView):
     serializer_class = Serializer(User)
 
     post = post
@@ -276,7 +241,7 @@ class InvitationViewSet(ViewSet):
         获取受登录用户邀请的用户列表
         """
         query = dict()
-        request.user.role == 0 and user and query.update(request.user)
+        request.user.role == 0 and user and query.update(creator=request.user)
         its = Invitation.objects.filter(**query)
         return self.result_class(data=its)(serialize=True)
 
@@ -471,7 +436,8 @@ class MessageViewSet(ViewSet):
         新建消息
         """
         user = user or request.user
-        obj = Message.objects.create(userId=user.id, title=title, content=content)
+        obj = Message.objects.create(
+            userId=user.id, title=title, content=content)
         #  obj = Message.objects.bulk_create(
         #  (Message(userId=x, title=title, content=content)
         #  for x in User.objects.filter(role__gt=10)))

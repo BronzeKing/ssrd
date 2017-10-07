@@ -158,5 +158,10 @@ class Valid(_Valid):
             return
         return num
 
+    def password(self, pwd):
+        self.msg = "密码必须大于6位"
+        if not len(pwd) >= 6:
+            return
+        return pwd
 
 V = MethodProxy(Valid)
