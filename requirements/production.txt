@@ -17,5 +17,3 @@ django-storages-redux==1.3.3
 # -------------------------------------------------------
 django-cors-headers
 raven
-paraer
-django-rest-framework-social-oauth2
