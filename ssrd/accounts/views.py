@@ -16,6 +16,10 @@ class LoginView(UnAuthView):
         'description': '手机、邮箱或授权码',
         'required': True
     }, {
+        'name': 'email',
+        'description': '手机、邮箱或授权码',
+        'required': True
+    }, {
         'name': 'password',
         'description': '密码'
     }])

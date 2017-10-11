@@ -8,8 +8,8 @@ class Backend(object):
     Authenticates against settings.AUTH_USER_MODEL.
     """
 
-    def authenticate(self, account='', password=None, **kwargs):
-        account = account.lower()
+    def authenticate(self, account='', password=None, email='', **kwargs):
+        account = account.lower() or email.lower()
         user = None
         user = User.objects.filter(Q(email=account) | Q(mobile=account))
         if user:
