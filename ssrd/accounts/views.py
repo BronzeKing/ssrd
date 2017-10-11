@@ -12,16 +12,14 @@ from .models import Credential, Captcha
 
 class LoginView(UnAuthView):
     @para_ok_or_400([{
-        'name': 'account',
-        'description': '手机、邮箱或授权码',
-        'required': True
-    }, {
         'name': 'email',
         'description': '手机、邮箱或授权码',
-        'required': True
+        'required': True,
+        'msg': '请输入账号'
     }, {
         'name': 'password',
-        'description': '密码'
+        'description': '密码',
+        'msg': '请输入密码'
     }])
     def post(self, request, **kwargs):
         result = self.result_class()
