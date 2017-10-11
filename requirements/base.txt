@@ -54,5 +54,4 @@ django-qiniu-storage
 social-auth-app-django
 python-social-auth[django]
 django-redis-sessions==0.3
-six
-paraer
+https://github.com/Hypers-HFA/paraer/archive/develop.zip

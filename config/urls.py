@@ -6,7 +6,9 @@ from django.views import defaults as default_views
 from ssrd.accounts.views import LoginView, LogoutView
 from rest_framework_swagger.views import get_swagger_view
 
-schema_view = get_swagger_view(title='ssrd')
+swagger_url = not settings.DEBUG and 'https://api.mum5.cn' or None
+
+schema_view = get_swagger_view(title='ssrd', url=swagger_url)
 
 urlpatterns = [
     url(r'^docs', schema_view),
