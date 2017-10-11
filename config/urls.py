@@ -3,9 +3,14 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
-from paraer import get_swagger_view
 from ssrd.accounts.views import LoginView, LogoutView
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='ssrd')
+
 urlpatterns = [
+    url(r'^docs', schema_view),
+    url(r'^$', schema_view, name='home'),
     url(r'^login$', LoginView.as_view(), name='login'),
     url(r'^logout$', LogoutView.as_view(), name='account_logout'),
     url(r'^about/$',
@@ -22,13 +27,6 @@ urlpatterns = [
 
     # Your stuff: custom urls includes go here
 ]
-swagger_url = not settings.DEBUG and 'https://api.mum5.cn/' or None
-schema_view = get_swagger_view(title='ssrd', url=swagger_url)
-urlpatterns += [
-    url(r'^docs', schema_view),
-    url(r'^$', schema_view, name='home'),
-]
-
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit
     # these url in browser to see how these error pages look like.

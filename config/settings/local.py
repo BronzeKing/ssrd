@@ -20,15 +20,15 @@ TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 # Note: This key only used for development and testing.
-SECRET_KEY = env('DJANGO_SECRET_KEY', default='e;Kw&CNh${oO.DA?yKVP-T*jdibwa31E}q!e=oxVOn#7Gy@@R9')
+SECRET_KEY = env(
+    'DJANGO_SECRET_KEY',
+    default='e;Kw&CNh${oO.DA?yKVP-T*jdibwa31E}q!e=oxVOn#7Gy@@R9')
 
 # Mail settings
 # ------------------------------------------------------------------------------
 
-
 #  EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND',
-                    #  default='django.core.mail.backends.console.EmailBackend')
-
+#  default='django.core.mail.backends.console.EmailBackend')
 
 # CACHING
 # ------------------------------------------------------------------------------
@@ -39,9 +39,10 @@ CACHES = {
     }
 }
 
-
-INTERNAL_IPS = ['127.0.0.1', '10.0.2.2', ]
-
+INTERNAL_IPS = [
+    '127.0.0.1',
+    '10.0.2.2',
+]
 
 import socket
 import os
@@ -51,15 +52,17 @@ if os.environ.get('USE_DOCKER') == 'yes':
     INTERNAL_IPS += [ip[:-1] + '1']
 
 #  DEBUG_TOOLBAR_CONFIG = {
-    #  'DISABLE_PANELS': [
-        #  'debug_toolbar.panels.redirects.RedirectsPanel',
-    #  ],
-    #  'SHOW_TEMPLATE_CONTEXT': True,
+#  'DISABLE_PANELS': [
+#  'debug_toolbar.panels.redirects.RedirectsPanel',
+#  ],
+#  'SHOW_TEMPLATE_CONTEXT': True,
 #  }
 
 # django-extensions
 # ------------------------------------------------------------------------------
-INSTALLED_APPS += ['django_extensions', ]
+INSTALLED_APPS += [
+    'django_extensions',
+]
 
 # TESTING
 # ------------------------------------------------------------------------------
@@ -67,3 +70,6 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 # Your local stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+STATIC_URL  = '/static/'

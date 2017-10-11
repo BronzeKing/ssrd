@@ -477,6 +477,7 @@ class ProductViewSet(ViewSet):
     }, {
         'name': 'picture',
         'description': '产品图片',
+        'type': 'file'
     }])
     def create(self, request, **kwargs):
         obj = Product(**kwargs)
@@ -499,6 +500,7 @@ class ProductViewSet(ViewSet):
     }, {
         'name': 'picture',
         'description': '产品图片',
+        'type': 'file',
         'method': V.recruitmentCategory
     }])
     def update(self, request, obj=None, **kwargs):

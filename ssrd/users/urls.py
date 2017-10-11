@@ -12,6 +12,7 @@ router.register(r'messages', views.MessageViewSet, base_name='messages')
 
 urlpatterns = [
     url(regex=r'^signup', view=views.UserView.as_view()),
+    url(r'^/users/(?P<id>\d+)/profile', view=views.ProfileView.as_view()),
     url(regex=r'^~redirect/$',
         view=views.UserRedirectView.as_view(),
         name='redirect'),

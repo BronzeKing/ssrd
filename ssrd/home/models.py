@@ -174,8 +174,10 @@ class Recruitment(models.Model):
 class Product(models.Model):
     name = models.CharField("产品名称", max_length=50)
     #  picture = models.ImageField("产品图片", upload_to=None)
-    category = models.ForeignKey(
-        ProductCategory, verbose_name="产品类别", null=True)
+    # category = models.ForeignKey(
+        # ProductCategory,
+        # on_delete=models.DO_NOTHING,
+        # verbose_name="产品类别", null=True)
     created = models.DateTimeField("创建时间", auto_now_add=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 

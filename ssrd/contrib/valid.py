@@ -1,3 +1,4 @@
+from datetime import datetime
 from ssrd.users import models as users
 from ssrd.home import models as home
 from ssrd import const
@@ -7,6 +8,7 @@ __all__ = ("V")
 ROLES = dict(const.ROLES)
 STATUS = dict(const.STATUS)
 ORDER_STATUS = dict(const.ORDER_STATUS)
+GENDER = dict(const.GENDER)
 
 
 class Valid(_Valid):
@@ -158,10 +160,17 @@ class Valid(_Valid):
             return
         return num
 
-    def password(self, pwd):
-        self.msg = "密码必须大于6位"
-        if not len(pwd) >= 6:
-            return
-        return pwd
+    def gender(self, data):
+        self.msg = "性别的值必须为{}".format(GENDER.keys())
+        if data in GENDER:
+            return data
+
+    def date(self, data, format='%Y/%m/%d'):
+        self.msg = u"日期格式不正确"
+        try:  # 尝试从时间戳住转date
+            return datetime.fromtimestamp(int(data))
+        except (TypeError, ValueError):
+            return datetime.strptime(data, format)
+
 
 V = MethodProxy(Valid)

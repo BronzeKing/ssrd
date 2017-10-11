@@ -3,9 +3,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from paraer import para_ok_or_400, perm_ok_or_403
 
 from ssrd import const
-from ssrd.contrib import ViewSet, V, UnAuthView
+from ssrd.contrib import ViewSet, V, UnAuthView, APIView
 from ssrd.contrib.serializer import Serializer
-from .models import User, AuthorizeCode, Invitation, Project, Collect, Message
+from .models import User, AuthorizeCode, Invitation, Project, Collect, Message, Profile
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
@@ -158,6 +158,57 @@ class UserViewSet(ViewSet):
         return self.result_class().data(user)(serialize=True)
 
 
+class ProfileView(APIView):
+    serializer_class = Serializer(Profile)
+
+    @para_ok_or_400([{
+        'name': 'user',
+        'method': V.user,
+        'description': '用户ID',
+    }])
+    def get(self, request, user=None, **kwargs):
+        return self.result_class().data(user.profile)()
+
+    @para_ok_or_400([{
+        'name': 'user',
+        'method': V.user,
+        'description': '用户ID',
+    }, {
+        'name': 'gender',
+        'method': V.gender,
+        'description': "性别",
+    }, {
+        'name': 'name',
+        'description': '真实姓名',
+        'method': V.name
+    }, {
+        'name': 'birthday',
+        'description': '生日',
+        'method': V.date,
+    }, {
+        'name': 'company',
+        'description': '所属公司',
+        'method': V.name,
+    }, {
+        'name': 'position',
+        'description': '职位',
+        'method': V.name,
+    }, {
+        'name': 'qq',
+        'description': 'QQ号码',
+        'method': V.num
+    }, {
+        'name': 'address',
+        'description': '地址',
+        'method': V.name
+    }])
+    def post(self, request, **kwargs):
+        profile = request.user.profile
+        [setattr(profile, k, v) for k, v in kwargs.items() if v]
+        profile.save()
+        return self.result_class(data=profile)()
+
+
 class AuthorizeCodeViewSet(ViewSet):
     serializer_class = Serializer(AuthorizeCode)
 
@@ -168,7 +219,7 @@ class AuthorizeCodeViewSet(ViewSet):
     }])
     def list(self, request, user=None, **kwargs):
         query = dict()
-        request.user.role > 0 and query.update(user=request.user)
+        request.user.role > 0 and query.update(creator=request.user)
         acs = AuthorizeCode.objects.filter(**query)
         return self.result_class(data=acs)(serialize=True)
 

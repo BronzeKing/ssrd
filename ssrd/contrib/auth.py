@@ -178,3 +178,5 @@ class UnAuthView(_APIView):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+        from ssrd.users.models import Profile
+        Profile.objects.create(user=instance)
