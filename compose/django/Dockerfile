@@ -9,6 +9,9 @@ RUN sed -i s@security.ubuntu.com@mirrors.aliyun.com@g /etc/apt/sources.list
 RUN groupadd -r django \
     && useradd -r -g django django
 
+# Requirements have to be pulled and installed here, otherwise caching won't work
+RUN apt update && apt install -y vim
+RUN wget https://raw.githubusercontent.com/drinksober/dotfiles/master/server.vimrc -O /root/.vimrc
 COPY ./compose/django/gunicorn.sh ./compose/django/entrypoint.sh /
 RUN sed -i 's/\r//' /entrypoint.sh \
     && sed -i 's/\r//' /gunicorn.sh \
@@ -17,15 +20,15 @@ RUN sed -i 's/\r//' /entrypoint.sh \
     && chmod +x /gunicorn.sh \
     && chown django /gunicorn.sh
 
+COPY ./requirements /requirements
+RUN pip install --no-cache-dir --trusted-host mirrors.aliyun.com --index-url http://mirrors.aliyun.com/pypi/simple/ -r /requirements/production.txt
+
 COPY . /app
 
-RUN pip install --no-cache-dir --trusted-host mirrors.aliyun.com --index-url http://mirrors.aliyun.com/pypi/simple/ -r /requirements/production.txt
-RUN chown -R django /app
-
-USER django
-
 WORKDIR /app
+RUN pip install --no-cache-dir --trusted-host mirrors.aliyun.com --index-url http://mirrors.aliyun.com/pypi/simple/ -r requirements/production.txt
 
 RUN python manage.py collectstatic --noinput
+USER django
 
 ENTRYPOINT ["/entrypoint.sh"]
