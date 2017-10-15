@@ -3,6 +3,7 @@
 .AppleDouble
 .LSOverride
 
+.qiniu_pythonsdk_hostscache.json
 ### SublimeText ###
 # cache files for sublime text
 *.tmlanguage.cache

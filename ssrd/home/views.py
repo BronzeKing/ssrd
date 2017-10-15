@@ -364,7 +364,8 @@ class RecruitmentViewSet(ViewSet):
         if search:
             obj = obj.filter(
                 Q(name__contains=search) | Q(salary__contains=search) | Q(
-                    jobDetail__contains=search) | Q(jobResponsibilities__contains=search))
+                    jobDetail__contains=search) | Q(
+                        jobResponsibilities__contains=search))
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([
@@ -618,17 +619,40 @@ class SystemViewSet(ViewSet):
         'description': '名称',
         'method': V.name,
     }, {
-        'name': 'feature',
-        'description': '功能特性',
+        'name': 'summary',
+        'description': '简介摘要',
+    }, {
+        'name': 'summaryPicture',
+        'description': '简介摘要插图',
+        'method': V.file,
+        'type': 'file'
     }, {
         'name': 'introduction',
         'description': '系统介绍',
     }, {
-        'name': 'summary',
-        'description': '简介摘要',
+        'name': 'systemFeature',
+        'description': '系统特性',
     }, {
         'name': 'structure',
         'description': '系统结构',
+        'method': V.file,
+        'type': 'file'
+    }, {
+        'name': 'funtionalFeature',
+        'description': '功能特性',
+    }, {
+        'name': 'picture1',
+        'description': '现场图片1',
+        'method': V.file,
+        'type': 'file'
+    }, {
+        'name': 'picture2',
+        'description': '现场图片2',
+        'method': V.file,
+        'type': 'file'
+    }, {
+        'name': 'picture3',
+        'description': '现场图片3',
         'method': V.file,
         'type': 'file'
     }])
@@ -643,17 +667,44 @@ class SystemViewSet(ViewSet):
         'method': V.system,
         'replace': 'obj'
     }, {
-        'name': 'feature',
-        'description': '功能特性',
-    }, {
-        'name': 'introduction',
-        'description': '系统介绍',
+        'name': 'name',
+        'description': '名称',
+        'method': V.name,
     }, {
         'name': 'summary',
         'description': '简介摘要',
     }, {
+        'name': 'summaryPicture',
+        'description': '简介摘要插图',
+        'method': V.file,
+        'type': 'file'
+    }, {
+        'name': 'introduction',
+        'description': '系统介绍',
+    }, {
+        'name': 'systemFeature',
+        'description': '系统特性',
+    }, {
         'name': 'structure',
         'description': '系统结构',
+        'method': V.file,
+        'type': 'file'
+    }, {
+        'name': 'funtionalFeature',
+        'description': '功能特性',
+    }, {
+        'name': 'picture1',
+        'description': '现场图片1',
+        'method': V.file,
+        'type': 'file'
+    }, {
+        'name': 'picture2',
+        'description': '现场图片2',
+        'method': V.file,
+        'type': 'file'
+    }, {
+        'name': 'picture3',
+        'description': '现场图片3',
         'method': V.file,
         'type': 'file'
     }])
@@ -782,12 +833,25 @@ class JobViewSet(ViewSet):
         'method': V.file,
         'required': True
     }])
-    def create(self, request, name=None, job=None, mobile=None, email=None, attatchment=None, **kwargs):
+    def create(self,
+               request,
+               name=None,
+               job=None,
+               mobile=None,
+               email=None,
+               attatchment=None,
+               **kwargs):
         """职位申请"""
-        obj = m.Job(name=name, job=job, mobile=mobile, email=email, attatchment=attatchment)
+        obj = m.Job(
+            name=name,
+            job=job,
+            mobile=mobile,
+            email=email,
+            attatchment=attatchment)
         obj.save()
         subject = "求职简历"
-        content = "职位申请：\n岗位：{}\n姓名：{}\n手机：{}\n邮箱：{}\n附件为\n{}".format(job, name, mobile, email, obj.attatchment.url)
+        content = "职位申请：\n岗位：{}\n姓名：{}\n手机：{}\n邮箱：{}\n附件为\n{}".format(
+            job, name, mobile, email, obj.attatchment.url)
         send_mail(subject, content, "ssrdhr@foxmail.com")
         send_mail(subject, content, "drinks.huang@hypers.com")
         return self.result_class(data=obj)(serialize=True)

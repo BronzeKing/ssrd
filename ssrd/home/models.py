@@ -175,9 +175,9 @@ class Product(models.Model):
     name = models.CharField("产品名称", max_length=50)
     #  picture = models.ImageField("产品图片", upload_to=None)
     # category = models.ForeignKey(
-        # ProductCategory,
-        # on_delete=models.DO_NOTHING,
-        # verbose_name="产品类别", null=True)
+    # ProductCategory,
+    # on_delete=models.DO_NOTHING,
+    # verbose_name="产品类别", null=True)
     created = models.DateTimeField("创建时间", auto_now_add=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
@@ -235,19 +235,17 @@ class IndustryLink(models.Model):
 class System(models.Model):
     name = models.CharField("名称", max_length=255)
     summary = models.TextField("简介摘要")
+    summaryPicture = models.ImageField("简介摘要插图")
     introduction = models.TextField("系统介绍")
-    feature = models.TextField("功能特性")
+    systemFeature = models.TextField("系统特性")
     structure = models.ImageField("系统结构", null=True)
+    funtionalFeature = models.TextField("功能特性")
+    picture1 = models.ImageField("现场图片图1")
+    picture2 = models.ImageField("现场图片图2")
+    picture3 = models.ImageField("现场图片图3")
+    systemDemonstration = models.ManyToManyField(
+        'home.SystemDemonstration', verbose_name="系统案例")
     rank = models.IntegerField("排序", default=100)
-
-    def data(self):
-        return dict(
-            name=self.name,
-            id=self.id,
-            summary=self.summary,
-            introduction=self.introduction,
-            feature=self.feature,
-            structure=self.structure.url)
 
     def __str__(self):
         return "<System: {}, {}>".format(self.name, self.structure.url)
@@ -310,6 +308,7 @@ class Document(models.Model):
 
 
 class SystemDemonstration(models.Model):
+    """系统案例"""
     title = models.CharField("标题", max_length=255)
     summary = models.TextField("摘要")
     description = models.TextField("描述")
