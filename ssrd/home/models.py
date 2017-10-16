@@ -4,6 +4,13 @@ from django.utils.translation import ugettext_lazy as _
 from ssrd import const
 
 
+class Images(models.Model):
+    image = models.ImageField("图片")
+
+    class Meta:
+        abstract = True
+
+
 class RecruitmentCategory(models.Model):
     name = models.CharField("职位名称", max_length=50)
     created = models.DateTimeField("创建时间", auto_now_add=True)
@@ -307,6 +314,13 @@ class Document(models.Model):
     __repr__ = __str__
 
 
+class SystemDemonstrationPicture(Images):
+    obj = models.ForeignKey('SystemDemonstration')
+
+    def data(self):
+        return dict(picture=self.image)
+
+
 class SystemDemonstration(models.Model):
     """系统案例"""
     title = models.CharField("标题", max_length=255)
@@ -315,9 +329,6 @@ class SystemDemonstration(models.Model):
     address = models.CharField("工程地址", max_length=100)
     content = models.TextField("工程内容")
     picture = models.ImageField("背景图片")
-    picture1 = models.ImageField("背景图片小图1")
-    picture2 = models.ImageField("背景图片小图2")
-    picture3 = models.ImageField("背景图片小图3")
     created = models.DateField("项目时间", default='2017-09-15')
     updated = models.DateTimeField("更新时间", auto_now=True)
 
