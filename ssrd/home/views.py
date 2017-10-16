@@ -946,7 +946,7 @@ class SystemDemonstrationViewSet(ViewSet):
     """
     文档
     """
-    serializer_class = Serializer(m.SystemDemonstration)
+    serializer_class = Serializer(m.SystemDemonstration, extra=['pictures'])
 
     def list(self, request, **kwargs):
         """获取案例展示"""

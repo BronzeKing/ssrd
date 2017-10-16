@@ -315,10 +315,7 @@ class Document(models.Model):
 
 
 class SystemDemonstrationPicture(Images):
-    obj = models.ForeignKey('SystemDemonstration')
-
-    def data(self):
-        return dict(picture=self.image)
+    obj = models.ForeignKey('SystemDemonstration', related_name='pictures')
 
 
 class SystemDemonstration(models.Model):
