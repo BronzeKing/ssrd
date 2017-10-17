@@ -39,13 +39,6 @@ class ProductCategory(models.Model):
 
     __repr__ = __str__
 
-    def data(self):
-        return dict(
-            name=self.name,
-            created=self.created,
-            updated=self.updated,
-            id=self.id)
-
 
 class AboutUs(models.Model):
     introduction = models.TextField("简介")
@@ -165,26 +158,21 @@ class Recruitment(models.Model):
 
     __repr__ = __str__
 
-    #  def data(self):
 
-
-#  return dict(
-#  name=self.name,
-#  id=self.id,
-#  salary=self.salary,
-#  detail=self.detail,
-#  # category=self.category.data(),
-#  created=self.created,
-#  updated=self.updated)
+class ProductImages(Images):
+    obj = models.ForeignKey('Product', related_name="pictures", on_delete=models.CASCADE)
 
 
 class Product(models.Model):
     name = models.CharField("产品名称", max_length=50)
-    #  picture = models.ImageField("产品图片", upload_to=None)
-    # category = models.ForeignKey(
-    # ProductCategory,
-    # on_delete=models.DO_NOTHING,
-    # verbose_name="产品类别", null=True)
+    description = models.TextField("产品描述")
+    summary = models.TextField("产品概述")
+    techParameter = models.TextField("技术参数")
+    techParameter = models.TextField("技术参数")
+    domain = models.TextField("应用领域")
+    other = models.TextField("其他")
+    background = models.ImageField("背景图片")
+    category = models.ForeignKey(ProductCategory, verbose_name="产品分类")
     created = models.DateTimeField("创建时间", auto_now_add=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
@@ -192,15 +180,6 @@ class Product(models.Model):
         return '<产品: {}, {}>'.format(self.name, 'self.category.name')
 
     __repr__ = __str__
-
-    def data(self):
-        return dict(
-            name=self.name,
-            id=self.id,
-            #  picture=self.picture,
-            category=self.category.data(),
-            created=self.created,
-            updated=self.updated)
 
 
 class ConsultationArticles(models.Model):
@@ -315,7 +294,10 @@ class Document(models.Model):
 
 
 class SystemDemonstrationPicture(Images):
-    obj = models.ForeignKey('SystemDemonstration', related_name='pictures')
+    obj = models.ForeignKey(
+        'SystemDemonstration',
+        related_name='pictures',
+        on_delete=models.CASCADE)
 
 
 class SystemDemonstration(models.Model):
@@ -328,6 +310,7 @@ class SystemDemonstration(models.Model):
     picture = models.ImageField("背景图片")
     created = models.DateField("项目时间", default='2017-09-15')
     updated = models.DateTimeField("更新时间", auto_now=True)
+    products = models.ManyToManyField("Product", verbose_name="产品", null=True)
 
     def __str__(self):
         return "<SystemDemonstration: {}   {}>".format(self.title,
