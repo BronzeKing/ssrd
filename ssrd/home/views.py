@@ -607,7 +607,7 @@ class SystemViewSet(ViewSet):
     """
     系统展示
     """
-    serializer_class = Serializer(System, extra=['pictures'])
+    serializer_class = Serializer(System, extra=['pictures', 'systemDemonstration'])
 
     def list(self, request, **kwargs):
         """获取系统展示"""
