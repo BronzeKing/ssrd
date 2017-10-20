@@ -160,7 +160,8 @@ class Recruitment(models.Model):
 
 
 class ProductImages(Images):
-    obj = models.ForeignKey('Product', related_name="pictures", on_delete=models.CASCADE)
+    obj = models.ForeignKey(
+        'Product', related_name="pictures", on_delete=models.CASCADE)
 
 
 class Product(models.Model):
@@ -218,6 +219,11 @@ class IndustryLink(models.Model):
     __repr__ = __str__
 
 
+class SystemPicture(Images):
+    obj = models.ForeignKey(
+        'System', related_name='pictures', on_delete=models.CASCADE)
+
+
 class System(models.Model):
     name = models.CharField("名称", max_length=255)
     summary = models.TextField("简介摘要")
@@ -226,9 +232,6 @@ class System(models.Model):
     systemFeature = models.TextField("系统特性")
     structure = models.ImageField("系统结构", null=True)
     funtionalFeature = models.TextField("功能特性")
-    picture1 = models.ImageField("现场图片图1")
-    picture2 = models.ImageField("现场图片图2")
-    picture3 = models.ImageField("现场图片图3")
     systemDemonstration = models.ManyToManyField(
         'home.SystemDemonstration', verbose_name="系统案例")
     rank = models.IntegerField("排序", default=100)

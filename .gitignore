@@ -2,6 +2,7 @@
 .DS_Store
 .AppleDouble
 .LSOverride
+*tags
 
 .qiniu_pythonsdk_hostscache.json
 ### SublimeText ###
