@@ -84,11 +84,18 @@ class AboutUsViewSet(ViewSet):
 class FAQsViewSet(ViewSet):
     serializer_class = Serializer(FAQs)
 
-    def list(self, request, **kwargs):
+    @para_ok_or_400([{
+        'name': 'search',
+        'description': '搜索',
+    }])
+    def list(self, request, search=None, **kwargs):
         """
         获取 FAQ
         """
         obj = FAQs.objects.all()
+        if search:
+            obj = obj.filter(
+                Q(questioin__contains=search) | Q(answer__contains=search))
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
@@ -607,7 +614,8 @@ class SystemViewSet(ViewSet):
     """
     系统展示
     """
-    serializer_class = Serializer(System, extra=['pictures', 'systemDemonstration'])
+    serializer_class = Serializer(
+        System, extra=['pictures', 'systemDemonstration'])
 
     def list(self, request, **kwargs):
         """获取系统展示"""
@@ -739,9 +747,16 @@ class NewsViewSet(ViewSet):
     """
     serializer_class = Serializer(News)
 
-    def list(self, request, **kwargs):
+    @para_ok_or_400([{
+        'name': 'search',
+        'description': '搜索',
+    }])
+    def list(self, request, search=None, **kwargs):
         """获取新闻公告"""
         obj = News.objects.all().order_by('rank', 'created')
+        if search:
+            obj = obj.filter(
+                Q(title__contains=search) | Q(content__contains=search))
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
@@ -867,10 +882,15 @@ class DocumentViewSet(ViewSet):
         'name': 'source',
         'description': dict(const.SOURCES, description='来源'),
         'required': True
+    }, {
+        'name': 'search',
+        'description': '搜索',
     }])
-    def list(self, request, source=None, **kwargs):
+    def list(self, request, search=None, source=None, **kwargs):
         """获取文档列表"""
         obj = m.Document.objects.filter(source=source)
+        if search:
+            obj = obj.filter(Q(name__contains=search))
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
@@ -946,7 +966,8 @@ class SystemDemonstrationViewSet(ViewSet):
     """
     文档
     """
-    serializer_class = Serializer(m.SystemDemonstration, extra=['pictures', 'products'])
+    serializer_class = Serializer(
+        m.SystemDemonstration, extra=['pictures', 'products'])
 
     def list(self, request, **kwargs):
         """获取案例展示"""

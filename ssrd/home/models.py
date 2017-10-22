@@ -61,19 +61,13 @@ class AboutUs(models.Model):
 
 
 class FAQs(models.Model):
-    questioin = models.TextField("问题")
+    questioin = models.TextField("问题", db_index=True)
     answer = models.TextField("回答")
     rank = models.IntegerField('排序', default=100)
+    created = models.DateTimeField("创建时间", auto_now_add=True)
 
     def __str__(self):
         return '<常见问答: ({}, {})>'.format(self.questioin, self.answer)
-
-    def data(self):
-        return dict(
-            questioin=self.questioin,
-            answer=self.answer,
-            rank=self.rank,
-            id=self.id)
 
 
 class FeedBack(models.Model):
@@ -142,7 +136,7 @@ class ServicePromise(models.Model):
 
 class Recruitment(models.Model):
     """招贤纳士"""
-    name = models.CharField("职位名称", max_length=100)
+    name = models.CharField("职位名称", max_length=100, db_index=True)
     salary = models.CharField("薪资待遇", max_length=50)
     jobDetail = models.TextField("职位简介")
     jobResponsibilities = models.TextField("岗位职责")
@@ -165,7 +159,7 @@ class ProductImages(Images):
 
 
 class Product(models.Model):
-    name = models.CharField("产品名称", max_length=50)
+    name = models.CharField("产品名称", max_length=50, db_index=True)
     description = models.TextField("产品描述")
     summary = models.TextField("产品概述")
     techParameter = models.TextField("技术参数")
@@ -285,7 +279,7 @@ class Job(models.Model):
 
 
 class Document(models.Model):
-    name = models.CharField("姓名", max_length=100)
+    name = models.CharField("姓名", max_length=100, db_index=True)
     source = models.SmallIntegerField("来源", choices=const.SOURCES)
     file = models.FileField("文件", max_length=100)
     updated = models.DateTimeField("更新时间", auto_now=True)
