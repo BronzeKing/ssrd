@@ -242,13 +242,6 @@ class News(models.Model):
     created = models.DateTimeField("创建时间", auto_now_add=True)
     rank = models.IntegerField("排序", default=100)
 
-    def data(self):
-        return dict(
-            id=self.id,
-            title=self.title,
-            content=self.content,
-            created=self.created)
-
     def __str__(self):
         return "<News: {}, {}   {}>".format(self.title, self.content,
                                             self.created)

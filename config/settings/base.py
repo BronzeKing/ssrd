@@ -332,7 +332,9 @@ ADMIN_URL = r'^admin/'
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
 REST_FRAMEWORK = {
-    "DATETIME_FORMAT": "%s",
+    "DATETIME_FORMAT": "%Y-%m-%d %H:%M:%S",
+    "DATE_FORMAT": "%Y-%m-%d",
+    "TIME_FORMAT": "%Y-%m-%d %H:%M:%S"
 }
 
 SWAGGER_SETTINGS = {
