@@ -973,3 +973,15 @@ class SystemDemonstrationViewSet(ViewSet):
         """获取案例展示"""
         obj = m.SystemDemonstration.objects.all()
         return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'description': '文档',
+        'method': V.systemDemonstration,
+        'replace': 'obj'
+    }])
+    def retrieve(self, request, obj=None, **kwargs):
+        """
+        获取文档
+        """
+        return self.result_class(data=obj)(serialize=True)
