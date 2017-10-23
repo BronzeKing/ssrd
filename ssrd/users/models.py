@@ -179,11 +179,10 @@ class ProjectDynamics(models.Model):
 
 
 class Collect(models.Model):
-    project = models.ForeignKey(
-        Project,
+    product = models.OneToOneField(
+        'home.Product',
         on_delete=models.CASCADE,
-        verbose_name="收藏的项目",
-        related_name="collects")
+        verbose_name="收藏的产品")
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -192,16 +191,8 @@ class Collect(models.Model):
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
 
-    def data(self):
-        return dict(
-            id=self.id,
-            project=self.project.data(),
-            user=self.user.data(),
-            created=self.created,
-            updated=self.updated)
-
     def __str__(self):
-        return "<Collect: {}, {}>".format(self.user, self.project)
+        return "<Collect: {}, {}>".format(self.user, self.product)
 
     __repr__ = __str__
 

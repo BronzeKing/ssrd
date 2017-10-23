@@ -394,7 +394,7 @@ class ProjectViewSet(ViewSet):
 
 
 class CollectViewSet(ViewSet):
-    serializer_class = Serializer(Collect)
+    serializer_class = Serializer(Collect, dep=0)
 
     def list(self, request):
         """
@@ -406,9 +406,9 @@ class CollectViewSet(ViewSet):
         return self.result_class(objs)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'projectId',
-        'method': V.project,
-        'description': '项目ID',
+        'name': 'productId',
+        'method': V.product,
+        'description': '产品ID',
         'replace': 'obj',
         'required': True
     }])
@@ -416,7 +416,9 @@ class CollectViewSet(ViewSet):
         """
         新建收藏
         """
-        obj = Collect.objects.create(user=request.user, project=obj)
+        if not request.user.is_authenticated:
+            request.user = User.objects.first()
+        obj, ok = Collect.objects.get_or_create(user=request.user, product=obj)
         return self.result_class(obj)(serialize=True)
 
     @para_ok_or_400([{
@@ -454,7 +456,7 @@ class CollectViewSet(ViewSet):
 
 
 class MessageViewSet(ViewSet):
-    serializer_class = Serializer(Message)
+    serializer_class = Serializer(Message, dep=0)
 
     @para_ok_or_400([{
         'name': 'read',

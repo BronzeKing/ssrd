@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 
-def Serializer(Model, extra=None):
+def Serializer(Model, extra=None, dep=None):
     class factory(serializers.ModelSerializer):
         class Meta:
             model = Model
@@ -9,7 +9,11 @@ def Serializer(Model, extra=None):
                 fields = [x.name for x in Model._meta.fields] + (extra or [])
             else:
                 exclude = []
-            depth = 1
+            # dep 和depth重名的时候会报错
+            if dep is not None:
+                depth = dep
+            else:
+                depth = 1
 
         def to_representation(self, instance):
             if hasattr(self.Meta.model, 'data'):
