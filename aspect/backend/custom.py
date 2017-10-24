@@ -9,7 +9,8 @@ class Backend(object):
     """
 
     def authenticate(self, account='', password=None, email='', **kwargs):
-        account = account.lower() or email.lower()
+        account = (account and account.lower()) or (email
+                                                    and email.lower()) or ''
         user = None
         user = User.objects.filter(Q(email=account) | Q(mobile=account))
         if user:

@@ -1,6 +1,5 @@
 from django.contrib import auth
 from django.db.models import Q
-from rest_framework.authtoken.models import Token
 from paraer import para_ok_or_400
 
 from ssrd.contrib.serializer import Serializer
@@ -11,8 +10,10 @@ from .models import Credential, Captcha
 
 
 class LoginView(UnAuthView):
+    serializer_class = Serializer(User)
+
     @para_ok_or_400([{
-        'name': 'email',
+        'name': 'account',
         'description': '手机、邮箱或授权码',
         'required': True,
         'msg': '请输入账号'
@@ -26,8 +27,8 @@ class LoginView(UnAuthView):
         user = auth.authenticate(**kwargs)
         if not user or not user.is_authenticated:
             return result.error('account', '手机、邮箱、授权码或密码错误')()
-        token, created = Token.objects.get_or_create(user=user)
-        return result.data(dict(key=token.key))()
+        auth.login(request, user)
+        return result.data(user)(serialize=True)
 
     def get(self, request):
         return self.result_class().data(

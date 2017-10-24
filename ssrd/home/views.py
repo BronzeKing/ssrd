@@ -1,6 +1,6 @@
 from django.db.models import Q
 
-from ssrd.contrib import ViewSet, V, send_mail
+from ssrd.contrib import ViewSet, V, send_mail, APIView
 from ssrd.contrib.serializer import Serializer
 from ssrd.home.models import AboutUs, FAQs, FeedBack, ServiceNet, ServicePromise, Recruitment, Product, IndustryLink, System, News
 from ssrd.home import models as m
@@ -985,3 +985,30 @@ class SystemDemonstrationViewSet(ViewSet):
         获取文档
         """
         return self.result_class(data=obj)(serialize=True)
+
+
+class ConstView(APIView):
+    def get(self, request):
+        """
+        获取常量
+        """
+        data = {}
+        for x in const.__all__:
+            if not x.startswith('__'):
+                try:
+                    data[x] = dict(getattr(const, x))
+                except:
+                    pass
+        return self.result_class(data=data)()
+
+
+class EnvView(APIView):
+    def get(self, request):
+        """
+        获取常量
+        """
+        domain = ('http://', 'https://')[request.is_secure()] + request.get_host()
+        oauth = domain + '/login/{}/'
+        oauth = [dict(name=x, url=oauth.format(x)) for x in ('qq', 'weibo', 'weixin')]
+        data = dict(oauth=oauth)
+        return self.result_class(data)()
