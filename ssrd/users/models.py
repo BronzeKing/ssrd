@@ -48,6 +48,7 @@ class User(AbstractUser):
             id=self.id,
             email=self.email,
             role=self.role,
+            created=self.date_joined,
             mobile=self.mobile)
 
 

@@ -1,11 +1,13 @@
-from django.views.generic import RedirectView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import RedirectView
+from django.db.models import Q
 from paraer import para_ok_or_400, perm_ok_or_403
 
 from ssrd import const
-from ssrd.contrib import ViewSet, V, UnAuthView, APIView
+from ssrd.contrib import APIView, UnAuthView, V, ViewSet
 from ssrd.contrib.serializer import Serializer
-from .models import User, AuthorizeCode, Invitation, Project, Collect, Message, Profile
+
+from .models import AuthorizeCode, Collect, Invitation, Message, Profile, Project, User
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
@@ -82,9 +84,10 @@ class UserViewSet(ViewSet):
         query = dict()
         role and query.update(role=role)
         status and query.update(is_active=status)
-        search and query.update(name__contains=search)
-        users = User.objects.filter(**query).order_by('-id')
-        return self.result_class().data(users)(serialize=True)
+        obj = User.objects.filter(**query).order_by('-id')
+        if search:
+            obj = obj.filter(Q(username__contains=search) | Q(email__contains=search) | Q(mobile__contains=search))
+        return self.result_class(data=obj)(serialize=True)
 
     create = post
 

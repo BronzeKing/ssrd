@@ -888,7 +888,9 @@ class DocumentViewSet(ViewSet):
     }])
     def list(self, request, search=None, source=None, **kwargs):
         """获取文档列表"""
-        obj = m.Document.objects.filter(source=source)
+        obj = m.Document.objects.all()
+        if int(source) != -1:
+            obj = obj.filter(source=source)
         if search:
             obj = obj.filter(Q(name__contains=search))
         return self.result_class(data=obj)(serialize=True)
@@ -1010,5 +1012,7 @@ class EnvView(APIView):
         domain = ('http://', 'https://')[request.is_secure()] + request.get_host()
         oauth = domain + '/login/{}/'
         oauth = [dict(name=x, url=oauth.format(x)) for x in ('qq', 'weibo', 'weixin')]
-        data = dict(oauth=oauth)
+        document = dict(const.SOURCES)
+        document = {y: x for x, y in document.items()}
+        data = dict(oauth=oauth, document=document)
         return self.result_class(data)()

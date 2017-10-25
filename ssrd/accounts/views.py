@@ -1,6 +1,7 @@
 from django.contrib import auth
 from django.db.models import Q
 from paraer import para_ok_or_400
+from rest_framework.permissions import IsAuthenticated
 
 from ssrd.contrib.serializer import Serializer
 from ssrd.contrib import APIView, V, UnAuthView
@@ -26,7 +27,7 @@ class LoginView(UnAuthView):
         result = self.result_class()
         user = auth.authenticate(**kwargs)
         if not user or not user.is_authenticated:
-            return result.error('account', '手机、邮箱、授权码或密码错误')()
+            return result.error('account', '手机、邮箱、授权码或密码错误')(status=400)
         auth.login(request, user)
         return result.data(user)(serialize=True)
 
@@ -85,7 +86,7 @@ class RegisterView(UnAuthView):
         return self.result_class(data=user)(serialize=True)
 
 
-captchaMap = {"signup": "注册", "resetPassword": "重置密码"}
+captchaMap = {"register": "注册", "resetPassword": "重置密码"}
 
 
 class CaptchaView(UnAuthView):
@@ -101,8 +102,13 @@ class CaptchaView(UnAuthView):
         'name': 'action',
         'description': captchaMap,
         'method': lambda x: x in captchaMap and x
+    }, {
+        'name': 'credential',
+        'description': '用户邮箱或手机号码',
     }])
-    def get(self, request, Type=None, action='signup'):
+    def get(self, request, Type=None, credential='', action='register'):
+        if not request.user.is_authenticated:
+            request.user.email = credential
         Captcha.fromUser(request.user, Type).send(request, action)
         return self.result_class().data(dict(status='ok'))()
 
@@ -138,6 +144,7 @@ class CredentialView(APIView):
 
 class PasswordChangeView(APIView):
     serializer_class = Serializer(User)
+    permission_classes = (IsAuthenticated, )
 
     @para_ok_or_400([{
         'name': 'password',
@@ -158,6 +165,8 @@ class PasswordChangeView(APIView):
 
 
 class PasswordResetView(APIView):
+    permission_classes = (IsAuthenticated, )
+
     @para_ok_or_400([{
         'name': 'email',
         'method': V.email,
