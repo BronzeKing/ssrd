@@ -40,7 +40,7 @@ class Result(__Result):
         elif self.errors:
             data = dict(msg="Validation Error", errors=self.errors)
         if isinstance(data,
-                      collections.Iterable) and not isinstance(data, dict):
+                      collections.Iterable) and not (isinstance(data, dict) or hasattr(data, '_meta')):
             if should_serialize:
                 data = self.serializer(data, many=True).data
             data = self.paginator.paginate_queryset(

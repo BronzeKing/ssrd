@@ -47,6 +47,7 @@ class User(AbstractUser):
             username=self.username,
             id=self.id,
             email=self.email,
+            role=self.role,
             mobile=self.mobile)
 
 

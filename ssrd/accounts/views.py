@@ -31,12 +31,17 @@ class LoginView(UnAuthView):
         return result.data(user)(serialize=True)
 
     def get(self, request):
-        return self.result_class().data(
-            dict(status=request.user.is_authenticated()))()
+        if request.user.is_authenticated():
+            return self.result_class(data=request.user)(serialize=True)
+        return self.result_class(data=dict(url='login'))(status=302)
 
 
 class LogoutView(UnAuthView):
     def post(self, request, **kwargs):
+        auth.logout(request)
+        return self.result_class().data(dict(status='ok'))()
+
+    def get(self, request, **kwargs):
         auth.logout(request)
         return self.result_class().data(dict(status='ok'))()
 
