@@ -615,7 +615,7 @@ class SystemViewSet(ViewSet):
     系统展示
     """
     serializer_class = Serializer(
-        System, extra=['pictures', 'systemDemonstration'])
+        System, extra=['pictures', 'systemCases'])
 
     def list(self, request, **kwargs):
         """获取系统展示"""
@@ -962,22 +962,22 @@ class DocumentViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
 
-class SystemDemonstrationViewSet(ViewSet):
+class SystemCaseViewSet(ViewSet):
     """
     文档
     """
     serializer_class = Serializer(
-        m.SystemDemonstration, extra=['pictures', 'products'])
+        m.SystemCase, extra=['pictures', 'systems'])
 
     def list(self, request, **kwargs):
         """获取案例展示"""
-        obj = m.SystemDemonstration.objects.all()
+        obj = m.SystemCase.objects.all()
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
         'name': 'pk',
         'description': '文档',
-        'method': V.systemDemonstration,
+        'method': V.systemCase,
         'replace': 'obj'
     }])
     def retrieve(self, request, obj=None, **kwargs):

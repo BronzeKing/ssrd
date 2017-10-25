@@ -28,9 +28,9 @@ class Valid(_Valid):
         self.msg = u'系统介绍不存在'
         return home.System.objects.get(pk=pk)
 
-    def systemDemonstration(self, pk):
+    def systemCase(self, pk):
         self.msg = u'系统案例不存在'
-        return home.SystemDemonstration.objects.get(pk=pk)
+        return home.SystemCase.objects.get(pk=pk)
 
     def industryLink(self, pk):
         self.msg = u'行业介绍不存在'

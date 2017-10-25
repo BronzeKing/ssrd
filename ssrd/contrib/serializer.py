@@ -2,6 +2,9 @@ from rest_framework import serializers
 
 
 def Serializer(Model, extra=None, dep=None):
+    if not hasattr(Model, '_meta'):
+        return
+
     class factory(serializers.ModelSerializer):
         class Meta:
             model = Model
@@ -20,7 +23,5 @@ def Serializer(Model, extra=None, dep=None):
                 return instance.data()
             return super(factory, self).to_representation(instance)
 
-    if not hasattr(Model, '_meta'):
-        return
     factory.__name__ = Model._meta.object_name + 'Serializer'
     return factory

@@ -25,9 +25,9 @@ router.register(
 router.register(r'systems', views.SystemViewSet, base_name='systems')
 router.register(r'news', views.NewsViewSet, base_name='news')
 router.register(
-    r'systemDemonstrations',
-    views.SystemDemonstrationViewSet,
-    base_name='systemDemonstrations')
+    r'systemCases',
+    views.SystemCaseViewSet,
+    base_name='systemCases')
 urlpatterns = [
     url(r'', include(router.urls)),
     url(r'^const$', views.ConstView.as_view()),

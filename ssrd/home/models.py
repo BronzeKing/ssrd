@@ -226,8 +226,6 @@ class System(models.Model):
     systemFeature = models.TextField("系统特性")
     structure = models.ImageField("系统结构", null=True)
     funtionalFeature = models.TextField("功能特性")
-    systemDemonstration = models.ManyToManyField(
-        'home.SystemDemonstration', verbose_name="系统案例")
     rank = models.IntegerField("排序", default=100)
 
     def __str__(self):
@@ -283,14 +281,12 @@ class Document(models.Model):
     __repr__ = __str__
 
 
-class SystemDemonstrationPicture(Images):
+class SystemCasePicture(Images):
     obj = models.ForeignKey(
-        'SystemDemonstration',
-        related_name='pictures',
-        on_delete=models.CASCADE)
+        'SystemCase', related_name='pictures', on_delete=models.CASCADE)
 
 
-class SystemDemonstration(models.Model):
+class SystemCase(models.Model):
     """系统案例"""
     title = models.CharField("标题", max_length=255)
     summary = models.TextField("摘要")
@@ -300,10 +296,9 @@ class SystemDemonstration(models.Model):
     picture = models.ImageField("背景图片")
     created = models.DateField("项目时间", default='2017-09-15')
     updated = models.DateTimeField("更新时间", auto_now=True)
-    products = models.ManyToManyField("Product", verbose_name="产品", null=True)
+    systems = models.ManyToManyField("home.System", verbose_name="系统", related_name="systemCases")
 
     def __str__(self):
-        return "<SystemDemonstration: {}   {}>".format(self.title,
-                                                       self.summary)
+        return "<SystemCase: {}   {}>".format(self.title, self.summary)
 
     __repr__ = __str__
