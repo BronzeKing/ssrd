@@ -1012,7 +1012,12 @@ class EnvView(APIView):
         domain = ('http://', 'https://')[request.is_secure()] + request.get_host()
         oauth = domain + '/login/{}/'
         oauth = [dict(name=x, url=oauth.format(x)) for x in ('qq', 'weibo', 'weixin')]
+
         document = dict(const.SOURCES)
         document = {y: x for x, y in document.items()}
-        data = dict(oauth=oauth, document=document)
+
+        status = dict(const.STATUS)
+        statusReverse = {y: x for x, y in status.items()}
+
+        data = dict(oauth=oauth, document=document, status=status, statusReverse=statusReverse)
         return self.result_class(data)()

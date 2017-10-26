@@ -109,9 +109,13 @@ class Valid(_Valid):
         self.msg = "错误的参数值：%s" % str(ROLES)
         return int(value) in ROLES
 
-    def status(self, value):
+    def Status(self, value):
         self.msg = "错误的参数值：%s" % str(STATUS)
-        return int(value) in STATUS
+        value = int(value)
+        if value == -1:
+            return ''
+        if value in STATUS:
+            return value
 
     def order_status(self, value):
         self.msg = "错误的参数值：%s" % str(ORDER_STATUS)
@@ -154,7 +158,9 @@ class Valid(_Valid):
 
     def num(self, num, n=1, bit=199, contain_0=True):
         self.msg = "必须为数值类型"
-        if not num.isdigit():
+        try:
+            int(num)
+        except:
             return
         return num
 

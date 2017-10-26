@@ -21,13 +21,6 @@ class RecruitmentCategory(models.Model):
 
     __repr__ = __str__
 
-    def data(self):
-        return dict(
-            name=self.name,
-            created=self.created,
-            updated=self.updated,
-            id=self.id)
-
 
 class ProductCategory(models.Model):
     name = models.CharField("产品类别", max_length=50)
@@ -45,14 +38,6 @@ class AboutUs(models.Model):
     culture = models.TextField("企业文化")
     honour = models.TextField("荣耀")
     cooperativePartner = models.TextField("合作伙伴")
-
-    def data(self):
-        return dict(
-            id=self.id,
-            introduction=self.introduction,
-            culture=self.culture,
-            honour=self.honour,
-            cooperativePartner=self.cooperativePartner)
 
     def __str__(self):
         return '关于我们'
@@ -84,15 +69,6 @@ class FeedBack(models.Model):
 
     __repr__ = __str__
 
-    def data(self):
-        return dict(
-            id=self.id,
-            name=self.name,
-            mobile=self.mobile,
-            email=self.email,
-            content=self.content,
-            created=self.created)
-
 
 class ServiceNet(models.Model):
     name = models.CharField("网点名称", max_length=50)
@@ -108,16 +84,6 @@ class ServiceNet(models.Model):
 
     __repr__ = __str__
 
-    def data(self):
-        return dict(
-            id=self.id,
-            name=self.name,
-            linkman=self.linkman,
-            mobile=self.mobile,
-            email=self.email,
-            address=self.address,
-            rank=self.rank)
-
 
 class ServicePromise(models.Model):
     title = models.CharField(max_length=100)
@@ -128,10 +94,6 @@ class ServicePromise(models.Model):
         return '<服务承诺: ({}, {})>'.format(self.title, self.content)
 
     __repr__ = __str__
-
-    def data(self):
-        return dict(
-            title=self.title, content=self.content, rank=self.rank, id=self.id)
 
 
 class Recruitment(models.Model):
@@ -186,9 +148,6 @@ class ConsultationArticles(models.Model):
 
     __repr__ = __str__
 
-    def data(self):
-        return dict(title=self.title, content=self.content, id=self.id)
-
 
 class CharityActivity(models.Model):
     pass
@@ -199,13 +158,6 @@ class IndustryLink(models.Model):
     picture = models.ImageField("背景图片", null=True)
     link = models.TextField("行业链接")
     rank = models.IntegerField("排序", default=100)
-
-    def data(self):
-        return dict(
-            picture=self.picture.url,
-            link=self.link,
-            name=self.name,
-            id=self.id)
 
     def __str__(self):
         return "<IndustryLink: {}, {}>".format(self.picture.url, self.link)
@@ -254,14 +206,6 @@ class Job(models.Model):
     email = models.CharField("邮箱", max_length=100)
     attatchment = models.FileField("附件")
     updated = models.DateTimeField("更新时间", auto_now=True)
-
-    def data(self):
-        return dict(
-            id=self.id,
-            name=self.name,
-            mobile=self.mobile,
-            created=self.updated,
-            email=self.email)
 
     def __str__(self):
         return "<job: {}   {}>".format(self.name, self.job)

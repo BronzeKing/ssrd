@@ -40,16 +40,17 @@ class User(AbstractUser):
     def __str__(self):
         return "<User: {}, {}>".format(self.username, self.email)
 
-    __repr__ = __str__
-
     def data(self):
         return dict(
-            username=self.username,
             id=self.id,
-            email=self.email,
+            username=self.username,
             role=self.role,
+            status=self.is_active and 1 or 0,
+            email=self.email,
             created=self.date_joined,
             mobile=self.mobile)
+
+    __repr__ = __str__
 
 
 class Profile(models.Model):
@@ -97,15 +98,6 @@ class Project(models.Model):
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
 
-    def data(self):
-        return dict(
-            id=self.id,
-            user=self.user.data(),
-            name=self.name,
-            created=self.created,
-            status=self.status,
-            updated=self.updated)
-
     def __str__(self):
         return "<{}: {}>".format(self.name, self.status)
 
@@ -133,15 +125,6 @@ class AuthorizeCode(models.Model):
         self.user = User.objects.create(
             username=username, email='', password='123456')
         return self
-
-    def data(self):
-        return dict(
-            user=self.user.data(),
-            creator=self.creator.data(),
-            code=self.code,
-            status=self.status,
-            created=self.created,
-            updated=self.updated)
 
     def __str__(self):
         return "<Project: {}, {}, {}, {}>".format(self.user, self.creator,
@@ -182,9 +165,7 @@ class ProjectDynamics(models.Model):
 
 class Collect(models.Model):
     product = models.OneToOneField(
-        'home.Product',
-        on_delete=models.CASCADE,
-        verbose_name="收藏的产品")
+        'home.Product', on_delete=models.CASCADE, verbose_name="收藏的产品")
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -204,17 +185,9 @@ class Message(models.Model):
     title = models.TextField("标题")
     content = models.TextField("内容")
     created = models.DateTimeField("创建时间", auto_now_add=True)
+    category = models.SmallIntegerField("消息类型", choices=const.MESSAGE, default=0)
     read = models.SmallIntegerField("已读", choices=const.READ, default=0)
     rank = models.IntegerField("排序", default=100)
-
-    def data(self):
-        return dict(
-            id=self.id,
-            userId=self.userId,
-            title=self.title,
-            content=self.content,
-            read=self.read,
-            created=self.created)
 
     def __str__(self):
         return "<Message: {}, {}>".format(self.user, self.title)

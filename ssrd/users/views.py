@@ -2,10 +2,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import RedirectView
 from django.db.models import Q
 from paraer import para_ok_or_400, perm_ok_or_403
+from rest_framework.permissions import IsAuthenticated
 
 from ssrd import const
 from ssrd.contrib import APIView, UnAuthView, V, ViewSet
 from ssrd.contrib.serializer import Serializer
+from ssrd.contrib import serializer
 
 from .models import AuthorizeCode, Collect, Invitation, Message, Profile, Project, User
 
@@ -66,6 +68,7 @@ class UserView(UnAuthView):
 
 class UserViewSet(ViewSet):
     serializer_class = Serializer(User)
+    permission_classes = (IsAuthenticated, )
 
     @para_ok_or_400([{
         'name': 'role',
@@ -73,7 +76,7 @@ class UserViewSet(ViewSet):
         'description': ("用户角色过滤", ) + const.ROLES
     }, {
         'name': 'status',
-        'method': V.num,
+        'method': V.Status,
         'description': ("用户状态过滤", ) + const.STATUS
     }, {
         'name': 'search',
@@ -83,7 +86,7 @@ class UserViewSet(ViewSet):
         """"""
         query = dict()
         role and query.update(role=role)
-        status and query.update(is_active=status)
+        status in (0, 1) and query.update(is_active=status)
         obj = User.objects.filter(**query).order_by('-id')
         if search:
             obj = obj.filter(Q(username__contains=search) | Q(email__contains=search) | Q(mobile__contains=search))
@@ -106,7 +109,7 @@ class UserViewSet(ViewSet):
         'description': '用户邮箱'
     }, {
         'name': 'status',
-        'method': V.num,
+        'method': V.Status,
         'description': ("用户状态过滤", ) + const.STATUS
     }])
     @perm_ok_or_403([{
@@ -123,7 +126,7 @@ class UserViewSet(ViewSet):
         """更新用户"""
         username and setattr(user, 'username', username)
         email and setattr(user, 'email', email)
-        status and setattr(user, 'status', status)
+        status in (0, 1) and setattr(user, 'is_active', status)
         user.save()
         return self.result_class(user)(serialize=True)
 
@@ -459,6 +462,7 @@ class CollectViewSet(ViewSet):
 
 
 class MessageViewSet(ViewSet):
+    permission_classes = (IsAuthenticated, )
     serializer_class = Serializer(Message, dep=0)
 
     @para_ok_or_400([{
@@ -497,6 +501,33 @@ class MessageViewSet(ViewSet):
         #  obj = Message.objects.bulk_create(
         #  (Message(userId=x, title=title, content=content)
         #  for x in User.objects.filter(role__gt=10)))
+        return self.result_class(obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.message,
+        'description': '消息ID',
+        'replace': 'obj'
+    }, {
+        'name': 'title',
+        'description': '消息标题',
+    }, {
+        'name': 'content',
+        'description': '消息内容',
+    }, {
+        'name': 'read',
+        'description': '已读',
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['obj']),
+        'reason': '无权限修改此消息'
+    }])
+    def update(self, request, obj=None, **kwargs):
+        """
+        修改消息
+        """
+        [setattr(obj, k, v) for k, v in kwargs.items() if v]
+        obj.save()
         return self.result_class(obj)(serialize=True)
 
     @para_ok_or_400([{
