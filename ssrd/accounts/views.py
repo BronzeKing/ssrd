@@ -11,7 +11,7 @@ from ssrd import const
 from .models import Credential, Captcha
 
 
-class LoginView(UnAuthView):
+class LoginView(APIView):
 
     @para_ok_or_400([{
         'name': 'account',
@@ -29,13 +29,15 @@ class LoginView(UnAuthView):
         if not user or not user.is_authenticated:
             return result.error('account', '手机、邮箱、授权码或密码错误')(status=400)
         token, ok = Token.objects.get_or_create(user=user)
-        data = Serializer(User)(user).data
-        data.update(token=token.key)
+        data = dict(token=token.key)
         return result.data(data)(serialize=True)
 
     def get(self, request):
-        if request.user.is_authenticated():
-            return self.result_class(data=request.user)(serialize=True)
+        user = request.user
+        data = Serializer(User)(user).data
+        data.update(invitation=user.profile.code)
+        if user.is_authenticated():
+            return self.result_class(data=data)(serialize=True)
         return self.result_class(data=dict(url='login'))()
 
 

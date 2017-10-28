@@ -16,10 +16,6 @@ def generate_key():
 
 class User(AbstractUser):
 
-    # First Name and Last Name do not cover name patterns
-    # around the globe.
-    name = models.CharField(_('Name of User'), blank=True, max_length=255)
-
     mobile = models.CharField(
         _("Mobile Phone"), blank=True, default='', max_length=11)
     role = models.SmallIntegerField("用户权限", choices=const.ROLES, default=1)
@@ -63,6 +59,7 @@ class Profile(models.Model):
     position = models.CharField("职位", null=True, max_length=255)
     qq = models.CharField("QQ号码", null=True, max_length=20)
     address = models.CharField("地址", null=True, max_length=255)
+    code = models.CharField("邀请码", max_length=40, default=generate_key)
 
     def __str__(self):
         return "<Profile: {}>".format(self.user)
@@ -105,6 +102,7 @@ class Project(models.Model):
 
 
 class AuthorizeCode(models.Model):
+    name = models.CharField("授权码名称", max_length=50)
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -121,7 +119,7 @@ class AuthorizeCode(models.Model):
     updated = models.DateTimeField("更新时间", auto_now=True)
 
     def generateUser(self):
-        username = 'user-{}'.format(User.objects.last().id + 1)
+        username = self.name
         self.user = User.objects.create(
             username=username, email='', password='123456')
         return self
@@ -134,23 +132,20 @@ class AuthorizeCode(models.Model):
 
 
 class Invitation(models.Model):
-    code = models.CharField("邀请码", max_length=40, default=generate_key)
-    creator = models.OneToOneField(
+    creator = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         verbose_name="邀请码所属用户",
-        related_name="invitations", )
-    users = models.ForeignKey(
+        related_name="invitations")
+    user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="Invitation",
+        related_name="invited",
         verbose_name="受邀用户")
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
 
     def __str__(self):
-        return "<Invitation: {}, {}, {}>".format(self.user, self.creator,
-                                                 self.code)
+        return "<Invitation: {}, {}, {}>".format(self.creator, self.user)
 
     __repr__ = __str__
 

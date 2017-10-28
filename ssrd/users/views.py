@@ -216,18 +216,23 @@ class ProfileView(APIView):
 
 
 class AuthorizeCodeViewSet(ViewSet):
-    serializer_class = Serializer(AuthorizeCode)
+    serializer_class = Serializer(AuthorizeCode, extra=['user'])
 
     @para_ok_or_400([{
         'name': 'user',
         'method': V.user,
         'description': '用户ID',
+    }, {
+        'name': 'search',
+        'description': '名称搜索过滤'
     }])
-    def list(self, request, user=None, **kwargs):
+    def list(self, request, user=None, search=None, **kwargs):
         query = dict()
         request.user.role > 0 and query.update(creator=request.user)
-        acs = AuthorizeCode.objects.filter(**query)
-        return self.result_class(data=acs)(serialize=True)
+        obj = AuthorizeCode.objects.filter(**query)
+        if search:
+            obj = obj.filter(Q(user__username__contains=search))
+        return self.result_class(data=obj)(serialize=True)
 
     def create(self, request, **kwargs):
         """新建授权码"""
