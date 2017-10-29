@@ -173,7 +173,7 @@ class SystemPicture(Images):
 class System(models.Model):
     name = models.CharField("名称", max_length=255)
     summary = models.TextField("简介摘要")
-    summaryPicture = models.ImageField("简介摘要插图")
+    picture = models.ImageField("简介摘要插图")
     introduction = models.TextField("系统介绍")
     systemFeature = models.TextField("系统特性")
     structure = models.ImageField("系统结构", null=True)
