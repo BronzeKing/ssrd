@@ -34,11 +34,11 @@ class LoginView(APIView):
 
     def get(self, request):
         user = request.user
+        if not user.is_authenticated():
+            return self.result_class(data=dict(url='login'))()
         data = Serializer(User)(user).data
         data.update(invitation=user.profile.code)
-        if user.is_authenticated():
-            return self.result_class(data=data)(serialize=True)
-        return self.result_class(data=dict(url='login'))()
+        return self.result_class(data=data)(serialize=True)
 
 
 class LogoutView(UnAuthView):

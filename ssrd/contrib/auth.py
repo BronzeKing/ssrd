@@ -8,8 +8,7 @@ from rest_framework.compat import coreapi
 from rest_framework.pagination import BasePagination
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from rest_framework.authentication import (BasicAuthentication,
-                                           SessionAuthentication, TokenAuthentication)
+from rest_framework.authentication import TokenAuthentication
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.conf import settings
@@ -39,8 +38,8 @@ class Result(__Result):
             data = None
         elif self.errors:
             data = dict(msg="Validation Error", errors=self.errors)
-        if isinstance(data,
-                      collections.Iterable) and not (isinstance(data, dict) or hasattr(data, '_meta')):
+        if isinstance(data, collections.Iterable) and not (isinstance(
+                data, dict) or hasattr(data, '_meta')):
             if should_serialize:
                 data = self.serializer(data, many=True).data
             data = self.paginator.paginate_queryset(
@@ -108,7 +107,7 @@ TokenAuthentication.keyword = 'Bearer'
 
 class ViewSet(_ViewSet):
     permission_classes = ()
-    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
+    authentication_classes = (TokenAuthentication, )
     pagination_class = PageNumberPager
     __result_class = Result
     serializer_class = None
@@ -137,7 +136,7 @@ class ViewSet(_ViewSet):
 
 class APIView(_APIView):
     permission_classes = ()
-    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
+    authentication_classes = (TokenAuthentication, )
     pagination_class = PageNumberPager
     __result_class = Result
     serializer_class = None

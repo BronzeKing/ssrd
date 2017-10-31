@@ -7,9 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from ssrd import const
 from ssrd.contrib import APIView, UnAuthView, V, ViewSet
 from ssrd.contrib.serializer import Serializer
-from ssrd.contrib import serializer
 
-from .models import AuthorizeCode, Collect, Invitation, Message, Profile, Project, User
+from .models import AuthorizeCode, Collect, Invitation, Message, Profile, Project, User, ProjectJournal, Document
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
@@ -89,7 +88,9 @@ class UserViewSet(ViewSet):
         status in (0, 1) and query.update(is_active=status)
         obj = User.objects.filter(**query).order_by('-id')
         if search:
-            obj = obj.filter(Q(username__contains=search) | Q(email__contains=search) | Q(mobile__contains=search))
+            obj = obj.filter(
+                Q(username__contains=search) | Q(email__contains=search) | Q(
+                    mobile__contains=search))
         return self.result_class(data=obj)(serialize=True)
 
     create = post
@@ -166,6 +167,7 @@ class UserViewSet(ViewSet):
 
 class ProfileView(APIView):
     serializer_class = Serializer(Profile)
+    permission_classes = (IsAuthenticated, )
 
     @para_ok_or_400([{
         'name': 'user',
@@ -217,6 +219,7 @@ class ProfileView(APIView):
 
 class AuthorizeCodeViewSet(ViewSet):
     serializer_class = Serializer(AuthorizeCode, extra=['user'])
+    permission_classes = (IsAuthenticated, )
 
     @para_ok_or_400([{
         'name': 'user',
@@ -310,6 +313,7 @@ class InvitationViewSet(ViewSet):
 
 class ProjectViewSet(ViewSet):
     serializer_class = Serializer(Project)
+    permission_classes = (IsAuthenticated, )
 
     @para_ok_or_400([{
         'name': 'stats',
@@ -404,8 +408,60 @@ class ProjectViewSet(ViewSet):
         return self.result_class(obj)(serialize=True)
 
 
+class ProjectLogViewSet(ViewSet):
+    serializer_class = Serializer(ProjectJournal, dep=2)
+    permission_classes = (IsAuthenticated, )
+
+    @para_ok_or_400([{
+        'name': 'projectId',
+        'method': V.project,
+        'description': '项目ID',
+        'replace': 'project'
+    }, {
+        'name': 'action',
+        'method': lambda x: x in dict(const.ProjectJournal),
+        'description': ("行为", ) + const.ProjectJournal
+    }])
+    def list(self, request, project=None, action=None, **kwargs):
+        """
+        获取项目日志，如签证，工作日志，审核日志等
+        """
+        query = dict()
+        project and query.update(project=project)
+        action and query.update(action=action)
+        obj = ProjectJournal.objects.filter(**query)
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'projectId',
+        'method': V.project,
+        'description': '项目ID',
+        'replace': 'project'
+    }, {
+        'name': 'action',
+        'method': lambda x: int(x) in dict(const.ProjectJournal),
+        'description': ("行为", ) + const.ProjectJournal
+    }, {
+        'name': 'content',
+        'description': '内容'
+    }, {
+        'name': 'attatchment',
+        'method': V.files,
+        'description': '附件，可以传list',
+        'type': 'file'
+    }])
+    def create(self, request, project=None, action=None, content=None, attatchment=None, **kwargs):
+        """新建项目日志"""
+        obj = ProjectJournal.objects.create(
+            project=project, action=action, content=content)
+        docs = Document.bulk(attatchment)
+        obj.attatchment.add(*docs)
+        return self.result_class(data=obj)(serialize=True)
+
+
 class CollectViewSet(ViewSet):
     serializer_class = Serializer(Collect, dep=0)
+    permission_classes = (IsAuthenticated, )
 
     def list(self, request):
         """

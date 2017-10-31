@@ -153,6 +153,13 @@ class Valid(_Valid):
         if hasattr(obj, 'file'):
             return obj
 
+    def files(self, obj):
+        self.msg = '必须为文件类型'
+        if not isinstance(obj, list):
+            obj = [obj]
+        if all(hasattr(x, 'file') for x in obj):
+            return obj
+
     def url(self, string):
         return string
 

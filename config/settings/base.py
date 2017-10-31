@@ -334,7 +334,10 @@ ADMIN_URL = r'^admin/'
 REST_FRAMEWORK = {
     "DATETIME_FORMAT": "%Y-%m-%d %H:%M:%S",
     "DATE_FORMAT": "%Y-%m-%d",
-    "TIME_FORMAT": "%Y-%m-%d %H:%M:%S"
+    "TIME_FORMAT": "%Y-%m-%d %H:%M:%S",
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
 }
 
 SWAGGER_SETTINGS = {

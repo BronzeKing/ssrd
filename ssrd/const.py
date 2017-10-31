@@ -29,3 +29,5 @@ CredentialKeyMap = dict((('email', "邮箱"), ('mobile', "手机")))
 GENDER = (("male", "男"), ("female", "女"))
 
 MESSAGE = ((0, '全部消息'), )
+
+ProjectJournal = ((0, '签字'), (1, '审核'), (2, '协助申请'), (3, '工作日志'), (4, '设计报价'), (5, '发货'))

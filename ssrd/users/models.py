@@ -6,6 +6,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from django.core.files import File
 
 from ssrd import const
 
@@ -138,9 +139,7 @@ class Invitation(models.Model):
         verbose_name="邀请码所属用户",
         related_name="invitations")
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        related_name="invited",
-        verbose_name="受邀用户")
+        settings.AUTH_USER_MODEL, related_name="invited", verbose_name="受邀用户")
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
 
@@ -150,12 +149,23 @@ class Invitation(models.Model):
     __repr__ = __str__
 
 
-class ProjectDynamics(models.Model):
+class ProjectJournal(models.Model):
     project = models.ForeignKey(
-        Project,
+        'users.Project',
         on_delete=models.CASCADE,
         verbose_name="所属项目",
-        related_name="projectDynamics")
+        related_name="logs")
+    action = models.SmallIntegerField(
+        "行为", choices=const.ProjectJournal, default=0)
+    content = models.TextField("内容")
+    created = models.DateTimeField("创建时间", auto_now_add=True)
+    updated = models.DateTimeField(("更新时间"), auto_now=True)
+    attatchment = models.ManyToManyField("users.Document", verbose_name="附件")
+
+    def __str__(self):
+        return "<ProjectJournal: {}, {}, {}>".format(self.project, self.action)
+
+    __repr__ = __str__
 
 
 class Collect(models.Model):
@@ -180,7 +190,8 @@ class Message(models.Model):
     title = models.TextField("标题")
     content = models.TextField("内容")
     created = models.DateTimeField("创建时间", auto_now_add=True)
-    category = models.SmallIntegerField("消息类型", choices=const.MESSAGE, default=0)
+    category = models.SmallIntegerField(
+        "消息类型", choices=const.MESSAGE, default=0)
     read = models.SmallIntegerField("已读", choices=const.READ, default=0)
     rank = models.IntegerField("排序", default=100)
 
@@ -188,3 +199,20 @@ class Message(models.Model):
         return "<Message: {}, {}>".format(self.user, self.title)
 
     __repr__ = __str__
+
+
+class Document(models.Model):
+    name = models.CharField("文件名", max_length=255, default='')
+    file = models.FileField("文件")
+    created = models.DateField("项目时间", auto_now_add=True)
+    updated = models.DateTimeField("更新时间", auto_now=True)
+
+    def __str__(self):
+        return "<Document: {}   {}>".format(self.file, self.updated)
+
+    __repr__ = __str__
+
+    @classmethod
+    def bulk(cls, files):
+        files = [File(x) for x in files]
+        return cls.objects.bulk_create([cls(file=x, name=x.name) for x in files])

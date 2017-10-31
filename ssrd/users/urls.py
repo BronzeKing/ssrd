@@ -9,6 +9,7 @@ router.register(r'invitations', views.InvitationViewSet, base_name='invitations'
 router.register(r'projects', views.ProjectViewSet, base_name='projects')
 router.register(r'collects', views.CollectViewSet, base_name='collects')
 router.register(r'messages', views.MessageViewSet, base_name='messages')
+router.register(r'project/(?P<projectId>\d+)/logs', views.ProjectLogViewSet, base_name='logs')
 
 urlpatterns = [
     url(regex=r'^signup', view=views.UserView.as_view()),
