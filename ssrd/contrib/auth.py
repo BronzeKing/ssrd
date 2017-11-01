@@ -6,9 +6,7 @@ from rest_framework.viewsets import ViewSet as _ViewSet
 from rest_framework.views import APIView as _APIView
 from rest_framework.compat import coreapi
 from rest_framework.pagination import BasePagination
-from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from rest_framework.authentication import TokenAuthentication
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.conf import settings
@@ -37,7 +35,8 @@ class Result(__Result):
         elif status == 204:
             data = None
         elif self.errors:
-            data = dict(msg="Validation Error", errors=self.errors)
+            status = 400
+            data = dict(msg="表单校验失败", errors=self.errors)
         if isinstance(data, collections.Iterable) and not (isinstance(
                 data, dict) or hasattr(data, '_meta')):
             if should_serialize:
@@ -100,9 +99,6 @@ class PageNumberPager(BasePagination):
                     description=u'分页参数：当为空时，获取全量数据',
                     type='integer'))
         return fields
-
-
-TokenAuthentication.keyword = 'Bearer'
 
 
 class ViewSet(_ViewSet):
@@ -174,7 +170,5 @@ class UnAuthView(_APIView):
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
-        Token.objects.create(user=instance)
         from ssrd.users.models import Profile, Invitation
-        Profile.objects.create(user=instance, name=instance.username)
-        Invitation.objects.create(creator=instance)
+        Profile.objects.get_or_create(user=instance, name=instance.username)

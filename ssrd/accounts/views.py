@@ -6,7 +6,7 @@ from rest_framework_jwt.views import ObtainJSONWebToken
 
 from ssrd.contrib.serializer import Serializer
 from ssrd.contrib import APIView, V, UnAuthView, Result
-from ssrd.users.models import User
+from ssrd.users.models import User, Invitation
 from ssrd import const
 from .models import Credential, Captcha
 
@@ -27,7 +27,7 @@ class LoginView(ObtainJSONWebToken):
     def post(self, request, **kwargs):
         response = super(LoginView, self).post(request, **kwargs)
         if response.status_code == 400:
-            return self.result_class().error('account', '手机、邮箱、授权码或密码错误')(status=400)
+            return self.result_class().error('username', '手机、邮箱、授权码或密码错误')(status=400)
         return response
 
     def get(self, request):
@@ -53,7 +53,7 @@ class RegisterView(UnAuthView):
     serializer_class = Serializer(User)
 
     @para_ok_or_400([{
-        'name': 'name',
+        'name': 'username',
         'method': V.name,
         'required': True
     }, {
@@ -68,6 +68,10 @@ class RegisterView(UnAuthView):
         'name': 'mobile',
         'description': '手机',
         'method': V.mobile,
+    }, {
+        'name': 'email',
+        'description': '邮箱',
+        'method': V.email,
         'required': True
     }, {
         'name': 'invitation',
@@ -76,16 +80,22 @@ class RegisterView(UnAuthView):
     }])
     def post(self,
              request,
-             name=None,
+             username=None,
              mobile=None,
+             email=None,
              password=None,
-             role='42',
+             role=None,
              invitation=None):
-        user = User.objects.create_user(
-            name=name, mobile=mobile, password=password, role=role)
-        invitation and invitation.users.add(user)
-        auth.login(request, user)
-        return self.result_class(data=user)(serialize=True)
+        result = self.result_class()
+        if User.objects.filter(email=email):
+            return result.error('email', '该邮箱已被注册')()
+        data = dict(username=username, email=email)
+        user = User(**data)
+        user.set_password(password)
+        user.save()
+        if invitation:
+            Invitation.objects.create(creator=invitation, user=user)
+        return result(data=user)(serialize=True)
 
 
 captchaMap = {"register": "注册", "resetPassword": "重置密码"}

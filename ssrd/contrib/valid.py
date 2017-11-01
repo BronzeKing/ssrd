@@ -90,10 +90,10 @@ class Valid(_Valid):
         obj = users.AuthorizeCode.objects.get(pk=pk)
         return obj
 
-    def invitation(self, pk):
+    def invitation(self, code):
         self.msg = u"用户不存在或已停用"
-        obj = users.Invitation.objects.get(pk=pk)
-        return obj
+        obj = users.Profile.objects.get(code=code)
+        return obj.user
 
     def project(self, pk):
         self.msg = '项目不存在'
@@ -107,7 +107,7 @@ class Valid(_Valid):
 
     def role(self, value):
         self.msg = "错误的参数值：%s" % str(ROLES)
-        return int(value) in ROLES
+        return int(value) in ROLES and int(value)
 
     def Status(self, value):
         self.msg = "错误的参数值：%s" % str(STATUS)

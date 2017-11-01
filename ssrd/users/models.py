@@ -29,7 +29,7 @@ class User(AbstractBaseUser):
     )
     mobile = models.CharField(
         _("Mobile Phone"), blank=True, default='', max_length=11)
-    role = models.SmallIntegerField("用户权限", choices=const.ROLES, default=1)
+    role = models.SmallIntegerField("用户权限", choices=const.ROLES, default=42)
     created = models.DateTimeField(_('date joined'), default=timezone.now)
     status = models.SmallIntegerField(
         "状态", choices=const.STATUS, default=1)
