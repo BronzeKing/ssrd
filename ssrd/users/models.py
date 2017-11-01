@@ -1,7 +1,8 @@
 import os
 import binascii
 
-from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
+from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -15,11 +16,26 @@ def generate_key():
     return binascii.hexlify(os.urandom(20)).decode()
 
 
-class User(AbstractUser):
-
+class User(AbstractBaseUser):
+    email = models.EmailField(_('email address'), unique=True)
+    username = models.CharField(
+        _('username'),
+        max_length=150,
+        unique=True,
+        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        error_messages={
+            'unique': _("A user with that username already exists."),
+        },
+    )
     mobile = models.CharField(
         _("Mobile Phone"), blank=True, default='', max_length=11)
     role = models.SmallIntegerField("用户权限", choices=const.ROLES, default=1)
+    created = models.DateTimeField(_('date joined'), default=timezone.now)
+    status = models.SmallIntegerField(
+        "状态", choices=const.STATUS, default=1)
+    EMAIL_FIELD = 'email'
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['mobile']
 
     def get_absolute_url(self):
         return reverse('users:detail', kwargs={'username': self.username})
@@ -36,16 +52,6 @@ class User(AbstractUser):
 
     def __str__(self):
         return "<User: {}, {}>".format(self.username, self.email)
-
-    def data(self):
-        return dict(
-            id=self.id,
-            username=self.username,
-            role=self.role,
-            status=self.is_active and 1 or 0,
-            email=self.email,
-            created=self.date_joined,
-            mobile=self.mobile)
 
     __repr__ = __str__
 
@@ -149,21 +155,21 @@ class Invitation(models.Model):
     __repr__ = __str__
 
 
-class ProjectJournal(models.Model):
+class ProjectLog(models.Model):
     project = models.ForeignKey(
         'users.Project',
         on_delete=models.CASCADE,
         verbose_name="所属项目",
         related_name="logs")
     action = models.SmallIntegerField(
-        "行为", choices=const.ProjectJournal, default=0)
+        "行为", choices=const.ProjectLog, default=0)
     content = models.TextField("内容")
     created = models.DateTimeField("创建时间", auto_now_add=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
     attatchment = models.ManyToManyField("users.Document", verbose_name="附件")
 
     def __str__(self):
-        return "<ProjectJournal: {}, {}, {}>".format(self.project, self.action)
+        return "<ProjectLog: {}, {}, {}>".format(self.project, self.action)
 
     __repr__ = __str__
 

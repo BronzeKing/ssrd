@@ -7,6 +7,7 @@ https://docs.djangoproject.com/en/dev/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
+import datetime
 import environ
 
 ROOT_DIR = environ.Path(
@@ -112,6 +113,7 @@ MANAGERS = ADMINS
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {'default': env.db('DATABASE_URL')}
 DATABASES['default']['ATOMIC_REQUESTS'] = True
+print(DATABASES)
 
 # GENERAL CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -305,7 +307,8 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.load_extra_data',
 
     # Update the user record with any changed info from the auth service.
-    'social_core.pipeline.user.user_details', )
+    'social_core.pipeline.user.user_details',
+)
 
 # Some really nice defaults
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
@@ -332,12 +335,18 @@ ADMIN_URL = r'^admin/'
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
 REST_FRAMEWORK = {
-    "DATETIME_FORMAT": "%Y-%m-%d %H:%M:%S",
-    "DATE_FORMAT": "%Y-%m-%d",
-    "TIME_FORMAT": "%Y-%m-%d %H:%M:%S",
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-    )
+    "DATETIME_FORMAT":
+    "%Y-%m-%d %H:%M:%S",
+    "DATE_FORMAT":
+    "%Y-%m-%d",
+    "TIME_FORMAT":
+    "%Y-%m-%d %H:%M:%S",
+    'DEFAULT_AUTHENTICATION_CLASSES':
+    ('rest_framework_jwt.authentication.JSONWebTokenAuthentication', )
+}
+JWT_AUTH = {
+    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=12 * 60 * 60),
 }
 
 SWAGGER_SETTINGS = {

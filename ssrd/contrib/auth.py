@@ -107,7 +107,6 @@ TokenAuthentication.keyword = 'Bearer'
 
 class ViewSet(_ViewSet):
     permission_classes = ()
-    authentication_classes = (TokenAuthentication, )
     pagination_class = PageNumberPager
     __result_class = Result
     serializer_class = None
@@ -136,7 +135,6 @@ class ViewSet(_ViewSet):
 
 class APIView(_APIView):
     permission_classes = ()
-    authentication_classes = (TokenAuthentication, )
     pagination_class = PageNumberPager
     __result_class = Result
     serializer_class = None

@@ -8,7 +8,7 @@ from ssrd import const
 from ssrd.contrib import APIView, UnAuthView, V, ViewSet
 from ssrd.contrib.serializer import Serializer
 
-from .models import AuthorizeCode, Collect, Invitation, Message, Profile, Project, User, ProjectJournal, Document
+from .models import AuthorizeCode, Collect, Invitation, Message, Profile, Project, User, ProjectLog, Document
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
@@ -409,7 +409,7 @@ class ProjectViewSet(ViewSet):
 
 
 class ProjectLogViewSet(ViewSet):
-    serializer_class = Serializer(ProjectJournal, dep=2)
+    serializer_class = Serializer(ProjectLog, dep=2)
     permission_classes = (IsAuthenticated, )
 
     @para_ok_or_400([{
@@ -419,8 +419,8 @@ class ProjectLogViewSet(ViewSet):
         'replace': 'project'
     }, {
         'name': 'action',
-        'method': lambda x: x in dict(const.ProjectJournal),
-        'description': ("行为", ) + const.ProjectJournal
+        'method': lambda x: x in dict(const.ProjectLog),
+        'description': ("行为", ) + const.ProjectLog
     }])
     def list(self, request, project=None, action=None, **kwargs):
         """
@@ -429,7 +429,7 @@ class ProjectLogViewSet(ViewSet):
         query = dict()
         project and query.update(project=project)
         action and query.update(action=action)
-        obj = ProjectJournal.objects.filter(**query)
+        obj = ProjectLog.objects.filter(**query)
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
@@ -439,8 +439,8 @@ class ProjectLogViewSet(ViewSet):
         'replace': 'project'
     }, {
         'name': 'action',
-        'method': lambda x: int(x) in dict(const.ProjectJournal),
-        'description': ("行为", ) + const.ProjectJournal
+        'method': lambda x: int(x) in dict(const.ProjectLog),
+        'description': ("行为", ) + const.ProjectLog
     }, {
         'name': 'content',
         'description': '内容'
@@ -452,7 +452,7 @@ class ProjectLogViewSet(ViewSet):
     }])
     def create(self, request, project=None, action=None, content=None, attatchment=None, **kwargs):
         """新建项目日志"""
-        obj = ProjectJournal.objects.create(
+        obj = ProjectLog.objects.create(
             project=project, action=action, content=content)
         docs = Document.bulk(attatchment)
         obj.attatchment.add(*docs)

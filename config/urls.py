@@ -5,6 +5,10 @@ from django.views.generic import TemplateView
 from django.views import defaults as default_views
 from ssrd.accounts.views import LoginView, LogoutView
 from rest_framework_swagger.views import get_swagger_view
+from rest_framework_jwt.views import verify_jwt_token
+from rest_framework_jwt.views import obtain_jwt_token
+
+
 
 swagger_url = not settings.DEBUG and 'https://api.mum5.cn/' or None
 
@@ -18,6 +22,10 @@ urlpatterns = [
     url(r'^about/$',
         TemplateView.as_view(template_name='pages/about.html'),
         name='about'),
+    url(r'^api-token-verify/', verify_jwt_token),
+    url(r'^api-token-auth/', obtain_jwt_token),
+
+
     # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),
 

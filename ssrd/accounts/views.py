@@ -2,19 +2,20 @@ from django.contrib import auth
 from django.db.models import Q
 from paraer import para_ok_or_400
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.authtoken.models import Token
+from rest_framework_jwt.views import ObtainJSONWebToken
 
 from ssrd.contrib.serializer import Serializer
-from ssrd.contrib import APIView, V, UnAuthView
+from ssrd.contrib import APIView, V, UnAuthView, Result
 from ssrd.users.models import User
 from ssrd import const
 from .models import Credential, Captcha
 
 
-class LoginView(APIView):
+class LoginView(ObtainJSONWebToken):
+    result_class = Result
 
     @para_ok_or_400([{
-        'name': 'account',
+        'name': 'username',
         'description': '手机、邮箱或授权码',
         'required': True,
         'msg': '请输入账号'
@@ -24,13 +25,10 @@ class LoginView(APIView):
         'msg': '请输入密码'
     }])
     def post(self, request, **kwargs):
-        result = self.result_class()
-        user = auth.authenticate(**kwargs)
-        if not user or not user.is_authenticated:
-            return result.error('account', '手机、邮箱、授权码或密码错误')(status=400)
-        token, ok = Token.objects.get_or_create(user=user)
-        data = dict(token=token.key)
-        return result.data(data)(serialize=True)
+        response = super(LoginView, self).post(request, **kwargs)
+        if response.status_code == 400:
+            return self.result_class().error('account', '手机、邮箱、授权码或密码错误')(status=400)
+        return response
 
     def get(self, request):
         user = request.user
