@@ -7,9 +7,6 @@ from ssrd import const
 class Images(models.Model):
     image = models.ImageField("图片")
 
-    class Meta:
-        abstract = True
-
 
 class RecruitmentCategory(models.Model):
     name = models.CharField("职位名称", max_length=50)
@@ -115,11 +112,6 @@ class Recruitment(models.Model):
     __repr__ = __str__
 
 
-class ProductImages(Images):
-    obj = models.ForeignKey(
-        'Product', related_name="pictures", on_delete=models.CASCADE)
-
-
 class Product(models.Model):
     name = models.CharField("产品名称", max_length=50, db_index=True)
     description = models.TextField("产品描述")
@@ -127,6 +119,7 @@ class Product(models.Model):
     techParameter = models.TextField("技术参数")
     techParameter = models.TextField("技术参数")
     domain = models.TextField("应用领域")
+    pictures = models.ManyToManyField("home.Images", verbose_name="产品插图")
     other = models.TextField("其他")
     background = models.ImageField("背景图片")
     category = models.ForeignKey(ProductCategory, verbose_name="产品分类")
@@ -165,16 +158,12 @@ class IndustryLink(models.Model):
     __repr__ = __str__
 
 
-class SystemPicture(Images):
-    obj = models.ForeignKey(
-        'System', related_name='pictures', on_delete=models.CASCADE)
-
-
 class System(models.Model):
     name = models.CharField("名称", max_length=255)
     summary = models.TextField("简介摘要")
     picture = models.ImageField("简介摘要插图")
     introduction = models.TextField("系统介绍")
+    pictures = models.ManyToManyField("home.Images", verbose_name="系统插图")
     systemFeature = models.TextField("系统特性")
     structure = models.ImageField("系统结构", null=True)
     funtionalFeature = models.TextField("功能特性")
@@ -225,11 +214,6 @@ class Document(models.Model):
     __repr__ = __str__
 
 
-class SystemCasePicture(Images):
-    obj = models.ForeignKey(
-        'SystemCase', related_name='pictures', on_delete=models.CASCADE)
-
-
 class SystemCase(models.Model):
     """系统案例"""
     title = models.CharField("标题", max_length=255)
@@ -240,7 +224,9 @@ class SystemCase(models.Model):
     picture = models.ImageField("背景图片")
     created = models.DateField("项目时间", default='2017-09-15')
     updated = models.DateTimeField("更新时间", auto_now=True)
-    systems = models.ManyToManyField("home.System", verbose_name="系统", related_name="systemCases")
+    pictures = models.ManyToManyField("home.Images", verbose_name="系统案例插图")
+    systems = models.ManyToManyField(
+        "home.System", verbose_name="系统", related_name="systemCases")
 
     def __str__(self):
         return "<SystemCase: {}   {}>".format(self.title, self.summary)
