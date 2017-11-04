@@ -95,7 +95,7 @@ class RegisterView(UnAuthView):
         user.save()
         if invitation:
             Invitation.objects.create(creator=invitation, user=user)
-        return result(data=user)(serialize=True)
+        return result.data(user)(serialize=True)
 
 
 captchaMap = {"register": "注册", "resetPassword": "重置密码"}

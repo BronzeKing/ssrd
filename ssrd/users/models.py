@@ -175,7 +175,7 @@ class ProjectLog(models.Model):
 
 
 class Collect(models.Model):
-    product = models.OneToOneField(
+    product = models.ForeignKey(
         'home.Product', on_delete=models.CASCADE, verbose_name="收藏的产品")
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
