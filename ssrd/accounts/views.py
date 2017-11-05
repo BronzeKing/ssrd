@@ -12,10 +12,11 @@ from .models import Credential, Captcha
 
 
 class LoginView(ObtainJSONWebToken):
+    authentication_classes = APIView.authentication_classes
     result_class = Result
 
     @para_ok_or_400([{
-        'name': 'username',
+        'name': 'email',
         'description': '手机、邮箱或授权码',
         'required': True,
         'msg': '请输入账号'
@@ -31,6 +32,7 @@ class LoginView(ObtainJSONWebToken):
         return response
 
     def get(self, request):
+
         user = request.user
         if not user.is_authenticated():
             return self.result_class(data=dict(url='login'))()

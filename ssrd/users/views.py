@@ -8,7 +8,7 @@ from ssrd import const
 from ssrd.contrib import APIView, UnAuthView, V, ViewSet
 from ssrd.contrib.serializer import Serializer
 
-from .models import AuthorizeCode, Collect, Invitation, Message, Profile, Project, User, ProjectLog, Document
+from .models import AuthorizeCode, Collect, Invitation, Message, Profile, Project, User, ProjectLog, Documents
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
@@ -454,7 +454,7 @@ class ProjectLogViewSet(ViewSet):
         """新建项目日志"""
         obj = ProjectLog.objects.create(
             project=project, action=action, content=content)
-        docs = Document.bulk(attatchment)
+        docs = Documents.bulk(attatchment)
         obj.attatchment.add(*docs)
         return self.result_class(data=obj)(serialize=True)
 
@@ -523,7 +523,6 @@ class CollectViewSet(ViewSet):
 
 
 class MessageViewSet(ViewSet):
-    permission_classes = (IsAuthenticated, )
     serializer_class = Serializer(Message, dep=0)
 
     @para_ok_or_400([{

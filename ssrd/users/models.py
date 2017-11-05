@@ -2,6 +2,7 @@ import os
 import binascii
 
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django.urls import reverse
@@ -16,13 +17,46 @@ def generate_key():
     return binascii.hexlify(os.urandom(20)).decode()
 
 
+class BaseUserManager(models.Manager):
+    @classmethod
+    def normalize_email(cls, email):
+        """
+        Normalize the email address by lowercasing the domain part of it.
+        """
+        email = email or ''
+        try:
+            email_name, domain_part = email.strip().rsplit('@', 1)
+        except ValueError:
+            pass
+        else:
+            email = '@'.join([email_name, domain_part.lower()])
+        return email
+
+    def make_random_password(self,
+                             length=10,
+                             allowed_chars='abcdefghjkmnpqrstuvwxyz'
+                             'ABCDEFGHJKLMNPQRSTUVWXYZ'
+                             '23456789'):
+        """
+        Generate a random password with the given length and given
+        allowed_chars. The default value of allowed_chars does not have "I" or
+        "O" or letters and digits that look similar -- just to avoid confusion.
+        """
+        return get_random_string(length, allowed_chars)
+
+    def get_by_natural_key(self, username):
+        return self.get(**{self.model.USERNAME_FIELD: username})
+
+
 class User(AbstractBaseUser):
     email = models.EmailField(_('email address'), unique=True)
     username = models.CharField(
         _('username'),
         max_length=150,
         unique=True,
-        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        help_text=
+        _('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'
+          ),
         error_messages={
             'unique': _("A user with that username already exists."),
         },
@@ -31,11 +65,11 @@ class User(AbstractBaseUser):
         _("Mobile Phone"), blank=True, default='', max_length=11)
     role = models.SmallIntegerField("用户权限", choices=const.ROLES, default=42)
     created = models.DateTimeField(_('date joined'), default=timezone.now)
-    status = models.SmallIntegerField(
-        "状态", choices=const.STATUS, default=1)
+    status = models.SmallIntegerField("状态", choices=const.STATUS, default=1)
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['mobile']
+    objects = BaseUserManager()
 
     def get_absolute_url(self):
         return reverse('users:detail', kwargs={'username': self.username})
@@ -166,7 +200,7 @@ class ProjectLog(models.Model):
     content = models.TextField("内容")
     created = models.DateTimeField("创建时间", auto_now_add=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
-    attatchment = models.ManyToManyField("users.Document", verbose_name="附件")
+    attatchment = models.ManyToManyField("users.Documents", verbose_name="附件")
 
     def __str__(self):
         return "<ProjectLog: {}, {}, {}>".format(self.project, self.action)
@@ -207,18 +241,19 @@ class Message(models.Model):
     __repr__ = __str__
 
 
-class Document(models.Model):
+class Documents(models.Model):
     name = models.CharField("文件名", max_length=255, default='')
     file = models.FileField("文件")
     created = models.DateField("项目时间", auto_now_add=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
     def __str__(self):
-        return "<Document: {}   {}>".format(self.file, self.updated)
+        return "<Documents: {}   {}>".format(self.file, self.updated)
 
     __repr__ = __str__
 
     @classmethod
     def bulk(cls, files):
         files = [File(x) for x in files]
-        return cls.objects.bulk_create([cls(file=x, name=x.name) for x in files])
+        return cls.objects.bulk_create(
+            [cls(file=x, name=x.name) for x in files])

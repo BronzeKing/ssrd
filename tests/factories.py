@@ -141,12 +141,12 @@ class JobFactory(factory.django.DjangoModelFactory):
         model = 'home.Job'
 
 
-class DocumentFactory(factory.django.DjangoModelFactory):
+class DocumentsFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: 'name-{0}'.format(n))
     source = 1
 
     class Meta:
-        model = 'home.Document'
+        model = 'home.Documents'
 
 
 def FileFactory():
@@ -156,6 +156,7 @@ def FileFactory():
     file.name = 'test.png'
     file.seek(0)
     return file
+
 
 class UserFactory(factory.django.DjangoModelFactory):
     username = factory.Sequence(lambda n: 'user-{0}'.format(n))

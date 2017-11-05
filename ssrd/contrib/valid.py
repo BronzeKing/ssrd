@@ -14,7 +14,7 @@ GENDER = dict(const.GENDER)
 class Valid(_Valid):
     def document(self, pk):
         self.msg = "文档不存在"
-        return home.Document.objects.get(pk=pk)
+        return home.Documents.objects.get(pk=pk)
 
     def message(self, pk):
         self.msg = u'消息不存在'

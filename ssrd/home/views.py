@@ -872,11 +872,11 @@ class JobViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
 
-class DocumentViewSet(ViewSet):
+class DocumentsViewSet(ViewSet):
     """
     文档
     """
-    serializer_class = Serializer(m.Document)
+    serializer_class = Serializer(m.Documents)
 
     @para_ok_or_400([{
         'name': 'source',
@@ -888,7 +888,7 @@ class DocumentViewSet(ViewSet):
     }])
     def list(self, request, search=None, source=None, **kwargs):
         """获取文档列表"""
-        obj = m.Document.objects.all()
+        obj = m.Documents.objects.all()
         if int(source) != -1:
             obj = obj.filter(source=source)
         if search:
@@ -910,7 +910,7 @@ class DocumentViewSet(ViewSet):
     }])
     def create(self, request, **kwargs):
         """新建文档"""
-        obj = m.Document(**kwargs)
+        obj = m.Documents(**kwargs)
         obj.save()
         return self.result_class(data=obj)(serialize=True)
 
