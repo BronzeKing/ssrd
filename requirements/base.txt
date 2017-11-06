@@ -56,6 +56,6 @@ python-social-auth[django]
 django-redis-sessions==0.3
 https://github.com/Hypers-HFA/paraer/archive/develop.zip
 djangorestframework-jwt
-
+python-dateutil
 jsonfield
 
