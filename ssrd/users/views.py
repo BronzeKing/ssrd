@@ -237,9 +237,16 @@ class AuthorizeCodeViewSet(ViewSet):
             obj = obj.filter(Q(user__username__contains=search))
         return self.result_class(data=obj)(serialize=True)
 
-    def create(self, request, **kwargs):
+    @para_ok_or_400([{
+        'name': 'name',
+        'method': V.name,
+        'description': '授权码名称'
+    }])
+    def create(self, request, name, **kwargs):
         """新建授权码"""
-        obj = AuthorizeCode(creator=request.user).generateUser()
+        if AuthorizeCode.objects.filter(name=name, creator=request.user):
+            return self.result_class().error('name', '已存在同名的授权码')()
+        obj = AuthorizeCode(name=name, creator=request.user).generateUser()
         obj.save()
         return self.result_class(data=obj)(serialize=True)
 
@@ -330,10 +337,11 @@ class ProjectViewSet(ViewSet):
         user = request.user
         query = dict()
         user.role > 0 and query.update(user=user)  # 管理员获取全量
-        search and query.update(name=search)
         status and query.update(status=status)
-        dataset = Project.objects.filter(**query).select_related('user')
-        return self.result_class(data=dataset)(serialize=True)
+        obj = Project.objects.filter(**query).select_related('user')
+        if search:
+            obj = obj.filter(name__contains=search)
+        return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
         'name': 'name',
@@ -449,11 +457,16 @@ class ProjectLogViewSet(ViewSet):
         'method': V.files,
         'description': '附件，可以传list',
         'type': 'file'
+    }, {
+        'name': 'date',
+        'method': V.date,
+        'description': '工作时间'
     }])
-    def create(self, request, project=None, action=None, content=None, attatchment=None, **kwargs):
+    def create(self, request, project=None, action=None, attatchment=None, **kwargs):
         """新建项目日志"""
         obj = ProjectLog.objects.create(
-            project=project, action=action, content=content)
+            project=project, action=action, content=kwargs)
+        attatchment = request.POST.getlist('attatchment', [])
         docs = Documents.bulk(attatchment)
         obj.attatchment.add(*docs)
         return self.result_class(data=obj)(serialize=True)

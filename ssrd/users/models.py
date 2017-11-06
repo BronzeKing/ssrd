@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.core.files import File
+from jsonfield import JSONField
 
 from ssrd import const
 
@@ -53,7 +54,6 @@ class User(AbstractBaseUser):
     username = models.CharField(
         _('username'),
         max_length=150,
-        unique=True,
         help_text=
         _('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'
           ),
@@ -162,7 +162,9 @@ class AuthorizeCode(models.Model):
     def generateUser(self):
         username = self.name
         self.user = User.objects.create(
-            username=username, email='', password='123456')
+            username=username,
+            email=self.name + '@mum5.cn',
+            password=self.code)
         return self
 
     def __str__(self):
@@ -197,13 +199,13 @@ class ProjectLog(models.Model):
         related_name="logs")
     action = models.SmallIntegerField(
         "行为", choices=const.ProjectLog, default=0)
-    content = models.TextField("内容")
+    content = JSONField("内容")
     created = models.DateTimeField("创建时间", auto_now_add=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
     attatchment = models.ManyToManyField("users.Documents", verbose_name="附件")
 
     def __str__(self):
-        return "<ProjectLog: {}, {}, {}>".format(self.project, self.action)
+        return "<ProjectLog: {}, {}, {}>".format(self.project, self.action, self.content)
 
     __repr__ = __str__
 

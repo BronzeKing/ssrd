@@ -1,4 +1,5 @@
 from datetime import datetime
+from dateutil import parser
 from ssrd.users import models as users
 from ssrd.home import models as home
 from ssrd import const
@@ -184,10 +185,7 @@ class Valid(_Valid):
 
     def date(self, data, format='%Y/%m/%d'):
         self.msg = u"日期格式不正确"
-        try:  # 尝试从时间戳住转date
-            return datetime.fromtimestamp(int(data))
-        except (TypeError, ValueError):
-            return datetime.strptime(data, format)
+        return parser.parse(data)
 
 
 V = MethodProxy(Valid)

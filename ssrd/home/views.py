@@ -370,9 +370,9 @@ class RecruitmentViewSet(ViewSet):
         obj = Recruitment.objects.all()
         if search:
             obj = obj.filter(
-                Q(name__contains=search) | Q(salary__contains=search) | Q(
-                    jobDetail__contains=search) | Q(
-                        jobResponsibilities__contains=search))
+                Q(name__contains=search) | Q(salary__contains=search) |
+                Q(jobDetail__contains=search) |
+                Q(jobResponsibilities__contains=search))
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([
@@ -614,8 +614,7 @@ class SystemViewSet(ViewSet):
     """
     系统展示
     """
-    serializer_class = Serializer(
-        System, extra=['pictures', 'systemCases'])
+    serializer_class = Serializer(System, extra=['pictures', 'systemCases'])
 
     def list(self, request, **kwargs):
         """获取系统展示"""
@@ -968,8 +967,7 @@ class SystemCaseViewSet(ViewSet):
     """
     文档
     """
-    serializer_class = Serializer(
-        m.SystemCase, extra=['pictures', 'systems'])
+    serializer_class = Serializer(m.SystemCase, extra=['pictures', 'systems'])
 
     def list(self, request, **kwargs):
         """获取案例展示"""
@@ -1009,9 +1007,13 @@ class EnvView(APIView):
         """
         获取常量
         """
-        domain = ('http://', 'https://')[request.is_secure()] + request.get_host()
+        domain = ('http://',
+                  'https://')[request.is_secure()] + request.get_host()
         oauth = domain + '/login/{}/'
-        oauth = [dict(name=x, url=oauth.format(x)) for x in ('qq', 'weibo', 'weixin')]
+        oauth = [
+            dict(name=x, url=oauth.format(x))
+            for x in ('qq', 'weibo', 'weixin')
+        ]
 
         document = dict(const.SOURCES)
         document = {y: x for x, y in document.items()}
@@ -1019,5 +1021,11 @@ class EnvView(APIView):
         status = dict(const.STATUS)
         statusReverse = {y: x for x, y in status.items()}
 
-        data = dict(oauth=oauth, document=document, status=status, statusReverse=statusReverse)
+        projectLog = {y: x for x, y in const.ProjectLog}
+        data = dict(
+            oauth=oauth,
+            document=document,
+            status=status,
+            statusReverse=statusReverse,
+            projectLog=projectLog)
         return self.result_class(data)()
