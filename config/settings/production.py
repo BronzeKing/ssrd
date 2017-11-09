@@ -54,17 +54,12 @@ ALLOWED_HOSTS = ["*"]
 # END SITE CONFIGURATION
 
 INSTALLED_APPS += [
-    'gunicorn',
-    'corsheaders',
-    'raven.contrib.django.raven_compat'
+    'gunicorn', 'corsheaders', 'raven.contrib.django.raven_compat'
 ]
 MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = (
-    'mum5.cn',
-    '127.0.0.1:3000'
-)
+CORS_ORIGIN_WHITELIST = ('mum5.cn', '127.0.0.1:3000')
 # STORAGE CONFIGURATION
 # ------------------------------------------------------------------------------
 # Uploaded Media Files
@@ -151,6 +146,15 @@ LOGGING = {
             ],
             'class': 'django.utils.log.AdminEmailHandler'
         },
+        'sentry': {
+            'level':
+            'ERROR',  # To capture more than ERROR, change to WARNING, INFO, etc.
+            'class':
+            'raven.contrib.django.raven_compat.handlers.SentryHandler',
+            'tags': {
+                'custom-tag': 'x'
+            },
+        },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
@@ -164,6 +168,16 @@ LOGGING = {
             ],
             'level': 'ERROR',
             'propagate': True
+        },
+        'raven': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'sentry.errors': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
         },
         'django.security.DisallowedHost': {
             'level': 'ERROR',
@@ -182,8 +196,10 @@ ADMIN_URL = env('DJANGO_ADMIN_URL')
 # Your production stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
 RAVEN_CONFIG = {
-    'dsn': 'https://75710b6ea670418fbfb735b9f94b1aac:bc9e43dada5b4762acf2b2772ec85cfa@sentry.io/219602',
+    'dsn':
+    'https://75710b6ea670418fbfb735b9f94b1aac:bc9e43dada5b4762acf2b2772ec85cfa@sentry.io/219602',
     # If you are using git, you can also automatically configure the
     # release based on the git info.
-    'release': 'ssrd'
+    'release':
+    'ssrd'
 }

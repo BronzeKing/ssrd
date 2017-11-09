@@ -31,8 +31,6 @@ data
 .env
 docker-compose.yml
 # Logs
-logs
-*.log
 pip-log.txt
 npm-debug.log*
 

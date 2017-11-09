@@ -749,6 +749,9 @@ class NewsViewSet(ViewSet):
     @para_ok_or_400([{
         'name': 'search',
         'description': '搜索',
+    }, {
+        'name': 'type',
+        'description': dict(const.NEWS, description='新闻类型'),
     }])
     def list(self, request, search=None, **kwargs):
         """获取新闻公告"""
