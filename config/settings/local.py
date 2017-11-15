@@ -101,3 +101,31 @@ class Line_Profiler(object):
 
 
 builtins.profile = Line_Profiler
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'thread': {
+            'format':
+            '%(asctime)s [%(threadName)s:%(thread)d] [%(filename)s:%(lineno)d] [%(levelname)s]- %(message)s'
+        },
+        'standard': {
+            'format':
+            '%(asctime)s [%(filename)s:%(lineno)d] [%(levelname)s]- %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+        }
+    },
+    'loggers': {
+        'django.db.backends': {
+        'handlers': ['console'],
+        'propagate': True,
+        'level': 'DEBUG',
+        },
+    }
+}

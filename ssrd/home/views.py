@@ -616,10 +616,9 @@ class SystemViewSet(ViewSet):
     """
     serializer_class = Serializer(System, extra=['pictures', 'systemCases'], dep=1)
 
-    @profile()
     def list(self, request, **kwargs):
         """获取系统展示"""
-        obj = System.objects.all().prefetch_related('pictures', 'systemCases', 'systemCases__systems').order_by('rank')
+        obj = System.objects.all().prefetch_related('pictures', 'systemCases', 'systemCases__pictures', 'systemCases__systems').order_by('rank')
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
