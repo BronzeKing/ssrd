@@ -99,21 +99,6 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
 # CACHING
 # ------------------------------------------------------------------------------
 
-REDIS_LOCATION = '{0}/{1}'.format(
-    env('REDIS_URL', default='redis://127.0.0.1:6379'), 0)
-# Heroku URL does not pass the DB number, so we parse it in
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': REDIS_LOCATION,
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            'IGNORE_EXCEPTIONS': True,  # mimics memcache behavior.
-            # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
-        }
-    }
-}
-
 # LOGGING CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#logging
@@ -194,11 +179,11 @@ ADMIN_URL = env('DJANGO_ADMIN_URL')
 
 # Your production stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
-RAVEN_CONFIG = {
-    'dsn':
-    'https://75710b6ea670418fbfb735b9f94b1aac:bc9e43dada5b4762acf2b2772ec85cfa@sentry.io/219602',
-    # If you are using git, you can also automatically configure the
-    # release based on the git info.
-    'release':
-    'ssrd'
-}
+#  RAVEN_CONFIG = {
+    #  'dsn':
+    #  'https://75710b6ea670418fbfb735b9f94b1aac:bc9e43dada5b4762acf2b2772ec85cfa@sentry.io/219602',
+    #  # If you are using git, you can also automatically configure the
+    #  # release based on the git info.
+    #  'release':
+    #  'ssrd'
+#  }

@@ -13,3 +13,6 @@ def main():
     response = request.get('/users')
     credential, ok = Credential.objects.get_or_create(user=user, key=0)
     credential.send_confirmation(request, signup=True)
+
+def db():
+    print(User.objects.all())

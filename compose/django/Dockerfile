@@ -29,6 +29,5 @@ WORKDIR /app
 RUN pip install --no-cache-dir --trusted-host mirrors.aliyun.com --index-url http://mirrors.aliyun.com/pypi/simple/ -r requirements/production.txt
 
 RUN python manage.py collectstatic --noinput
-USER django
 
 ENTRYPOINT ["/entrypoint.sh"]
