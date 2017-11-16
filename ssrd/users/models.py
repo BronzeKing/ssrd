@@ -122,26 +122,6 @@ class Group(models.Model):
     __repr__ = __str__
 
 
-class Project(models.Model):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        verbose_name="所属用户",
-        related_name='projects',
-        default=1)
-    name = models.CharField("项目名称", max_length=50, unique=True)
-    status = models.SmallIntegerField(
-        "项目状态", choices=const.ORDER_STATUS, default=1)
-    picture = models.ImageField("背景图片", null=True)
-    created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
-    updated = models.DateTimeField(("更新时间"), auto_now=True)
-
-    def __str__(self):
-        return "<{}: {}>".format(self.name, self.status)
-
-    __repr__ = __str__
-
-
 class AuthorizeCode(models.Model):
     name = models.CharField("授权码名称", max_length=50)
     user = models.OneToOneField(
@@ -168,7 +148,7 @@ class AuthorizeCode(models.Model):
         return self
 
     def __str__(self):
-        return "<Project: {}, {}, {}, {}>".format(self.user, self.creator,
+        return "<AuthorizeCode: {}, {}, {}, {}>".format(self.user, self.creator,
                                                   self.code, self.status)
 
     __repr__ = __str__
@@ -187,6 +167,36 @@ class Invitation(models.Model):
 
     def __str__(self):
         return "<Invitation: {}, {}, {}>".format(self.creator, self.user)
+
+    __repr__ = __str__
+
+
+class Project(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name="所属用户",
+        related_name='projects',
+        default=1)
+    name = models.CharField("项目名称", max_length=50, unique=True)
+    type = models.CharField("项目类型", choices=const.ProjectType, max_length=20, default=0)
+    mobile = models.CharField(
+        _("Mobile Phone"), blank=True, default='', max_length=11)
+    status = models.SmallIntegerField(
+        "项目状态", choices=const.ORDER_STATUS, default=1)
+    remark = models.TextField("补充说明")
+    duration = models.SmallIntegerField("工期", default=1)
+    budget = models.SmallIntegerField("工期", default=1)
+    linkman = models.CharField("联系人", max_length=50, unique=True)
+    content = JSONField("内容")
+    address = models.CharField("地址", null=True, max_length=255)
+    attatchment = models.ManyToManyField("users.Documents", verbose_name="附件")
+    picture = models.ImageField("背景图片", null=True)
+    created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
+    updated = models.DateTimeField(("更新时间"), auto_now=True)
+
+    def __str__(self):
+        return "<{}: {}>".format(self.name, self.status)
 
     __repr__ = __str__
 

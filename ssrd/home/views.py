@@ -1,5 +1,4 @@
 from django.db.models import Q
-from django.core.cache import cache
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
@@ -979,6 +978,7 @@ class SystemCaseViewSet(ViewSet):
     """
     serializer_class = Serializer(m.SystemCase, extra=['pictures', 'systems'])
 
+    @method_decorator(cache_page(60 * 60))
     def list(self, request, **kwargs):
         """获取案例展示"""
         obj = m.SystemCase.objects.all()
@@ -1037,5 +1037,6 @@ class EnvView(APIView):
             document=document,
             status=status,
             statusReverse=statusReverse,
+            ProjectType=[x[0] for x in const.ProjectType],
             projectLog=projectLog)
         return self.result_class(data)()
