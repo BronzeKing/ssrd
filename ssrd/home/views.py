@@ -1,4 +1,7 @@
 from django.db.models import Q
+from django.core.cache import cache
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 from ssrd.contrib import ViewSet, V, send_mail, APIView
 from ssrd.contrib.serializer import Serializer
@@ -614,11 +617,15 @@ class SystemViewSet(ViewSet):
     """
     系统展示
     """
-    serializer_class = Serializer(System, extra=['pictures', 'systemCases'], dep=1)
+    serializer_class = Serializer(
+        System, extra=['pictures', 'systemCases'], dep=1)
 
+    @method_decorator(cache_page(60 * 60))
     def list(self, request, **kwargs):
         """获取系统展示"""
-        obj = System.objects.all().prefetch_related('pictures', 'systemCases', 'systemCases__pictures', 'systemCases__systems').order_by('rank')
+        obj = System.objects.all().prefetch_related(
+            'pictures', 'systemCases', 'systemCases__pictures',
+            'systemCases__systems').order_by('rank')
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
