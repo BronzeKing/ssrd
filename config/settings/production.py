@@ -49,6 +49,9 @@ X_FRAME_OPTIONS = 'DENY'
 ALLOWED_HOSTS = env.list(
     'DJANGO_ALLOWED_HOSTS', default=[
         'mum5.cn',
+        'www.mum5.cn',
+        'szssrd.com',
+        'www.szssrd.com'
     ])
 ALLOWED_HOSTS = ["*"]
 # END SITE CONFIGURATION
@@ -59,7 +62,7 @@ INSTALLED_APPS += [
 MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = ('mum5.cn', '127.0.0.1:3000')
+CORS_ORIGIN_WHITELIST = ('mum5.cn', '127.0.0.1:3000', 'www.mum5.cn', 'www.szssrd.com', 'szssrd.com')
 # STORAGE CONFIGURATION
 # ------------------------------------------------------------------------------
 # Uploaded Media Files
