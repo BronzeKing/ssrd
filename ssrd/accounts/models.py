@@ -15,6 +15,7 @@ class Credential(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name=_('user'),
+        related_name="credentials",
         on_delete=models.CASCADE)  # 可能发送多封验证短信或者邮件， 这里保持onetoone还是ForeignKey ?
     Type = models.CharField(
         "类型",
@@ -47,7 +48,7 @@ class Credential(models.Model):
         return Captcha(self)
 
     def send_confirmation(self, request=None, action=None):
-        confirmation = self.captchas[self.Type](self)  # TODO 增加短信验证方式
+        confirmation = self.captchas()[self.Type](self.user)  # TODO 增加短信验证方式
         confirmation.send(request, action=action)
         return confirmation
 

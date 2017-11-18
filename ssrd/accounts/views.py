@@ -37,7 +37,9 @@ class LoginView(ObtainJSONWebToken):
         if not user.is_authenticated():
             return self.result_class(data=dict(url='login'))()
         data = Serializer(User)(user).data
-        data.update(invitation=user.profile.code)
+        verified = {'email': False, 'mobile': False}
+        verified.update({x.Type: x.verified for x in user.credentials.all()})
+        data.update(verified = verified, invitation=user.profile.code)
         return self.result_class(data=data)(serialize=True)
 
 
@@ -100,7 +102,7 @@ class RegisterView(UnAuthView):
         return result.data(user)(serialize=True)
 
 
-captchaMap = {"register": "注册", "resetPassword": "重置密码"}
+captchaMap = {"register": "注册", "resetPassword": "重置密码", "changeEmail": "更改邮箱"}
 
 
 class CaptchaView(UnAuthView):
@@ -115,12 +117,17 @@ class CaptchaView(UnAuthView):
     }, {
         'name': 'action',
         'description': captchaMap,
-        'method': lambda x: x in captchaMap and x
+        'method': lambda x: x in captchaMap and x,
+        'required': True
     }, {
         'name': 'credential',
         'description': '用户邮箱或手机号码',
     }])
     def get(self, request, Type=None, credential='', action='register'):
+        if not credential:
+            return self.result_class().error(Type, '请输入正确的值')()
+        if Type == 'email' and not V.email(credential):
+            return self.result_class().error(Type, '邮箱格式不正确')()
         if not request.user.is_authenticated:
             request.user.email = credential
         Captcha.fromUser(request.user, Type).send(request, action)
@@ -131,23 +138,27 @@ class CredentialView(APIView):
     serializer_class = Serializer(Credential)
 
     @para_ok_or_400([{
-        'name':
-        'Type',
-        'description': ('类型', ) + tuple(const.CredentialKeyMap.items()),
-        'method':
-        lambda x: x in const.CredentialKeyMap and x,
-        'required':
-        True
+        'name': 'email',
+        'description': '邮箱',
+        'method': V.email
+    }, {
+        'name': 'mobile',
+        'description': '手机',
+        'method': V.mobile
     }, {
         'name': 'captcha',
         'description': '验证码'
     }])
-    def post(self, request, Type=None, captcha=None):
+    def post(self, request, email=None, mobile=None, captcha=None):
         result = self.result_class()
+        if not mobile and not email:
+            result.error('mobile', '请填写手机号码')
+            result.error('email', '请填写邮箱')
+            return result()
+        Type = mobile and 'mobile' or 'email'
         if captcha == Captcha.fromUser(request.user, Type):
-            confirm = bool(captcha)
             obj = Credential.objects.add_credential(
-                request, request.user, Type, signup=True, confirm=confirm)
+                request, request.user, Type, action=True, confirm=False)
             obj.verified = True
             obj.save()
         else:
