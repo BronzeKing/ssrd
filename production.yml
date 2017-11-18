@@ -14,14 +14,17 @@ services:
     ports:
       - "0.0.0.0:5432:5432"
     container_name: postgres
-
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "0.0.0.0:6379:6379"
   django:
     build:
       context: .
       dockerfile: ./compose/django/Dockerfile
     depends_on:
       - postgres
-    external_links:
       - redis
     command: bash -x ./compose/django/gunicorn.sh
     env_file: .env

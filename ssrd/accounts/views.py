@@ -28,7 +28,7 @@ class LoginView(ObtainJSONWebToken):
     def post(self, request, **kwargs):
         response = super(LoginView, self).post(request, **kwargs)
         if response.status_code == 400:
-            return self.result_class().error('username', '手机、邮箱、授权码或密码错误')(status=400)
+            return self.result_class().error('email', '手机、邮箱、授权码或密码错误')(status=400)
         return response
 
     def get(self, request):
