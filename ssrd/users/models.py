@@ -191,7 +191,6 @@ class Project(models.Model):
     content = JSONField("内容")
     address = models.CharField("地址", null=True, max_length=255)
     attatchment = models.ManyToManyField("users.Documents", verbose_name="附件")
-    picture = models.ImageField("背景图片", null=True)
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
 

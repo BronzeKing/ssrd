@@ -1,5 +1,7 @@
 from datetime import datetime
+import json
 from dateutil import parser
+
 from ssrd.users import models as users
 from ssrd.home import models as home
 from ssrd import const
@@ -171,6 +173,12 @@ class Valid(_Valid):
         except:
             return
         return num
+
+    def json(self, data):
+        try:
+            return json.loads(data)
+        except (TypeError, ValueError):
+            return {}
 
     def mobile(self, num):
         self.msg = "手机号码必须为11位整数"

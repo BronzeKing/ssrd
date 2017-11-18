@@ -349,16 +349,46 @@ class ProjectViewSet(ViewSet):
         'method': V.name,
         'required': True
     }, {
-        'name': 'picture',
-        'description': '背景图片',
-        'required': True,
-        'method': V.file,
+        'name': 'attatchment',
+        'description': '项目文档',
+        'method': V.files,
         'type': 'file'
+    }, {
+        'name': 'type',
+        'description': ('项目类型', ) + const.ProjectType,
+        'method': lambda x: x in dict(const.ProjectType) and x,
+    }, {
+        'name': 'mobile',
+        'description': '手机',
+        'method': V.mobile,
+        'required': True
+    }, {
+        'name': 'linkman',
+        'description': '联系人',
+        'required': True
+    }, {
+        'name': 'address',
+        'description': '项目地址',
+    }, {
+        'name': 'remark',
+        'description': '补充说明',
+    }, {
+        'name': 'content',
+        'method': V.json,
+        'description': '项目内容'
+    }, {
+        'name': 'budget',
+        'method': V.num,
+        'description': '预算'
+    }, {
+        'name': 'duration',
+        'method': V.num,
+        'description': '工期'
     }])
-    def create(self, request, name=None, picture=None, **kwargs):
+    def create(self, request, attatchment=None, **kwargs):
         """新建项目"""
-        data = dict(name=name, user=request.user, picture=picture)
-        obj = Project.objects.create(**data)
+        obj = Project.objects.create(user=request.user, **kwargs)
+        obj.attatchment.add(*Documents.bulk(attatchment))
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
@@ -374,13 +404,50 @@ class ProjectViewSet(ViewSet):
         'name': 'name',
         'description': '项目名称',
         'method': V.name,
+        'required': True
+    }, {
+        'name': 'attatchment',
+        'description': '项目文档',
+        'method': V.files,
+        'type': 'file'
+    }, {
+        'name': 'type',
+        'description': ('项目类型', ) + const.ProjectType,
+        'method': lambda x: x in dict(const.ProjectType) and x,
+    }, {
+        'name': 'mobile',
+        'description': '手机',
+        'method': V.mobile,
+        'required': True
+    }, {
+        'name': 'linkman',
+        'description': '联系人',
+        'required': True
+    }, {
+        'name': 'address',
+        'description': '项目地址',
+    }, {
+        'name': 'remark',
+        'description': '补充说明',
+    }, {
+        'name': 'content',
+        'method': V.json,
+        'description': '项目内容'
+    }, {
+        'name': 'budget',
+        'method': V.num,
+        'description': '预算'
+    }, {
+        'name': 'duration',
+        'method': V.num,
+        'description': '工期'
     }])
     @perm_ok_or_403([{
         'method': lambda r, k: r.user.has_permission(k['obj']),
         'reason': '无权限更改此项目'
     }])
     def update(self, request, obj=None, name=None, status=None, **kwargs):
-        """更新授权码"""
+        """更新项目"""
         status and setattr(obj, 'status', status)
         name and setattr(obj, 'name', name)
         obj.save()
