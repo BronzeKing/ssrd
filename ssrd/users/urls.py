@@ -13,7 +13,7 @@ router.register(r'projects/(?P<projectId>\d+)/logs', views.ProjectLogViewSet, ba
 
 urlpatterns = [
     url(regex=r'^signup', view=views.UserView.as_view()),
-    url(r'^/users/(?P<id>\d+)/profile', view=views.ProfileView.as_view()),
+    url(r'^users/(?P<user>\d+)/profile', view=views.ProfileView.as_view()),
     url(regex=r'^~redirect/$',
         view=views.UserRedirectView.as_view(),
         name='redirect'),

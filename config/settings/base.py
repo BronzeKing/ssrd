@@ -407,3 +407,8 @@ SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 CSRF_COOKIE_HTTPONLY = SESSION_COOKIE_HTTPONLY = False
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
+try:
+    from psycopg2cffi import compat
+    compat.register()
+except ImportError:
+    pass

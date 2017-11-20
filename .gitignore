@@ -3,6 +3,8 @@
 .AppleDouble
 .LSOverride
 .vscode*
+*.code-workspace
+
 *tags
 
 .qiniu_pythonsdk_hostscache.json

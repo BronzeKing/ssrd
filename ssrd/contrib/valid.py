@@ -118,7 +118,7 @@ class Valid(_Valid):
         if value == -1:
             return ''
         if value in STATUS:
-            return value
+            return str(value)
 
     def order_status(self, value):
         self.msg = "错误的参数值：%s" % str(ORDER_STATUS)

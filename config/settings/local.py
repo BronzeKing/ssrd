@@ -79,7 +79,11 @@ try:
     import __builtin__ as builtins
 except ImportError:
     import builtins
-from line_profiler import LineProfiler
+try:
+    from line_profiler import LineProfiler
+except ImportError:
+    pass
+
 import functools
 
 class Line_Profiler(object):

@@ -85,8 +85,8 @@ class UserViewSet(ViewSet):
         """"""
         query = dict()
         role and query.update(role=role)
-        status in (0, 1) and query.update(is_active=status)
-        obj = User.objects.filter(**query).order_by('-id')
+        status and query.update(status=status)
+        obj = User.objects.filter(**query).exclude(id=request.user.id).order_by('-id')
         if search:
             obj = obj.filter(
                 Q(username__contains=search) | Q(email__contains=search) | Q(
@@ -127,7 +127,7 @@ class UserViewSet(ViewSet):
         """更新用户"""
         username and setattr(user, 'username', username)
         email and setattr(user, 'email', email)
-        status in (0, 1) and setattr(user, 'is_active', status)
+        status in (0, 1) and setattr(user, 'status', status)
         user.save()
         return self.result_class(user)(serialize=True)
 
@@ -175,7 +175,7 @@ class ProfileView(APIView):
         'description': '用户ID',
     }])
     def get(self, request, user=None, **kwargs):
-        return self.result_class().data(user.profile)()
+        return self.result_class().data(user.profile)(serialize=True)
 
     @para_ok_or_400([{
         'name': 'user',
@@ -228,10 +228,15 @@ class AuthorizeCodeViewSet(ViewSet):
     }, {
         'name': 'search',
         'description': '名称搜索过滤'
+    }, {
+        'name': 'status',
+        'method': V.Status,
+        'description': ('状态过滤', ) + const.STATUS
     }])
-    def list(self, request, user=None, search=None, **kwargs):
+    def list(self, request, user=None, status=None, search=None, **kwargs):
         query = dict()
         request.user.role > 0 and query.update(creator=request.user)
+        status and query.update(status=status)
         obj = AuthorizeCode.objects.filter(**query)
         if search:
             obj = obj.filter(Q(user__username__contains=search))
@@ -266,7 +271,7 @@ class AuthorizeCodeViewSet(ViewSet):
     }])
     def update(self, request, obj=None, status=None, **kwargs):
         """更新授权码"""
-        obj.statsu = status
+        obj.status = status
         obj.save()
         return self.result_class(obj)(serialize=True)
 
@@ -323,7 +328,7 @@ class ProjectViewSet(ViewSet):
     permission_classes = (IsAuthenticated, )
 
     @para_ok_or_400([{
-        'name': 'stats',
+        'name': 'status',
         'method': V.status,
         'description': ("项目状态过滤", ) + const.ORDER_STATUS
     }, {
@@ -334,6 +339,7 @@ class ProjectViewSet(ViewSet):
         """
         获取受登录用户有权限的项目
         """
+
         user = request.user
         query = dict()
         user.role > 0 and query.update(user=user)  # 管理员获取全量
