@@ -34,6 +34,9 @@ class AboutUs(models.Model):
     introduction = models.TextField("简介")
     culture = models.TextField("企业文化")
     address = models.CharField("联系地址", max_length=100)
+    email = models.EmailField("邮箱")
+    postcode = models.CharField("邮编", max_length=10)
+    postcode = models.CharField("电话", max_length=20)
 
     def __str__(self):
         return '关于我们'

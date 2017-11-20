@@ -195,5 +195,10 @@ class Valid(_Valid):
         self.msg = u"日期格式不正确"
         return parser.parse(data)
 
+    def address(self, data):
+        self.msg = u"地址不能超过100字符或不能包含特殊字符串"
+        if len(data) < 100:
+            return data
+
 
 V = MethodProxy(Valid)

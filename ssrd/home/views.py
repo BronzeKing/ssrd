@@ -12,15 +12,8 @@ from paraer import para_ok_or_400
 # Create your views here.
 
 
-class AboutUsViewSet(ViewSet):
-    serializer_class = Serializer(AboutUs)
-
-    def list(self, request):
-        """
-        获取 关于我们
-        """
-        obj = AboutUs.objects.all()
-        return self.result_class(data=obj)(serialize=True)
+class AboutUsView(APIView):
+    serializer_class = Serializer(m.AboutUs)
 
     @para_ok_or_400([{
         'name': 'pk',
@@ -34,52 +27,29 @@ class AboutUsViewSet(ViewSet):
         'name': 'culture',
         'description': '企业文化'
     }, {
-        'name': 'honour',
-        'description': '荣耀资质'
+        'name': 'email',
+        'description': '邮箱',
+        'method': V.email
     }, {
-        'name': 'cooperativePartner',
-        'description': '合作伙伴'
+        'name': 'address',
+        'method': V.address,
+        'description': '地址'
+    }, {
+        'name': 'tel',
+        'method': lambda x: len(x) < 20,
+        'description': '电话'
+    }, {
+        'name': 'postcode',
+        'method': lambda x: len(x) < 10,
+        'description': '邮编'
     }])
-    def update(self, request, obj=None, **kwargs):
+    def create(self, request, obj=None, **kwargs):
         [setattr(obj, k, v) for k, v in kwargs.items() if v]
         obj.save()
         return self.result_class(data=obj)(serialize=True)
 
-    @para_ok_or_400([{
-        'name': 'introduction',
-        'description': '简介'
-    }, {
-        'name': 'culture',
-        'description': '企业文化'
-    }, {
-        'name': 'honour',
-        'description': '荣耀资质'
-    }, {
-        'name': 'cooperativePartner',
-        'description': '合作伙伴'
-    }])
-    def create(self, request, **kwargs):
-        obj = AboutUs(**kwargs)
-        obj.save()
-        return self.result_class(data=obj)(serialize=True)
-
-    @para_ok_or_400([{
-        'name': 'pk',
-        'method': V.aboutus,
-        'description': '关于我们',
-        'replace': 'obj'
-    }])
-    def destroy(self, request, obj=None, **kwargs):
-        obj.delete()
-        return self.result_class(data=obj)(serialize=True)
-
-    @para_ok_or_400([{
-        'name': 'pk',
-        'method': V.aboutus,
-        'description': '关于我们',
-        'replace': 'obj'
-    }])
-    def retrieve(self, request, obj=None, **kwargs):
+    def get(self, request, **kwargs):
+        obj, ok = m.AboutUs.objects.get_or_create()
         return self.result_class(data=obj)(serialize=True)
 
 
