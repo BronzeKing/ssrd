@@ -33,8 +33,7 @@ class ProductCategory(models.Model):
 class AboutUs(models.Model):
     introduction = models.TextField("简介")
     culture = models.TextField("企业文化")
-    honour = models.TextField("荣耀")
-    cooperativePartner = models.TextField("合作伙伴")
+    address = models.CharField("联系地址", max_length=100)
 
     def __str__(self):
         return '关于我们'
@@ -204,7 +203,7 @@ class Job(models.Model):
 
 
 class Documents(models.Model):
-    name = models.CharField("姓名", max_length=100, db_index=True)
+    name = models.CharField("文档名称", max_length=100, db_index=True)
     source = models.SmallIntegerField("来源", choices=const.SOURCES)
     file = models.FileField("文件", max_length=100)
     updated = models.DateTimeField("更新时间", auto_now=True)

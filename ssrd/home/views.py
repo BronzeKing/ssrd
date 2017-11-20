@@ -889,6 +889,7 @@ class DocumentsViewSet(ViewSet):
     @para_ok_or_400([{
         'name': 'source',
         'description': dict(const.SOURCES, description='来源'),
+        'method': lambda x: int(x) in dict(const.SOURCES) and (x == -1 and '' or str(x)),
         'required': True
     }, {
         'name': 'search',
@@ -897,7 +898,7 @@ class DocumentsViewSet(ViewSet):
     def list(self, request, search=None, source=None, **kwargs):
         """获取文档列表"""
         obj = m.Documents.objects.all()
-        if int(source) != -1:
+        if source:
             obj = obj.filter(source=source)
         if search:
             obj = obj.filter(Q(name__contains=search))
