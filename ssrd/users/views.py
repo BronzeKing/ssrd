@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from ssrd import const
 from ssrd.contrib import APIView, UnAuthView, V, ViewSet
 from ssrd.contrib.serializer import Serializer
+from ssrd.users import models as m
 
 from .models import AuthorizeCode, Collect, Invitation, Message, Profile, Project, User, ProjectLog, Documents
 
@@ -706,5 +707,85 @@ class MessageViewSet(ViewSet):
     def retrieve(self, request, obj=None, **kwargs):
         """
         获取消息
+        """
+        return self.result_class(obj)(serialize=True)
+
+class GroupViewSet(ViewSet):
+    serializer_class = Serializer(m.Group, dep=0)
+    permission_classes = (IsAuthenticated, )
+
+    def list(self, request):
+        """
+        获取所有部门
+        """
+        objs = m.Group.objects.all()
+        return self.result_class(objs)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'name',
+        'method': V.name,
+        'description': '部门名称',
+        'required': True
+    }])
+    def create(self, request, *kwargs):
+        """
+        新建部门
+        """
+        obj, ok = m.Group.objects.get_or_create(**kwargs)
+        return self.result_class(obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.group,
+        'description': '部门ID',
+        'replace': 'obj'
+    }, {
+        'name': 'name',
+        'method': V.name,
+        'description': '部门名称',
+        'required': True
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['obj']),
+        'reason': '无权限删除此部门'
+    }])
+    def update(self, request, obj=None, *kwargs):
+        """
+        编辑部门
+        """
+        [setattr(obj, k, v) for k, v in kwargs.items() if v]
+        obj.save()
+        return self.result_class(obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.group,
+        'description': '部门ID',
+        'replace': 'obj'
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['obj']),
+        'reason': '无权限删除此部门'
+    }])
+    def destroy(self, request, obj=None, **kwargs):
+        """
+        删除部门
+        """
+        obj.delete()
+        return self.result_class(obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.group,
+        'description': '部门ID',
+        'replace': 'obj'
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['obj']),
+        'reason': '无权限删除此部门'
+    }])
+    def retrieve(self, request, obj=None, **kwargs):
+        """
+        删除部门
         """
         return self.result_class(obj)(serialize=True)

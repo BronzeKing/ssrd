@@ -88,6 +88,11 @@ class Valid(_Valid):
         user = users.User.objects.get(id=pk)
         return user
 
+    def group(self, pk):
+        self.msg = u"部门不存在或已停用"
+        obj = users.Group.objects.get(id=pk)
+        return obj
+
     def authorizecode(self, pk):
         self.msg = u"用户不存在或已停用"
         obj = users.AuthorizeCode.objects.get(pk=pk)

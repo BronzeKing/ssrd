@@ -84,6 +84,9 @@ class User(AbstractBaseUser):
             return True
         return True
 
+    def create_profile(self):
+        Profile.objects.get_or_create(user=self, name=self.username)
+
     def __str__(self):
         return "<User: {}, {}>".format(self.username, self.email)
 
@@ -101,6 +104,7 @@ class Profile(models.Model):
     qq = models.CharField("QQ号码", null=True, max_length=20)
     address = models.CharField("地址", null=True, max_length=255)
     code = models.CharField("邀请码", max_length=40, default=generate_key)
+    group = models.ForeignKey('users.Group', default=6, on_delete=models.SET_DEFAULT)
 
     def __str__(self):
         return "<Profile: {}>".format(self.user)
@@ -112,7 +116,7 @@ class Profile(models.Model):
 
 
 class Group(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField("部门", max_length=50, unique=True)
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
