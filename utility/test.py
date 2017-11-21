@@ -16,3 +16,9 @@ def main():
 
 def db():
     print(User.objects.all())
+
+def cache():
+    from django.core.cache import cache
+    from django.conf import settings
+    print(settings.REDIS)
+    print(cache.get('asd'))

@@ -391,17 +391,9 @@ SOCIAL_AUTH_WEIBO_SECRET = '6196884b82a19b5bf81768a74f7d593c'
 CREDENTIAL_CONFIRMATION_EXPIRE_DAYS = 3
 CONFIRMATION_COOLDOWN = 3 * 60
 
+REDIS = env.cache('REDIS_URL')
 CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": env("REDIS_HOST") or "redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "CONNECTION_POOL_KWARGS": {
-                "max_connections": 100
-            }
-        }
-    }
+    'default': REDIS
 }
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
