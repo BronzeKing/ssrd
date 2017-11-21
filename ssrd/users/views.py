@@ -714,11 +714,17 @@ class GroupViewSet(ViewSet):
     serializer_class = Serializer(m.Group, dep=0)
     permission_classes = (IsAuthenticated, )
 
-    def list(self, request):
+    @para_ok_or_400([{
+        'name': 'search',
+        'description': '部门搜索',
+    }])
+    def list(self, request, search='', **kwargs):
         """
         获取所有部门
         """
-        objs = m.Group.objects.all()
+        query = dict()
+        search and query.update(name__contains=search)
+        objs = m.Group.objects.filter(**query)
         return self.result_class(objs)(serialize=True)
 
     @para_ok_or_400([{
@@ -727,7 +733,7 @@ class GroupViewSet(ViewSet):
         'description': '部门名称',
         'required': True
     }])
-    def create(self, request, *kwargs):
+    def create(self, request, **kwargs):
         """
         新建部门
         """
@@ -735,7 +741,7 @@ class GroupViewSet(ViewSet):
         return self.result_class(obj)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'pk',
+        'name': 'id',
         'method': V.group,
         'description': '部门ID',
         'replace': 'obj'
@@ -749,7 +755,7 @@ class GroupViewSet(ViewSet):
         'method': lambda r, k: r.user.has_permission(k['obj']),
         'reason': '无权限删除此部门'
     }])
-    def update(self, request, obj=None, *kwargs):
+    def update(self, request, obj=None, **kwargs):
         """
         编辑部门
         """

@@ -66,6 +66,7 @@ class User(AbstractBaseUser):
     role = models.SmallIntegerField("用户权限", choices=const.ROLES, default=42)
     created = models.DateTimeField(_('date joined'), default=timezone.now)
     status = models.SmallIntegerField("状态", choices=const.STATUS, default=1)
+    group = models.ForeignKey('users.Group', default=6, on_delete=models.SET_DEFAULT)
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['mobile']
@@ -104,7 +105,6 @@ class Profile(models.Model):
     qq = models.CharField("QQ号码", null=True, max_length=20)
     address = models.CharField("地址", null=True, max_length=255)
     code = models.CharField("邀请码", max_length=40, default=generate_key)
-    group = models.ForeignKey('users.Group', default=6, on_delete=models.SET_DEFAULT)
 
     def __str__(self):
         return "<Profile: {}>".format(self.user)
