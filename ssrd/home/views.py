@@ -53,72 +53,6 @@ class AboutUsView(APIView):
         return self.result_class(data=obj)(serialize=True)
 
 
-class FAQsViewSet(ViewSet):
-    serializer_class = Serializer(FAQs)
-
-    @para_ok_or_400([{
-        'name': 'search',
-        'description': '搜索',
-    }])
-    def list(self, request, search=None, **kwargs):
-        """
-        获取 FAQ
-        """
-        obj = FAQs.objects.all()
-        if search:
-            obj = obj.filter(
-                Q(questioin__contains=search) | Q(answer__contains=search))
-        return self.result_class(data=obj)(serialize=True)
-
-    @para_ok_or_400([{
-        'name': 'answer',
-        'description': '回答'
-    }, {
-        'name': 'questioin',
-        'description': '问题'
-    }])
-    def create(self, request, **kwargs):
-        obj = FAQs(**kwargs)
-        obj.save()
-        return self.result_class(data=obj)(serialize=True)
-
-    @para_ok_or_400([{
-        'name': 'pk',
-        'method': V.faqs,
-        'description': 'FAQ',
-        'replace': 'obj'
-    }, {
-        'name': 'answer',
-        'description': '回答'
-    }, {
-        'name': 'questioin',
-        'description': '问题'
-    }])
-    def update(self, request, obj=None, **kwargs):
-        [setattr(obj, k, v) for k, v in kwargs.items() if v]
-        obj.save()
-        return self.result_class(data=obj)(serialize=True)
-
-    @para_ok_or_400([{
-        'name': 'pk',
-        'method': V.faqs,
-        'description': 'FAQ',
-        'replace': 'obj'
-    }])
-    def destroy(self, request, obj=None, **kwargs):
-        obj.delete()
-        return self.result_class(data=obj)(serialize=True)
-
-    @para_ok_or_400([{
-        'name': 'pk',
-        'method': V.faqs,
-        'description': 'FAQ',
-        'replace': 'obj',
-    }])
-    def retrieve(self, request, obj=None, **kwargs):
-        return self.result_class(data=obj)(serialize=True)
-
-
 class FeedBackViewSet(ViewSet):
     serializer_class = Serializer(FeedBack)
 
@@ -727,11 +661,14 @@ class NewsViewSet(ViewSet):
         'description': '搜索',
     }, {
         'name': 'type',
+        'method': lambda x: int(x) in dict(const.NEWS) and x,
         'description': dict(const.NEWS, description='新闻类型'),
     }])
-    def list(self, request, search=None, **kwargs):
+    def list(self, request, type=None, search=None, **kwargs):
         """获取新闻公告"""
-        obj = News.objects.all().order_by('rank', 'created')
+        query = dict()
+        type and query.update(type=type)
+        obj = News.objects.filter(**query).order_by('rank', 'created')
         if search:
             obj = obj.filter(
                 Q(title__contains=search) | Q(content__contains=search))
@@ -1003,11 +940,13 @@ class EnvView(APIView):
         statusReverse = {y: x for x, y in status.items()}
 
         projectLog = {y: x for x, y in const.ProjectLog}
+        news = {y: x for x, y in const.NEWS}
         data = dict(
             oauth=oauth,
             document=document,
             status=status,
             statusReverse=statusReverse,
+            news=news,
             ProjectType=[x[0] for x in const.ProjectType],
             projectLog=projectLog)
         return self.result_class(data)()

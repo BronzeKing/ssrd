@@ -182,6 +182,7 @@ class News(models.Model):
     title = models.TextField("标题")
     content = models.TextField("内容")
     created = models.DateTimeField("创建时间", auto_now_add=True)
+    updated = models.DateTimeField("更新时间", auto_now=True)
     type = models.SmallIntegerField("类型", choices=const.NEWS, default=1)
     rank = models.IntegerField("排序", default=100)
 
