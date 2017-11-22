@@ -223,7 +223,7 @@ class ProjectLog(models.Model):
     __repr__ = __str__
 
 
-class Collect(models.Model):
+class Collected(models.Model):
     product = models.ForeignKey(
         'home.Product', on_delete=models.CASCADE, verbose_name="收藏的产品")
     user = models.ForeignKey(

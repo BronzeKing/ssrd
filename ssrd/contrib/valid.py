@@ -110,7 +110,7 @@ class Valid(_Valid):
 
     def collect(self, pk):
         self.msg = "收藏品不存在"
-        obj = users.Collect.objects.get(pk=pk)
+        obj = users.Collected.objects.get(pk=pk)
         return obj
 
     def role(self, value):

@@ -9,7 +9,7 @@ from ssrd.contrib import APIView, UnAuthView, V, ViewSet
 from ssrd.contrib.serializer import Serializer
 from ssrd.users import models as m
 
-from .models import AuthorizeCode, Collect, Invitation, Message, Profile, Project, User, ProjectLog, Documents
+from .models import AuthorizeCode, Collected, Invitation, Message, Profile, Project, User, ProjectLog, Documents
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
@@ -102,6 +102,10 @@ class UserViewSet(ViewSet):
         'description': '用户ID',
         'replace': 'user'
     }, {
+        'name': 'group',
+        'method': V.group,
+        'description': '用户组ID',
+    }, {
         'name': 'username',
         'method': V.name,
         'description': '用户名称'
@@ -121,14 +125,9 @@ class UserViewSet(ViewSet):
     def update(self,
                request,
                user=None,
-               username=None,
-               status=None,
-               email=None,
                **kwargs):
         """更新用户"""
-        username and setattr(user, 'username', username)
-        email and setattr(user, 'email', email)
-        status in (0, 1) and setattr(user, 'status', status)
+        [setattr(user, k, v) for k, v in kwargs.items() if v]
         user.save()
         return self.result_class(user)(serialize=True)
 
@@ -547,7 +546,7 @@ class ProjectLogViewSet(ViewSet):
 
 
 class CollectViewSet(ViewSet):
-    serializer_class = Serializer(Collect, dep=0)
+    serializer_class = Serializer(Collected, dep=0)
     permission_classes = (IsAuthenticated, )
 
     def list(self, request):
@@ -556,7 +555,7 @@ class CollectViewSet(ViewSet):
         """
         query = dict()
         request.user.role > 0 and query.update(user=request.user)
-        objs = Collect.objects.filter(**query)
+        objs = Collected.objects.filter(**query)
         return self.result_class(objs)(serialize=True)
 
     @para_ok_or_400([{
@@ -572,7 +571,7 @@ class CollectViewSet(ViewSet):
         """
         if not request.user.is_authenticated:
             request.user = User.objects.first()
-        obj, ok = Collect.objects.get_or_create(user=request.user, product=obj)
+        obj, ok = Collected.objects.get_or_create(user=request.user, product=obj)
         return self.result_class(obj)(serialize=True)
 
     @para_ok_or_400([{
