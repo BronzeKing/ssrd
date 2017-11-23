@@ -98,7 +98,7 @@ class Profile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, verbose_name="所属用户")
     name = models.CharField("真实姓名", max_length=50)
-    gender = models.CharField("性别", choices=const.GENDER, max_length=10)
+    gender = models.CharField("性别", choices=const.GENDER, max_length=10, default='male')
     birthday = models.DateField("生日", auto_now=True)
     company = models.CharField("所属公司", max_length=255, null=True)
     position = models.CharField("职位", null=True, max_length=255)
@@ -113,6 +113,13 @@ class Profile(models.Model):
 
     class Meta:
         unique_together = ('user', )
+
+
+class Cart(models.Model):
+    """购物车"""
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, verbose_name="所属用户")
+    content = JSONField("内容")
 
 
 class Group(models.Model):
@@ -192,7 +199,6 @@ class Project(models.Model):
     duration = models.SmallIntegerField("工期", default=1)
     budget = models.SmallIntegerField("工期", default=1)
     linkman = models.CharField("联系人", max_length=50, unique=True)
-    content = JSONField("内容")
     address = models.CharField("地址", null=True, max_length=255)
     attatchment = models.ManyToManyField("users.Documents", verbose_name="附件")
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
@@ -259,7 +265,7 @@ class Message(models.Model):
 class Documents(models.Model):
     name = models.CharField("文件名", max_length=255, default='')
     file = models.FileField("文件")
-    created = models.DateField("项目时间", auto_now_add=True)
+    created = models.DateField("创建时间", auto_now_add=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
     def __str__(self):

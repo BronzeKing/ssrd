@@ -882,7 +882,7 @@ class DocumentsViewSet(ViewSet):
 
 class SystemCaseViewSet(ViewSet):
     """
-    文档
+    系统案例
     """
     serializer_class = Serializer(m.SystemCase, extra=['pictures', 'systems'])
 
@@ -894,7 +894,7 @@ class SystemCaseViewSet(ViewSet):
 
     @para_ok_or_400([{
         'name': 'pk',
-        'description': '文档',
+        'description': '系统案例ID',
         'method': V.systemCase,
         'replace': 'obj'
     }])
@@ -904,6 +904,16 @@ class SystemCaseViewSet(ViewSet):
         """
         return self.result_class(data=obj)(serialize=True)
 
+class TerminalViewSet(ViewSet):
+    """
+    远程终端访问平台
+    """
+    serializer_class = Serializer(m.Terminal)
+
+    def list(self, request, **kwargs):
+        """获取案例展示"""
+        obj = m.Terminal.objects.all()
+        return self.result_class(data=obj)(serialize=True)
 
 class ConstView(APIView):
     def get(self, request):

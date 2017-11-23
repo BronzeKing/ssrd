@@ -6,7 +6,7 @@ from rest_framework_jwt.views import ObtainJSONWebToken
 
 from ssrd.contrib.serializer import Serializer
 from ssrd.contrib import APIView, V, UnAuthView, Result
-from ssrd.users.models import User, Invitation
+from ssrd.users.models import User, Invitation, Profile
 from ssrd import const
 from .models import Credential, Captcha
 
@@ -37,9 +37,10 @@ class LoginView(ObtainJSONWebToken):
         if not user.is_authenticated():
             return self.result_class(data=dict(url='login'))()
         data = Serializer(User)(user).data
+        profile = Serializer(Profile)(user.profile).data
         verified = {'email': False, 'mobile': False}
         verified.update({x.Type: x.verified for x in user.credentials.all()})
-        data.update(verified = verified, invitation=user.profile.code)
+        data.update(profile=profile, verified = verified, invitation=user.profile.code)
         return self.result_class(data=data)(serialize=True)
 
 
@@ -54,7 +55,7 @@ class LogoutView(UnAuthView):
 
 
 class RegisterView(UnAuthView):
-    serializer_class = Serializer(User)
+    serializer_class = Serializer(User, extra=['profile'])
 
     @para_ok_or_400([{
         'name': 'username',

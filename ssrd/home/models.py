@@ -237,3 +237,16 @@ class SystemCase(models.Model):
         return "<SystemCase: {}   {}>".format(self.title, self.summary)
 
     __repr__ = __str__
+
+
+
+class Terminal(models.Model):
+    """系统案例"""
+    name = models.CharField("名称", max_length=255)
+    link = models.CharField("链接", max_length=255)
+    picture = models.ImageField("背景图片")
+
+    def __str__(self):
+        return "<Terminal: {}   {}>".format(self.name, self.link)
+
+    __repr__ = __str__
