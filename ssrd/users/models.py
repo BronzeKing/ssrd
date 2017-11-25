@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.core.files import File
-from jsonfield import JSONField
+from django.contrib.postgres.fields import JSONField
 
 from ssrd import const
 

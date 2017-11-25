@@ -108,29 +108,26 @@ captchaMap = {"register": "注册", "resetPassword": "重置密码", "changeEmai
 
 class CaptchaView(UnAuthView):
     @para_ok_or_400([{
-        'name':
-        'Type',
-        'description': ('类型', ) + tuple(const.CredentialKeyMap.items()),
-        'method':
-        lambda x: x in const.CredentialKeyMap and x,
-        'required':
-        True
-    }, {
         'name': 'action',
         'description': captchaMap,
         'method': lambda x: x in captchaMap and x,
         'required': True
     }, {
-        'name': 'credential',
-        'description': '用户邮箱或手机号码',
+        'name': 'mobile',
+        'description': '手机号码',
+        'method': V.mobile
+    }, {
+        'name': 'email',
+        'description': '邮箱',
+        'method': V.email
     }])
-    def get(self, request, Type=None, credential='', action='register'):
-        if not credential:
-            return self.result_class().error(Type, '请输入正确的值')()
-        if Type == 'email' and not V.email(credential):
-            return self.result_class().error(Type, '邮箱格式不正确')()
+    def get(self, request, email=None, mobile='', action='register'):
+        if not email or mobile:
+            return self.result_class().error('mobile', '不能为空').error('email', '不能为空')()
         if not request.user.is_authenticated:
-            request.user.email = credential
+            request.user.email = email
+            request.user.mobile = mobile
+        Type = email and 'email' or 'mobile'
         Captcha.fromUser(request.user, Type).send(request, action)
         return self.result_class().data(dict(status='ok'))()
 

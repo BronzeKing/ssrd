@@ -16,7 +16,6 @@ class Backend(object):
                      **kwargs):
         account = (account and account.lower()) or (
             email and email.lower()) or (username and username.lower()) or ''
-        user = None
         user = User.objects.filter(Q(email=account) | Q(mobile=account))
         if user:
             user = user[0]

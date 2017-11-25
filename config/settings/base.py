@@ -346,6 +346,7 @@ REST_FRAMEWORK = {
 JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=12 * 60 * 60),
+    'JWT_SECRET_KEY': '1qaz2wsx3edcssrd'
 }
 
 SWAGGER_SETTINGS = {
