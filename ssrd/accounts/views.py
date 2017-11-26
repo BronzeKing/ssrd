@@ -28,7 +28,8 @@ class LoginView(ObtainJSONWebToken):
     def post(self, request, **kwargs):
         response = super(LoginView, self).post(request, **kwargs)
         if response.status_code == 400:
-            return self.result_class().error('email', '手机、邮箱、授权码或密码错误')(status=400)
+            return self.result_class().error('email',
+                                             '手机、邮箱、授权码或密码错误')(status=400)
         return response
 
     def get(self, request):
@@ -40,7 +41,8 @@ class LoginView(ObtainJSONWebToken):
         profile = Serializer(Profile)(user.profile).data
         verified = {'email': False, 'mobile': False}
         verified.update({x.Type: x.verified for x in user.credentials.all()})
-        data.update(profile=profile, verified = verified, invitation=user.profile.code)
+        data.update(
+            profile=profile, verified=verified, invitation=user.profile.code)
         return self.result_class(data=data)(serialize=True)
 
 
@@ -123,7 +125,8 @@ class CaptchaView(UnAuthView):
     }])
     def get(self, request, email=None, mobile='', action='register'):
         if not email or mobile:
-            return self.result_class().error('mobile', '不能为空').error('email', '不能为空')()
+            return self.result_class().error('mobile', '不能为空').error(
+                'email', '不能为空')()
         if not request.user.is_authenticated:
             request.user.email = email
             request.user.mobile = mobile

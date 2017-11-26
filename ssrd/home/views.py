@@ -524,11 +524,11 @@ class SystemViewSet(ViewSet):
         System, extra=['pictures', 'systemCases'], dep=1)
 
     @method_decorator(cache_page(60 * 60))
-    def list(self, request, **kwargs):
+    def list(self, request, pageSize=6, **kwargs):
         """获取系统展示"""
         obj = System.objects.all().prefetch_related(
             'pictures', 'systemCases', 'systemCases__pictures',
-            'systemCases__systems').order_by('rank')
+            'systemCases__systems').order_by('rank')[:pageSize]
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{

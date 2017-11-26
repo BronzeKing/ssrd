@@ -163,13 +163,13 @@ class IndustryLink(models.Model):
 
 class System(models.Model):
     name = models.CharField("名称", max_length=255)
-    summary = models.TextField("简介摘要")
+    summary = models.TextField("简介摘要", default='')
     picture = models.ImageField("简介摘要插图")
-    introduction = models.TextField("系统介绍")
+    introduction = models.TextField("系统介绍", default='')
     pictures = models.ManyToManyField("home.Images", verbose_name="系统插图")
-    systemFeature = models.TextField("系统特性")
+    systemFeature = models.TextField("系统特性", default='')
     structure = models.ImageField("系统结构", null=True)
-    funtionalFeature = models.TextField("功能特性")
+    funtionalFeature = models.TextField("功能特性", default='')
     rank = models.IntegerField("排序", default=100)
 
     def __str__(self):

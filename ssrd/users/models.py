@@ -66,7 +66,8 @@ class User(AbstractBaseUser):
     role = models.SmallIntegerField("用户权限", choices=const.ROLES, default=42)
     created = models.DateTimeField(_('date joined'), default=timezone.now)
     status = models.SmallIntegerField("状态", choices=const.STATUS, default=1)
-    group = models.ForeignKey('users.Group', default=6, on_delete=models.SET_DEFAULT)
+    group = models.ForeignKey(
+        'users.Group', default=6, on_delete=models.SET_DEFAULT)
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['mobile']
@@ -98,7 +99,8 @@ class Profile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, verbose_name="所属用户")
     name = models.CharField("真实姓名", max_length=50)
-    gender = models.CharField("性别", choices=const.GENDER, max_length=10, default='male')
+    gender = models.CharField(
+        "性别", choices=const.GENDER, max_length=10, default='male')
     birthday = models.DateField("生日", auto_now=True)
     company = models.CharField("所属公司", max_length=255, null=True)
     position = models.CharField("职位", null=True, max_length=255)
@@ -159,8 +161,8 @@ class AuthorizeCode(models.Model):
         return self
 
     def __str__(self):
-        return "<AuthorizeCode: {}, {}, {}, {}>".format(self.user, self.creator,
-                                                  self.code, self.status)
+        return "<AuthorizeCode: {}, {}, {}, {}>".format(
+            self.user, self.creator, self.code, self.status)
 
     __repr__ = __str__
 
@@ -190,7 +192,8 @@ class Project(models.Model):
         related_name='projects',
         default=1)
     name = models.CharField("项目名称", max_length=50, unique=True)
-    type = models.CharField("项目类型", choices=const.ProjectType, max_length=20, default=0)
+    type = models.CharField(
+        "项目类型", choices=const.ProjectType, max_length=20, default=0)
     mobile = models.CharField(
         _("Mobile Phone"), blank=True, default='', max_length=11)
     status = models.SmallIntegerField(
@@ -224,7 +227,8 @@ class ProjectLog(models.Model):
     attatchment = models.ManyToManyField("users.Documents", verbose_name="附件")
 
     def __str__(self):
-        return "<ProjectLog: {}, {}, {}>".format(self.project, self.action, self.content)
+        return "<ProjectLog: {}, {}, {}>".format(self.project, self.action,
+                                                 self.content)
 
     __repr__ = __str__
 
