@@ -121,7 +121,12 @@ class Cart(models.Model):
     """购物车"""
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, verbose_name="所属用户")
-    content = JSONField("内容")
+    content = JSONField("内容", default=[])
+
+    def __str__(self):
+        return "<Cart: {}, {}>".format(self.user, self.content)
+
+    __repr__ = __str__
 
 
 class Group(models.Model):

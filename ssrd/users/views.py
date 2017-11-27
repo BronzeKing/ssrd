@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import RedirectView
 from django.db.models import Q
 from paraer import para_ok_or_400, perm_ok_or_403
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from ssrd import const
@@ -794,3 +795,29 @@ class GroupViewSet(ViewSet):
         删除部门
         """
         return self.result_class(obj)(serialize=True)
+
+class CartView(APIView):
+    serializer_class = Serializer(m.Cart, dep=0)
+    permission_classes = (IsAuthenticated, )
+
+    @para_ok_or_400([{
+        'name': 'content',
+        'method': V.json,
+        'description': '购物车内容',
+        'required': True
+    }])
+    def post(self, request, content, **kwargs):
+        """
+        编辑购物车
+        """
+        obj, ok = m.Cart.objects.get_or_create(user=request.user)
+        obj.content = content
+        obj.save()
+        return Response(obj.content)
+
+    def get(self, request,  **kwargs):
+        """
+        获取购物网车
+        """
+        obj, ok = m.Cart.objects.get_or_create(user=request.user)
+        return Response(obj.content)
