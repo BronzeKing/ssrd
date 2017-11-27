@@ -802,15 +802,16 @@ class CartView(APIView):
 
     @para_ok_or_400([{
         'name': 'content',
-        'method': V.json,
         'description': '购物车内容',
         'required': True
     }])
-    def post(self, request, content, **kwargs):
+    def post(self, request, content=None, **kwargs):
         """
         编辑购物车
         """
         obj, ok = m.Cart.objects.get_or_create(user=request.user)
+        if not isinstance(content, list):
+            content = [content]
         obj.content = content
         obj.save()
         return Response(obj.content)
