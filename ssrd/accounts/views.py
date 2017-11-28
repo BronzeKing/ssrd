@@ -105,7 +105,7 @@ class RegisterView(UnAuthView):
         return result.data(user)(serialize=True)
 
 
-captchaMap = {"register": "注册", "resetPassword": "重置密码", "changeEmail": "更改邮箱"}
+captchaMap = {"register": "注册", "resetPassword": "重置密码", "changeEmail": "更改邮箱", 'changeMobile': '更改手机'}
 
 
 class CaptchaView(UnAuthView):
@@ -124,7 +124,7 @@ class CaptchaView(UnAuthView):
         'method': V.email
     }])
     def get(self, request, email=None, mobile='', action='register'):
-        if not email or mobile:
+        if not email and not mobile:
             return self.result_class().error('mobile', '不能为空').error(
                 'email', '不能为空')()
         if not request.user.is_authenticated:
@@ -162,6 +162,8 @@ class CredentialView(APIView):
                 request, request.user, Type, action=True, confirm=False)
             obj.verified = True
             obj.save()
+            setattr(request.user, Type, mobile or email)
+            request.user.save()
         else:
             return result.error('captcha', '验证码不正确')()
 

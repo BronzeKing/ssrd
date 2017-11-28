@@ -128,6 +128,20 @@ class Cart(models.Model):
 
     __repr__ = __str__
 
+class Order(models.Model):
+    """订单"""
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="所属用户")
+    content = JSONField("内容", default=[])
+    code = models.CharField("订单号", max_length=40, default=generate_key)
+    created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
+    updated = models.DateTimeField("更新时间", auto_now=True)
+
+    def __str__(self):
+        return "<order: {}, {}>".format(self.user, self.content)
+
+    __repr__ = __str__
+
 
 class Group(models.Model):
     name = models.CharField("部门", max_length=50, unique=True)
@@ -209,6 +223,7 @@ class Project(models.Model):
     linkman = models.CharField("联系人", max_length=50, unique=True)
     address = models.CharField("地址", null=True, max_length=255)
     attatchment = models.ManyToManyField("users.Documents", verbose_name="附件")
+    company = models.CharField("所属公司", max_length=255, null=True)
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
 

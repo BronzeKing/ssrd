@@ -179,8 +179,9 @@ class ProfileView(APIView):
         return self.result_class().data(user.profile)(serialize=True)
 
     @para_ok_or_400([{
-        'name': 'user',
+        'name': 'userId',
         'method': V.user,
+        'replace': 'user',
         'description': '用户ID',
     }, {
         'name': 'gender',
@@ -211,11 +212,11 @@ class ProfileView(APIView):
         'description': '地址',
         'method': V.name
     }])
-    def post(self, request, **kwargs):
+    def post(self, request, userId=None, user=None, **kwargs):
         profile = request.user.profile
         [setattr(profile, k, v) for k, v in kwargs.items() if v]
         profile.save()
-        return self.result_class(data=profile)()
+        return self.result_class(data=profile)(serialize=True)
 
 
 class AuthorizeCodeViewSet(ViewSet):

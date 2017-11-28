@@ -159,5 +159,5 @@ class EmailCaptcha(Captcha):
 class MobileConfirmation(Captcha):
     name = 'mobile'
 
-    def send(self, request, credentialConfirmation, signup):
+    def send(self, request, action):
         pass
