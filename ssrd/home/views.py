@@ -760,7 +760,7 @@ class JobViewSet(ViewSet):
         'name': 'attatchment',
         'description': '附件',
         'type': 'file',
-        'method': V.file,
+        'method': V.files,
         'required': True
     }])
     def create(self,
@@ -781,7 +781,7 @@ class JobViewSet(ViewSet):
         obj.save()
         subject = "求职简历"
         content = "职位申请：\n岗位：{}\n姓名：{}\n手机：{}\n邮箱：{}\n附件为\n{}".format(
-            job, name, mobile, email, obj.attatchment.url)
+            job, name, mobile, email, '')  #TODO
         send_mail(subject, content, "ssrdhr@foxmail.com")
         send_mail(subject, content, "drinks.huang@hypers.com")
         return self.result_class(data=obj)(serialize=True)

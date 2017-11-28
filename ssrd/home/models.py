@@ -198,7 +198,7 @@ class Job(models.Model):
     job = models.TextField("职位", max_length=100)
     mobile = models.CharField("手机号码", blank=True, max_length=11)
     email = models.CharField("邮箱", max_length=100)
-    attatchment = models.FileField("附件")
+    attatchment = models.ManyToManyField("users.Documents", verbose_name="附件")
     updated = models.DateTimeField("更新时间", auto_now=True)
 
     def __str__(self):
