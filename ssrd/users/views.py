@@ -395,8 +395,8 @@ class ProjectViewSet(ViewSet):
     }])
     def create(self, request, attatchment=None, **kwargs):
         """新建项目"""
-        obj = Project.objects.create(user=request.user, **kwargs)
-        obj.attatchment.add(*Documents.bulk(attatchment))
+        obj, ok = Project.objects.get_or_create(user=request.user, **kwargs)
+        obj.attatchment.add(*Documents.bulk(attatchment or []))
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{

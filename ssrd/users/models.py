@@ -128,6 +128,7 @@ class Cart(models.Model):
 
     __repr__ = __str__
 
+
 class Order(models.Model):
     """订单"""
     user = models.ForeignKey(
@@ -210,7 +211,7 @@ class Project(models.Model):
         verbose_name="所属用户",
         related_name='projects',
         default=1)
-    name = models.CharField("项目名称", max_length=50, unique=True)
+    name = models.CharField("项目名称", max_length=50)
     type = models.CharField(
         "项目类型", choices=const.ProjectType, max_length=20, default=0)
     mobile = models.CharField(
@@ -220,12 +221,15 @@ class Project(models.Model):
     remark = models.TextField("补充说明")
     duration = models.SmallIntegerField("工期", default=1)
     budget = models.SmallIntegerField("工期", default=1)
-    linkman = models.CharField("联系人", max_length=50, unique=True)
+    linkman = models.CharField("联系人", max_length=50)
     address = models.CharField("地址", null=True, max_length=255)
     attatchment = models.ManyToManyField("users.Documents", verbose_name="附件")
     company = models.CharField("所属公司", max_length=255, null=True)
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
+
+    class Meta:
+        unique_together = ('user', 'name')
 
     def __str__(self):
         return "<{}: {}>".format(self.name, self.status)
