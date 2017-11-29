@@ -214,6 +214,7 @@ class Project(models.Model):
     name = models.CharField("项目名称", max_length=50)
     type = models.CharField(
         "项目类型", choices=const.ProjectType, max_length=20, default=0)
+    content = JSONField("内容", default=[])
     mobile = models.CharField(
         _("Mobile Phone"), blank=True, default='', max_length=11)
     status = models.SmallIntegerField(

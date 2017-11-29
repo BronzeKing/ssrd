@@ -382,7 +382,6 @@ class ProjectViewSet(ViewSet):
         'description': '补充说明',
     }, {
         'name': 'content',
-        'method': V.json,
         'description': '项目内容'
     }, {
         'name': 'budget',
