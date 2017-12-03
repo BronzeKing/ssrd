@@ -16,6 +16,7 @@ def to_repr(data):
 class ProjectSerializer(serializers.BaseSerializer):
     def to_representation(self, o):
         return dict(
+            id=o.id,
             name=o.name,
             type=ProjectType[o.type],
             content=o.content,
@@ -24,7 +25,7 @@ class ProjectSerializer(serializers.BaseSerializer):
             linkman=o.linkman,
             budget=o.budget,
             address=o.address,
-            attatchment=[x.url for x in o.attatchment.all()],
+            attatchment=[dict(name=x.name, url=file.url) for x in o.attatchment.all()],
             company=o.company,
             created=o.created,
             updated=o.updated,
