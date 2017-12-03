@@ -25,7 +25,7 @@ class ProjectSerializer(serializers.BaseSerializer):
             linkman=o.linkman,
             budget=o.budget,
             address=o.address,
-            attatchment=[dict(name=x.name, url=file.url) for x in o.attatchment.all()],
+            attatchment=[dict(name=x.name, url=x.file.url) for x in o.attatchment.all()],
             company=o.company,
             created=o.created,
             updated=o.updated,
