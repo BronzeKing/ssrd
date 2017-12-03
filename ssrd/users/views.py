@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from ssrd import const
 from ssrd.contrib import APIView, UnAuthView, V, ViewSet
-from ssrd.contrib.serializer import Serializer
+from ssrd.contrib.serializer import Serializer, ProjectSerializer
 from ssrd.users import models as m
 
 from .models import AuthorizeCode, Collected, Invitation, Message, Profile, Project, User, ProjectLog, Documents
@@ -326,7 +326,7 @@ class InvitationViewSet(ViewSet):
 
 
 class ProjectViewSet(ViewSet):
-    serializer_class = Serializer(Project)
+    serializer_class = ProjectSerializer
     permission_classes = (IsAuthenticated, )
 
     @para_ok_or_400([{
@@ -346,7 +346,7 @@ class ProjectViewSet(ViewSet):
         query = dict()
         user.role > 0 and query.update(user=user)  # 管理员获取全量
         status and query.update(status=status)
-        obj = Project.objects.filter(**query).select_related('user')
+        obj = Project.objects.filter(**query).select_related('user').prefetch_related('attatchment')
         if search:
             obj = obj.filter(name__contains=search)
         return self.result_class(data=obj)(serialize=True)

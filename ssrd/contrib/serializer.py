@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.conf import settings
+from ssrd import const
 
+ProjectType = dict(const.ProjectType)
 _methodMap = {
     'created': lambda x: x.strftime(settings.REST_FRAMEWORK['DATE_FORMAT']),
     'updated': lambda x: x.strftime(settings.REST_FRAMEWORK['DATETIME_FORMAT'])
@@ -9,6 +11,24 @@ _methodMap = {
 
 def to_repr(data):
     return {x: _methodMap.get(x, lambda x: x)(y) for x, y in data.items()}
+
+
+class ProjectSerializer(serializers.BaseSerializer):
+    def to_representation(self, o):
+        return dict(
+            name=o.name,
+            type=ProjectType[o.type],
+            content=o.content,
+            mobile=o.mobile,
+            status=o.status,
+            linkman=o.linkman,
+            budget=o.budget,
+            address=o.address,
+            attatchment=[x.url for x in o.attatchment.all()],
+            company=o.company,
+            created=o.created,
+            updated=o.updated,
+            user=dict(username=o.user.username, id=o.user.id))
 
 
 def modelFactory(Model, extra, dep):
