@@ -18,6 +18,17 @@ def generate_key():
     return binascii.hexlify(os.urandom(20)).decode()
 
 
+class Group(models.Model):
+    name = models.CharField("部门", max_length=50, unique=True)
+    created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
+    updated = models.DateTimeField("更新时间", auto_now=True)
+
+    def __str__(self):
+        return "<{}: {}>".format(self.name, self.created)
+
+    __repr__ = __str__
+
+
 class BaseUserManager(models.Manager):
     @classmethod
     def normalize_email(cls, email):
@@ -49,6 +60,14 @@ class BaseUserManager(models.Manager):
         return self.get(**{self.model.USERNAME_FIELD: username})
 
 
+def defaultUserGroup():
+    obj, ok = Group.objects.get_or_create(name='客户')
+    return obj
+
+
+defaultGroup = defaultUserGroup()
+
+
 class User(AbstractBaseUser):
     email = models.EmailField(_('email address'), unique=True)
     username = models.CharField(
@@ -59,15 +78,14 @@ class User(AbstractBaseUser):
           ),
         error_messages={
             'unique': _("A user with that username already exists."),
-        },
-    )
+        }, )
     mobile = models.CharField(
         _("Mobile Phone"), blank=True, default='', max_length=11)
     role = models.SmallIntegerField("用户权限", choices=const.ROLES, default=42)
     created = models.DateTimeField(_('date joined'), default=timezone.now)
     status = models.SmallIntegerField("状态", choices=const.STATUS, default=1)
     group = models.ForeignKey(
-        'users.Group', default=6, on_delete=models.SET_DEFAULT)
+        'users.Group', default=defaultGroup.id, on_delete=models.SET_DEFAULT)
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['mobile']
@@ -140,17 +158,6 @@ class Order(models.Model):
 
     def __str__(self):
         return "<order: {}, {}>".format(self.user, self.content)
-
-    __repr__ = __str__
-
-
-class Group(models.Model):
-    name = models.CharField("部门", max_length=50, unique=True)
-    created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
-    updated = models.DateTimeField("更新时间", auto_now=True)
-
-    def __str__(self):
-        return "<{}: {}>".format(self.name, self.created)
 
     __repr__ = __str__
 
