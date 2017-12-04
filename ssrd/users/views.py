@@ -522,14 +522,15 @@ class ProjectLogViewSet(ViewSet):
         'replace': 'project'
     }, {
         'name': 'action',
-        'method': lambda x: int(x) in dict(const.ProjectLog),
+        'method': lambda x: const.ProjectLogMap.get(x),
+        'required': True,
         'description': ("行为", ) + const.ProjectLog
     }, {
         'name': 'content',
         'description': '内容'
     }, {
         'name': 'attatchment',
-        'method': V.files,
+        'method': V.documents,
         'description': '附件，可以传list',
         'type': 'file'
     }, {
@@ -541,9 +542,7 @@ class ProjectLogViewSet(ViewSet):
         """新建项目日志"""
         obj = ProjectLog.objects.create(
             project=project, action=action, content=kwargs)
-        attatchment = request.POST.getlist('attatchment', [])
-        docs = Documents.bulk(attatchment)
-        obj.attatchment.add(*docs)
+        obj.attatchment.add(*attatchment)
         return self.result_class(data=obj)(serialize=True)
 
 

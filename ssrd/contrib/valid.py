@@ -15,6 +15,13 @@ GENDER = dict(const.GENDER)
 
 
 class Valid(_Valid):
+
+    def documents(self, obj):
+        if not isinstance(obj, list):
+            obj = []
+        obj = [x for x in obj if str(x).isdigit()]
+        return users.Documents.objects.filter(id__in=obj)
+
     def document(self, pk):
         self.msg = "文档不存在"
         return home.Documents.objects.get(pk=pk)

@@ -14,8 +14,14 @@ from django.contrib.postgres.fields import JSONField
 from ssrd import const
 
 
-def generate_key():
-    return binascii.hexlify(os.urandom(20)).decode()
+def generate_key(bit=None):
+    if not bit:
+        return binascii.hexlify(os.urandom(20)).decode()
+
+    def _generate_key():
+        return binascii.hexlify(os.urandom(20)).decode()[:bit]
+
+    return _generate_key
 
 
 class Group(models.Model):
@@ -174,7 +180,7 @@ class AuthorizeCode(models.Model):
         on_delete=models.CASCADE,
         verbose_name="所属用户",
         related_name="authorizecodes")
-    code = models.CharField("授权码", max_length=40, default=generate_key)
+    code = models.CharField("授权码", max_length=40, default=generate_key(6))
     status = models.SmallIntegerField("授权码状态", choices=const.STATUS, default=1)
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
