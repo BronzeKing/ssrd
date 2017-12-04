@@ -4,6 +4,7 @@ from django.db.models import Q
 from paraer import para_ok_or_400, perm_ok_or_403
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django.core.files import File
 
 from ssrd import const
 from ssrd.contrib import APIView, UnAuthView, V, ViewSet
@@ -822,3 +823,33 @@ class CartView(APIView):
         """
         obj, ok = m.Cart.objects.get_or_create(user=request.user)
         return Response(obj.content)
+
+class DocumentsViewSet(ViewSet):
+    """
+    文档
+    """
+    serializer_class = Serializer(m.Documents)
+
+    @para_ok_or_400([{
+        'name': 'search',
+        'description': '搜索',
+    }])
+    def list(self, request, search=None, **kwargs):
+        """获取文档列表"""
+        obj = m.Documents.objects.all()
+        if search:
+            obj = obj.filter(Q(name__contains=search))
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'file',
+        'description': '文件',
+        'type': 'file',
+        'method': V.file,
+        'required': True
+    }])
+    def create(self, request, file=None, **kwargs):
+        """新建文档"""
+        file = File(file)
+        obj = m.Documents.objects.create(name=file.name, file=file)
+        return self.result_class(data=obj)(serialize=True)
