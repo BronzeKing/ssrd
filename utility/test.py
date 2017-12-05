@@ -22,3 +22,11 @@ def cache():
     from django.conf import settings
     print(settings.REDIS)
     print(cache.get('asd'))
+
+def profile():
+    from ssrd.users.models import Profile, avator
+    objs = Profile.objects.all()
+    for obj in objs:
+        obj.avator = avator
+        obj.save()
+        print(obj.avator.url)

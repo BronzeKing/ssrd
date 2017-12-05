@@ -543,6 +543,12 @@ class ProjectLogViewSet(ViewSet):
         obj = ProjectLog.objects.create(
             project=project, action=action, content=kwargs)
         obj.attatchment.add(*attatchment)
+        if action != 4: # 工作日志
+            if action == 7:  # 驳回
+                project.status = project.status - 1
+            else:
+                project.status = project.status + 1
+            project.save()
         return self.result_class(data=obj)(serialize=True)
 
 

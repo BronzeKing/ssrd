@@ -1,5 +1,6 @@
 import os
 import binascii
+from functools import partial
 
 from django.utils import timezone
 from django.utils.crypto import get_random_string
@@ -17,12 +18,7 @@ from ssrd import const
 def generate_key(bit=None):
     if not bit:
         return binascii.hexlify(os.urandom(20)).decode()
-
-    def _generate_key():
-        return binascii.hexlify(os.urandom(20)).decode()[:bit]
-
-    return _generate_key
-
+    return binascii.hexlify(os.urandom(20)).decode()[:bit]
 
 class Group(models.Model):
     name = models.CharField("部门", max_length=50, unique=True)
@@ -118,10 +114,14 @@ class User(AbstractBaseUser):
 
     __repr__ = __str__
 
+from django.core.files import File
+avatorPath = str(settings.APPS_DIR) + '/static/images/avator.png'
+avator = File(open(avatorPath, 'rb'))
 
 class Profile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, verbose_name="所属用户")
+    avator = models.ImageField("系统结构", null=True)
     name = models.CharField("真实姓名", max_length=50)
     gender = models.CharField(
         "性别", choices=const.GENDER, max_length=10, default='male')
@@ -134,6 +134,12 @@ class Profile(models.Model):
 
     def __str__(self):
         return "<Profile: {}>".format(self.user)
+
+    def save(self, *args, **kwargs):
+        if not self.avator:
+            self.avator = avator
+        super(Profile, self).save(*args, **kwargs)
+
 
     __repr__ = __str__
 
@@ -180,7 +186,7 @@ class AuthorizeCode(models.Model):
         on_delete=models.CASCADE,
         verbose_name="所属用户",
         related_name="authorizecodes")
-    code = models.CharField("授权码", max_length=40, default=generate_key(6))
+    code = models.CharField("授权码", max_length=40, default=partial(generate_key, bit=6))
     status = models.SmallIntegerField("授权码状态", choices=const.STATUS, default=1)
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
