@@ -71,7 +71,7 @@ defaultGroup = defaultUserGroup()
 
 
 class User(AbstractBaseUser):
-    email = models.EmailField(_('email address'), unique=True)
+    email = models.EmailField(_('email address'), blank=True)
     username = models.CharField(
         _('username'),
         max_length=150,
@@ -82,15 +82,15 @@ class User(AbstractBaseUser):
             'unique': _("A user with that username already exists."),
         }, )
     mobile = models.CharField(
-        _("Mobile Phone"), blank=True, default='', max_length=11)
-    role = models.SmallIntegerField("用户权限", choices=const.ROLES, default=42)
+        _("Mobile Phone"), unique=True, max_length=11)
+    role = models.SmallIntegerField("用户权限", choices=const.ROLES, default=2)
     created = models.DateTimeField(_('date joined'), default=timezone.now)
     status = models.SmallIntegerField("状态", choices=const.STATUS, default=1)
     group = models.ForeignKey(
         'users.Group', default=defaultGroup.id, on_delete=models.SET_DEFAULT)
     EMAIL_FIELD = 'email'
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['mobile']
+    USERNAME_FIELD = 'mobile'
+    REQUIRED_FIELDS = []
     objects = BaseUserManager()
 
     def get_absolute_url(self):
@@ -114,14 +114,15 @@ class User(AbstractBaseUser):
 
     __repr__ = __str__
 
-from django.core.files import File
-avatorPath = str(settings.APPS_DIR) + '/static/images/avator.png'
-avator = File(open(avatorPath, 'rb'))
+def avator():
+    from django.core.files import File
+    avatorPath = str(settings.APPS_DIR) + '/static/images/avator.png'
+    return File(open(avatorPath, 'rb'))
 
 class Profile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, verbose_name="所属用户")
-    avator = models.ImageField("系统结构", null=True)
+    avator = models.ImageField("系统结构", default=avator)
     name = models.CharField("真实姓名", max_length=50)
     gender = models.CharField(
         "性别", choices=const.GENDER, max_length=10, default='male')
@@ -134,12 +135,6 @@ class Profile(models.Model):
 
     def __str__(self):
         return "<Profile: {}>".format(self.user)
-
-    def save(self, *args, **kwargs):
-        if not self.avator:
-            self.avator = avator
-        super(Profile, self).save(*args, **kwargs)
-
 
     __repr__ = __str__
 

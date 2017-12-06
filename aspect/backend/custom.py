@@ -12,10 +12,10 @@ class Backend(object):
                      account='',
                      username='',
                      password=None,
-                     email='',
+                     mobile='',
                      **kwargs):
         account = (account and account.lower()) or (
-            email and email.lower()) or (username and username.lower()) or ''
+            mobile and mobile.lower()) or (username and username.lower()) or ''
         user = User.objects.filter(Q(email=account) | Q(mobile=account))
         if user:
             user = user[0]

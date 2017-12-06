@@ -502,7 +502,7 @@ class ProjectLogViewSet(ViewSet):
         'replace': 'project'
     }, {
         'name': 'action',
-        'method': lambda x: x in dict(const.ProjectLog),
+        'method': lambda x: x.isdigit() and x,
         'description': ("行为", ) + const.ProjectLog
     }])
     def list(self, request, project=None, action=None, **kwargs):
@@ -543,8 +543,9 @@ class ProjectLogViewSet(ViewSet):
         obj = ProjectLog.objects.create(
             project=project, action=action, content=kwargs)
         obj.attatchment.add(*attatchment)
-        if action != 4: # 工作日志
-            if action == 7:  # 驳回
+        actionName = const.ProjectLog[action]
+        if actionName != '工作日志':
+            if actionName == '驳回':
                 project.status = project.status - 1
             else:
                 project.status = project.status + 1

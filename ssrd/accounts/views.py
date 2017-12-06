@@ -16,7 +16,7 @@ class LoginView(ObtainJSONWebToken):
     result_class = Result
 
     @para_ok_or_400([{
-        'name': 'email',
+        'name': 'mobile',
         'description': '手机、邮箱或授权码',
         'required': True,
         'msg': '请输入账号'
