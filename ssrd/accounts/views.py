@@ -6,7 +6,7 @@ from rest_framework_jwt.views import ObtainJSONWebToken
 
 from ssrd.contrib.serializer import Serializer
 from ssrd.contrib import APIView, V, UnAuthView, Result
-from ssrd.users.models import User, Invitation, Profile
+from ssrd.users.models import User, Invitation, Profile, Group
 from ssrd import const
 from .models import Credential, Captcha
 
@@ -69,17 +69,17 @@ class RegisterView(UnAuthView):
         'method': V.password,
         'required': True
     }, {
-        'name': 'role',
-        'description': ('客户类型', ) + const.ROLES,
+        'name': 'group',
+        'description': '客户类型'
     }, {
         'name': 'mobile',
         'description': '手机',
         'method': V.mobile,
+        'required': True
     }, {
         'name': 'email',
         'description': '邮箱',
         'method': V.email,
-        'required': True
     }, {
         'name': 'invitation',
         'description': '邀请码',
@@ -89,14 +89,17 @@ class RegisterView(UnAuthView):
              request,
              username=None,
              mobile=None,
-             email=None,
+             email='',
              password=None,
-             role=None,
+             group=None,
              invitation=None):
         result = self.result_class()
-        if User.objects.filter(email=email):
+        if email and User.objects.filter(email=email):
             return result.error('email', '该邮箱已被注册')()
-        data = dict(username=username, email=email)
+        if mobile and User.objects.filter(mobile=mobile):
+            return result.error('mobile', '该手机已被注册')()
+        group, ok = Group.objects.get_or_create(name=group)
+        data = dict(username=username, mobile=mobile, email=email, group=group)
         user = User(**data)
         user.set_password(password)
         user.save()

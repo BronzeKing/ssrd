@@ -71,7 +71,7 @@ defaultGroup = defaultUserGroup()
 
 
 class User(AbstractBaseUser):
-    email = models.EmailField(_('email address'), blank=True)
+    email = models.EmailField(_('email address'), blank=True, default='')
     username = models.CharField(
         _('username'),
         max_length=150,
