@@ -64,11 +64,7 @@ class BaseUserManager(models.Manager):
 
 def defaultUserGroup():
     obj, ok = Group.objects.get_or_create(name='客户')
-    return obj
-
-
-defaultGroup = defaultUserGroup()
-
+    return obj.id
 
 class User(AbstractBaseUser):
     email = models.EmailField(_('email address'), blank=True, default='')
@@ -87,7 +83,7 @@ class User(AbstractBaseUser):
     created = models.DateTimeField(_('date joined'), default=timezone.now)
     status = models.SmallIntegerField("状态", choices=const.STATUS, default=1)
     group = models.ForeignKey(
-        'users.Group', default=defaultGroup.id, on_delete=models.SET_DEFAULT)
+        'users.Group', default=defaultUserGroup, on_delete=models.SET_DEFAULT)
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'mobile'
     REQUIRED_FIELDS = []
