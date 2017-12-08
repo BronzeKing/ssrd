@@ -956,6 +956,9 @@ class EnvView(APIView):
 
         projectLog = {y: x for x, y in const.ProjectLog}
         projectLogReverse = {x: y for x, y in const.ProjectLog}
+        projectStatus = {y: x for x, y in const.ORDER_STATUS}
+        projectStatusReverse= {x: y for x, y in const.ORDER_STATUS}
+        
         news = {y: x for x, y in const.NEWS}
         data = dict(
             oauth=oauth,
@@ -965,5 +968,7 @@ class EnvView(APIView):
             news=news,
             ProjectType=[x[0] for x in const.ProjectType],
             projectLog=projectLog,
+            projectStatus=projectStatus,
+            projectStatusReverse=projectStatusReverse,
             projectLogReverse=projectLogReverse)
         return self.result_class(data)()
