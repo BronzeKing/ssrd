@@ -667,7 +667,7 @@ class NewsViewSet(ViewSet):
         """获取新闻公告"""
         query = dict()
         type and query.update(type=type)
-        obj = News.objects.filter(**query).order_by('rank', 'created')
+        obj = News.objects.filter(**query).order_by('-updated')
         if search:
             obj = obj.filter(
                 Q(title__contains=search) | Q(content__contains=search))
