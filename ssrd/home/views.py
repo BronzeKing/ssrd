@@ -661,8 +661,7 @@ class NewsViewSet(ViewSet):
         'description': '搜索',
     }, {
         'name': 'type',
-        'method': lambda x: int(x) in dict(const.NEWS) and x,
-        'description': dict(const.NEWS, description='新闻类型'),
+        **V.make(const.NEWS)
     }])
     def list(self, request, type=None, search=None, **kwargs):
         """获取新闻公告"""
@@ -680,6 +679,9 @@ class NewsViewSet(ViewSet):
     }, {
         'name': 'content',
         'description': '内容',
+    }, {
+        'name': 'type',
+        **V.make(const.NEWS)
     }])
     def create(self, request, **kwargs):
         """
@@ -697,6 +699,9 @@ class NewsViewSet(ViewSet):
     }, {
         'name': 'title',
         'description': '标题',
+    }, {
+        'name': 'type',
+        **V.make(const.NEWS)
     }, {
         'name': 'content',
         'description': '内容',

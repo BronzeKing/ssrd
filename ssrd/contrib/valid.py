@@ -212,5 +212,12 @@ class Valid(_Valid):
         if len(data) < 100:
             return data
 
+    def make(self, map):
+        map = dict(map)
+        reverseMap = {y: x for x, y in map.items()}
+        def inner(data):
+            return map.get(data) or reverseMap.get(data)
+        return dict(method=inner, description=map)
+
 
 V = MethodProxy(Valid)
