@@ -18,6 +18,7 @@ router.register(
 router.register(
     r'recruitments', views.RecruitmentViewSet, base_name='recruitments')
 router.register(r'products', views.ProductViewSet, base_name='products')
+router.register(r'categories', views.CategoryViewSet, base_name='categories')
 router.register(
     r'industryLinks', views.IndustryLinkViewSet, base_name='industryLinks')
 router.register(r'systems', views.SystemViewSet, base_name='systems')

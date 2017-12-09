@@ -1,6 +1,7 @@
 from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from collections import defaultdict
 
 from ssrd.contrib import ViewSet, V, send_mail, APIView
 from ssrd.contrib.serializer import Serializer
@@ -370,14 +371,90 @@ class RecruitmentViewSet(ViewSet):
     def retrieve(self, request, obj=None, **kwargs):
         return self.result_class(data=obj)(serialize=True)
 
+def categoryTree(obj):
+    data = dict(id=obj.id, name=obj.name)
+    category_set = obj.category_set.all().prefetch_related('category_set')
+    data['sub'] = [categoryTree(x) for x in category_set]
+    return data
+
+class CategoryViewSet(ViewSet):
+    serializer_class = Serializer(m.Category, dep=5)
+
+    @para_ok_or_400([{
+        'name': 'search',
+        'description': '搜索字段'
+    }])
+    def list(self, request, search=None, **kwargs):
+        """获取产品目录列表"""
+        obj = m.Category.objects.filter(parent__isnull=True).prefetch_related('category_set').order_by('-updated')
+        if search:
+            obj = obj.filter(
+                Q(name__contains=search))
+        data = [categoryTree(x) for x in obj]
+        return self.result_class(data=data)()
+
+    @para_ok_or_400([{
+        'name': 'name',
+        'description': '目录名称',
+        'method': V.name
+    }])
+    def create(self, request, **kwargs):
+        """
+        新建产品目录
+        """
+        obj = m.Category.objects.get_or_create(**kwargs)
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'description': '目录',
+        'method': V.category,
+        'replace': 'obj'
+    }, {
+        'name': 'name',
+        'description': '目录名称',
+        'method': V.name,
+    }])
+    def update(self, request, obj=None, **kwargs):
+        [setattr(obj, k, v) for k, v in kwargs.items() if v]
+        obj.save()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'description': '产品',
+        'method': V.category,
+        'replace': 'obj'
+    }])
+    def destroy(self, request, obj=None, **kwargs):
+        obj.delete()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'description': '产品目录',
+        'method': V.category,
+        'replace': 'obj'
+    }])
+    def retrieve(self, request, obj=None, **kwargs):
+        return self.result_class(data=obj)(serialize=True)
+
 
 class ProductViewSet(ViewSet):
     serializer_class = Serializer(Product)
     """产品"""
 
-    def list(self, request, **kwargs):
+    @para_ok_or_400([{
+        'name': 'search',
+        'description': '搜索字段',
+        'method': V.name
+    }])
+    def list(self, request, search=None, **kwargs):
         """获取产品列表"""
-        obj = Product.objects.all()
+        obj = Product.objects.all().select_related('category')
+        if search:
+            obj = obj.filter(
+                Q(name__contains=search) | Q(category_name__contains(search)))
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
@@ -394,8 +471,7 @@ class ProductViewSet(ViewSet):
         'type': 'file'
     }])
     def create(self, request, **kwargs):
-        obj = Product(**kwargs)
-        obj.save()
+        obj = Product.objects.get_or_create(**kwargs)
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{

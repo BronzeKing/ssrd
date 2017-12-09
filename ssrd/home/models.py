@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.postgres.fields import JSONField
 
 from ssrd import const
 
@@ -19,15 +20,18 @@ class RecruitmentCategory(models.Model):
     __repr__ = __str__
 
 
-class ProductCategory(models.Model):
+class Category(models.Model):
     name = models.CharField("产品类别", max_length=50)
+    parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
     created = models.DateTimeField("创建时间", auto_now_add=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
     def __str__(self):
-        return "<产品分类: {}".format(self.name)
+        return "<产品分类: {}>".format(self.name)
 
     __repr__ = __str__
+    class Meta:
+        unique_together = ['name', 'parent']
 
 
 class AboutUs(models.Model):
@@ -114,18 +118,16 @@ class Recruitment(models.Model):
 
     __repr__ = __str__
 
+def defaultCategory():
+    return Category.objects.first() or Category.objects.get_or_create(name='')[0]
 
 class Product(models.Model):
-    name = models.CharField("产品名称", max_length=50, db_index=True)
+    name = models.CharField("产品名称", max_length=50, unique=True)
     description = models.TextField("产品描述")
-    summary = models.TextField("产品概述")
-    techParameter = models.TextField("技术参数")
-    techParameter = models.TextField("技术参数")
-    domain = models.TextField("应用领域")
+    content = JSONField("产品内容", default=[])
     pictures = models.ManyToManyField("home.Images", verbose_name="产品插图")
-    other = models.TextField("其他")
     background = models.ImageField("背景图片")
-    category = models.ForeignKey(ProductCategory, verbose_name="产品分类")
+    category = models.ForeignKey(Category, verbose_name="产品分类", on_delete=models.SET(defaultCategory))
     created = models.DateTimeField("创建时间", auto_now_add=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
