@@ -6,6 +6,7 @@ from ssrd.home.models import Product, Images, Category
 from ssrd.users.models import Documents
 from django.core.files import File
 from scrapy.http import Request
+from data.home import get_category
 
 import pandas as pd
 
@@ -17,6 +18,46 @@ config = [
     for index, x in data.iterrows() if x['产品编号'] not in products
 ]
 [x.update(category=category) for x in config]
+categories = [{
+    'parent': {
+        'name': '前台设备',
+        'parent': {
+            'name': '智能化视频监控'
+        }
+    },
+    'name': '枪机'
+}, {
+    'parent': {
+        'name': '前台设备',
+        'parent': {
+            'name': '智能化视频监控'
+        }
+    },
+    'name': '球机'
+}, {
+    'parent': {
+        'name': '前台设备',
+        'parent': {
+            'name': '智能化视频监控'
+        }
+    },
+    'name': '半球'
+}, {
+    'parent': {
+        'name': '后台设备',
+        'parent': {
+            'name': '智能化视频监控'
+        }
+    },
+    'name': 'NVR'
+}]
+
+
+def update_category(item):
+    for _c in categories:
+        if _c['name'] in item['name']:
+            item['category'] = get_category(_c)
+            item.save()
 
 
 def download(url):
@@ -86,10 +127,9 @@ class HkSpider(scrapy.Spider):
         item['content'] = content
         obj = Product.objects.filter(name=item['code'])
         if obj:
-            obj.delete()
-            # obj = obj[0]
-            # [setattr(obj, k, v) for k, v in item.items()]
-            # obj.save()
-            # obj.pictures.clear()
+            obj = obj[0]
+            [setattr(obj, k, v) for k, v in item.items()]
+            obj.save()
+            obj.pictures.clear()
         obj = Product.objects.create(**item)
         obj.pictures.add(*pictures)
