@@ -448,10 +448,16 @@ class ProductViewSet(ViewSet):
         'name': 'search',
         'description': '搜索字段',
         'method': V.name
+    }, {
+        'name': 'category',
+        'description': '目录',
+        'method': V.category
     }])
-    def list(self, request, search=None, **kwargs):
+    def list(self, request, search=None, category=None, **kwargs):
         """获取产品列表"""
-        obj = Product.objects.all().select_related('category')
+        query = dict()
+        category and query.update(category=category)
+        obj = Product.objects.filter(**query).select_related('category')
         if search:
             obj = obj.filter(
                 Q(name__contains=search) | Q(category_name__contains(search)))

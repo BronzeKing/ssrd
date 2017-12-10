@@ -82,6 +82,10 @@ class Valid(_Valid):
         self.msg = u'产品不存在'
         return home.Product.objects.get(pk=pk)
 
+    def category(self, pk):
+        self.msg = u'目录不存在'
+        return home.Category.objects.get(pk=pk)
+
     def consultationArticles(self, pk):
         self.msg = u'咨询我们不存在'
         return home.ConsultationArticles.objects.get(pk=pk)
