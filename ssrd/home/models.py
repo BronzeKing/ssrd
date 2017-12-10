@@ -132,8 +132,8 @@ def defaultCategory():
 
 
 class Product(models.Model):
-    name = models.CharField("产品名称", max_length=50, unique=True)
-    code = models.CharField("产品编号", max_length=50, default='')
+    name = models.CharField("产品名称", max_length=50)
+    code = models.CharField("产品编号", max_length=50, unique=True)
     description = models.TextField("产品描述")
     content = JSONField("产品内容", default=[])
     pictures = models.ManyToManyField("home.Images", verbose_name="产品插图")
