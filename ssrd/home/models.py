@@ -8,6 +8,11 @@ from ssrd import const
 class Images(models.Model):
     image = models.ImageField("图片")
 
+    def __str__(self):
+        return "<Image: {}".format(self.image)
+
+    __repr__ = __str__
+
 
 class RecruitmentCategory(models.Model):
     name = models.CharField("职位名称", max_length=50)
@@ -22,7 +27,8 @@ class RecruitmentCategory(models.Model):
 
 class Category(models.Model):
     name = models.CharField("产品类别", max_length=50)
-    parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
+    parent = models.ForeignKey(
+        "self", null=True, blank=True, on_delete=models.CASCADE)
     created = models.DateTimeField("创建时间", auto_now_add=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
@@ -30,6 +36,7 @@ class Category(models.Model):
         return "<产品分类: {}>".format(self.name)
 
     __repr__ = __str__
+
     class Meta:
         unique_together = ['name', 'parent']
 
@@ -118,16 +125,21 @@ class Recruitment(models.Model):
 
     __repr__ = __str__
 
+
 def defaultCategory():
-    return Category.objects.first() or Category.objects.get_or_create(name='')[0]
+    return Category.objects.first() or Category.objects.get_or_create(
+        name='')[0]
+
 
 class Product(models.Model):
     name = models.CharField("产品名称", max_length=50, unique=True)
+    code = models.CharField("产品编号", max_length=50, default='')
     description = models.TextField("产品描述")
     content = JSONField("产品内容", default=[])
     pictures = models.ManyToManyField("home.Images", verbose_name="产品插图")
     background = models.ImageField("背景图片")
-    category = models.ForeignKey(Category, verbose_name="产品分类", on_delete=models.SET(defaultCategory))
+    category = models.ForeignKey(
+        Category, verbose_name="产品分类", on_delete=models.SET(defaultCategory))
     created = models.DateTimeField("创建时间", auto_now_add=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
@@ -239,7 +251,6 @@ class SystemCase(models.Model):
         return "<SystemCase: {}   {}>".format(self.title, self.summary)
 
     __repr__ = __str__
-
 
 
 class Terminal(models.Model):
