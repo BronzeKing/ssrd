@@ -57,7 +57,7 @@ class AboutUs(models.Model):
 
 
 class FAQs(models.Model):
-    questioin = models.TextField("问题", db_index=True)
+    question = models.TextField("问题", db_index=True)
     answer = models.TextField("回答")
     rank = models.IntegerField('排序', default=100)
     created = models.DateTimeField("创建时间", auto_now_add=True)

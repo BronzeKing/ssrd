@@ -23,7 +23,7 @@ router.register(
     r'industryLinks', views.IndustryLinkViewSet, base_name='industryLinks')
 router.register(r'systems', views.SystemViewSet, base_name='systems')
 router.register(r'news', views.NewsViewSet, base_name='news')
-router.register(r'faqs', views.NewsViewSet, base_name='faqs')
+router.register(r'faqs', views.FAQsViewSet, base_name='faqs')
 router.register(r'terminals', views.TerminalViewSet, base_name='terminals')
 router.register(
     r'systemCases',

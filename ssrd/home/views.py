@@ -732,6 +732,82 @@ class SystemViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
 
+class FAQsViewSet(ViewSet):
+    """
+    最新公告
+    """
+    serializer_class = Serializer(FAQs)
+
+    @para_ok_or_400([{
+        'name': 'search',
+        'description': '搜索',
+    }])
+    def list(self, request, search=None, **kwargs):
+        """获取常见问题"""
+        obj = m.FAQs.objects.all().order_by('-id')
+        if search:
+            obj = obj.filter(
+                Q(title__contains=search) | Q(content__contains=search))
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'title',
+        'description': '标题',
+    }, {
+        'name': 'content',
+        'description': '内容',
+    }])
+    def create(self, request, **kwargs):
+        """
+        新建常见问题
+        """
+        obj = m.FAQs(**kwargs)
+        obj.save()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'description': '常见问题',
+        'method': V.faqs,
+        'replace': 'obj'
+    }, {
+        'name': 'title',
+        'description': '标题',
+        'name': 'content',
+        'description': '内容',
+    }])
+    def update(self, request, obj=None, **kwargs):
+        """
+        修改常见问题
+        """
+        [setattr(obj, k, v) for k, v in kwargs.items() if v]
+        obj.save()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'description': '常见问题',
+        'method': V.faqs,
+        'replace': 'obj'
+    }])
+    def destroy(self, request, obj=None, **kwargs):
+        """
+        删除单条常见问题
+        """
+        obj.delete()
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'description': '常见问题',
+        'method': V.faqs,
+        'replace': 'obj'
+    }])
+    def retrieve(self, request, obj=None, **kwargs):
+        """
+        获取常见问题
+        """
+        return self.result_class(data=obj)(serialize=True)
 class NewsViewSet(ViewSet):
     """
     最新公告

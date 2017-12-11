@@ -74,7 +74,8 @@ class PageNumberPager(BasePagination):
             RecordCount=RecordCount, PageCount=PageCount, Records=data)
         if should_page:
             startRecord = (PageIndex - 1) * PageSize
-            endRecord = RecordCount if ((PageCount - startRecord) <
+
+            endRecord = RecordCount if ((RecordCount- startRecord) <
                                         PageSize) else (startRecord + PageSize)
             data = data[startRecord:endRecord]
             result = dict(
