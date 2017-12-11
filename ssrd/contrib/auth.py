@@ -63,8 +63,8 @@ class PageNumberPager(BasePagination):
     def paginate_queryset(self, data, request, view=None, paginate=True):
         # 传了分页参数才做分页处理
         paras = self.request.GET.get
-        PageIndex = paras('PageIndex', '')
-        PageSize = paras('PageSize', '')
+        PageIndex = paras('pageIndex', '')
+        PageSize = paras('pageSize', '')
         should_page = PageSize.isdigit() and paginate
         PageSize = PageSize.isdigit() and int(PageSize) or 10
         PageIndex = PageIndex.isdigit() and int(PageIndex) or 1
