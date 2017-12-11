@@ -304,6 +304,7 @@ class Message(models.Model):
 class Documents(models.Model):
     name = models.CharField("文件名", max_length=255, default='')
     file = models.FileField("文件")
+    type = models.SmallIntegerField("文件类型", choices=const.DOCUMENTS, default=1) 
     created = models.DateField("创建时间", auto_now_add=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 

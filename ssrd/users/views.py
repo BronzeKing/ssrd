@@ -839,10 +839,15 @@ class DocumentsViewSet(ViewSet):
     @para_ok_or_400([{
         'name': 'search',
         'description': '搜索',
+    }, {
+        'name': 'type',
+        **V.make(const.DOCUMENTS)
     }])
-    def list(self, request, search=None, **kwargs):
+    def list(self, request, search=None, type=None, **kwargs):
         """获取文档列表"""
-        obj = m.Documents.objects.all()
+        query = dict()
+        type and query.update(type=type)
+        obj = m.Documents.objects.filter(**query).order_by('-id')
         if search:
             obj = obj.filter(Q(name__contains=search))
         return self.result_class(data=obj)(serialize=True)
@@ -853,9 +858,24 @@ class DocumentsViewSet(ViewSet):
         'type': 'file',
         'method': V.file,
         'required': True
+    }, {
+        'name': 'type',
+        **V.make(const.DOCUMENTS)
     }])
-    def create(self, request, file=None, **kwargs):
+    def create(self, request, file=None, type=None, **kwargs):
         """新建文档"""
         file = File(file)
-        obj = m.Documents.objects.create(name=file.name, file=file)
+        obj = m.Documents.objects.create(name=file.name, file=file, type=type)
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'description': 'ID',
+        'type': 'file',
+        'method': V.documents
+    }])
+    def destroy(self, request, obj=None, **kwargs):
+        """新建文档"""
+        obj = obj[0]
+        obj.delete()
         return self.result_class(data=obj)(serialize=True)

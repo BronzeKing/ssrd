@@ -1106,7 +1106,7 @@ class EnvView(APIView):
             for x in ('qq', 'weibo', 'weixin')
         ]
 
-        document = dict(const.SOURCES)
+        document = dict(const.DOCUMENTS)
         document = {y: x for x, y in document.items()}
 
         status = dict(const.STATUS)
