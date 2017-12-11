@@ -460,7 +460,7 @@ class ProductViewSet(ViewSet):
         obj = Product.objects.filter(**query).select_related('category')
         if search:
             obj = obj.filter(
-                Q(name__contains=search) | Q(category_name__contains(search)))
+                Q(name__contains=search) | Q(category_name__contains=search))
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{

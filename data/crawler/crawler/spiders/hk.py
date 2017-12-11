@@ -2,13 +2,15 @@
 import scrapy
 from io import BytesIO
 import requests
-from ssrd.home.models import Product, Images, Category
-from ssrd.users.models import Documents
 from django.core.files import File
 from scrapy.http import Request
-from data.home import get_category
-
+from scrapy.http import HtmlResponse
 import pandas as pd
+
+from ssrd.home.models import Product, Images, Category
+from ssrd.users.models import Documents
+from data.home import get_category
+from utility.tfIdf import TfIdf
 
 category, ok = Category.objects.get_or_create(name='球机')
 data = pd.read_excel('/home/linlin/Documents/data.xlsx')[:21]
@@ -50,22 +52,93 @@ categories = [{
         }
     },
     'name': 'NVR'
+}, {
+    'parent': {
+        'name': '护罩',
+        'parent': {
+            'name': '摄像机配件'
+        }
+    },
+    'name': '室外护罩'
+}, {
+    'parent': {
+        'name': '护罩',
+        'parent': {
+            'name': '摄像机配件'
+        }
+    },
+    'name': '室内护罩'
+}, {
+    'parent': {
+        'name': '支架',
+        'parent': {
+            'name': '摄像机配件'
+        }
+    },
+    'name': '枪型/筒型/一体型摄像机支架'
+}, {
+    'parent': {
+        'name': '支架',
+        'parent': {
+            'name': '摄像机配件'
+        }
+    },
+    'name': '半球型/海螺型摄像机支架'
+}, {
+    'parent': {
+        'name': '支架',
+        'parent': {
+            'name': '摄像机配件'
+        }
+    },
+    'name': '其它摄像机支架'
+}, {
+    'parent': {
+        'name': '支架',
+        'parent': {
+            'name': '摄像机配件'
+        }
+    },
+    'name': '红外球机支架'
+}, {
+    'parent': {
+        'name': '支架',
+        'parent': {
+            'name': '摄像机配件'
+        }
+    },
+    'name': '5寸球机支架'
+}, {
+    'parent': {
+        'name': '支架',
+        'parent': {
+            'name': '摄像机配件'
+        }
+    },
+    'name': '4寸球机支架'
 }]
 
 
 def update_category(item):
-    for _c in categories:
-        if _c['name'] in item['name']:
-            item['category'] = get_category(_c)
-            item.save()
+    tf = TfIdf()
+    tf.add_document(item['name'], item['name'])
+    sims = [(x, tf.similarities(x['name'])) for x in categories]
+    score = max([x[1][1] for x in sims])
+    category = [x[0] for x in sims if x[1][1] == score]
+    if category:
+        item['category'] = get_category(category[0])
 
 
-def download(url):
+def request(url):
     headers = {
         'User-Agent':
         'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36'
     }
-    response = requests.get(url, headers=headers)
+    return requests.get(url, headers=headers)
+
+
+def download(url):
+    response = request(url)
     name = url.split('/')[-1]
     bio = BytesIO(response.content)
     setattr(bio, 'name', name)
@@ -76,20 +149,51 @@ def onerror(tag):
     return tag.split('src=')[1].strip("'")
 
 
+# 支架和护罩
+zhijia = [
+    'http://www.hikvision.com/cn/prlb_277.html'
+    'http://www.hikvision.com/cn/prlb_278.html',
+    'http://www.hikvision.com/cn/prlb_279.html',
+    'http://www.hikvision.com/cn/prlb_280.html',
+    'http://www.hikvision.com/cn/prlb_281.html',
+    'http://www.hikvision.com/cn/prlb_282.html',
+    'http://www.hikvision.com/cn/prlb_283.html',
+    'http://www.hikvision.com/cn/prlb_1160.html',
+]
+
+
 class HkSpider(scrapy.Spider):
     name = 'hk'
     allowed_domains = ['www.hikvision.com']
-    start_urls = [x['url'] for x in config]
+    # start_urls = [x['url'] for x in config]
+    start_urls = zhijia
     item = {}
 
     def start_requests(self):
         for index, url in enumerate(self.start_urls):
-            self.item = dict(config[index])
-            yield Request(url, dont_filter=True, meta=dict(index=index))
+            # self.item = dict(config[index])
+            yield Request(url, dont_filter=True, callback=self.parseList)
+
+    def parseList(self, response):
+        for i in range(10):
+            xpath = '//*[@id="zz{}"]/div[2]/div/div[2]/a/@href'.format(i)
+            urls = response.xpath(xpath).extract()
+            urls = ['http://www.hikvision.com/cn/' + x for x in urls]
+            for url in urls:
+                yield Request(url, dont_filter=True, callback=self.parse)
 
     def parse(self, response):
         item = self.item
 
+        Xdescription = '/html/body/div[5]/div[2]/div[2]/div[2]/div[2]/div/text()'
+        description = ''.join(
+            map(lambda x: x.strip(), response.xpath(Xdescription).extract()))
+        item['description'] = description
+        item['code'] = item['name'] = description
+        update_category(item)
+        obj = Product.objects.filter(name=item['code'])
+        if obj:
+            return
         Xbackgroup = '//*[@id="middlepic"]/@onerror'
         backgroup = onerror(response.xpath(Xbackgroup).extract_first())
         item['background'] = download(backgroup)
@@ -106,10 +210,6 @@ class HkSpider(scrapy.Spider):
         pictures = [
             Images.objects.create(image=x) for x in map(download, pictures)
         ]
-        Xdescription = '/html/body/div[5]/div[2]/div[2]/div[2]/div[2]/div/text()'
-        description = ''.join(
-            map(lambda x: x.strip(), response.xpath(Xdescription).extract()))
-        item['description'] = description
 
         content = [{'产品概述': ''}, {'详细参数': ''}, {'资料下载': ''}]
         content[0]['产品概述'] = response.xpath(

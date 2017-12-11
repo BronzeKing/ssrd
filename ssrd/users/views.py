@@ -347,7 +347,7 @@ class ProjectViewSet(ViewSet):
         query = dict()
         user.role > 0 and query.update(user=user)  # 管理员获取全量
         status and query.update(status=status)
-        obj = Project.objects.filter(**query).select_related('user').prefetch_related('attatchment')
+        obj = Project.objects.filter(**query).select_related('user').prefetch_related('attatchment').order_by('-updated')
         if search:
             obj = obj.filter(name__contains=search)
         return self.result_class(data=obj)(serialize=True)
@@ -512,7 +512,7 @@ class ProjectLogViewSet(ViewSet):
         query = dict()
         project and query.update(project=project)
         action and query.update(action=action)
-        obj = ProjectLog.objects.filter(**query)
+        obj = ProjectLog.objects.filter(**query).order_by('-updated')
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
