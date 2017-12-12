@@ -502,8 +502,7 @@ class ProjectLogViewSet(ViewSet):
         'replace': 'project'
     }, {
         'name': 'action',
-        'method': lambda x: x.isdigit() and x,
-        'description': ("行为", ) + const.ProjectLog
+        **V.make(const.ProjectLog)
     }])
     def list(self, request, project=None, action=None, **kwargs):
         """
@@ -522,9 +521,8 @@ class ProjectLogViewSet(ViewSet):
         'replace': 'project'
     }, {
         'name': 'action',
-        'method': lambda x: const.ProjectLogMap.get(x),
         'required': True,
-        'description': ("行为", ) + const.ProjectLog
+        **V.make(const.ProjectLog)
     }, {
         'name': 'content',
         'description': '内容'
