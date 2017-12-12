@@ -371,10 +371,11 @@ class RecruitmentViewSet(ViewSet):
     def retrieve(self, request, obj=None, **kwargs):
         return self.result_class(data=obj)(serialize=True)
 
-def categoryTree(obj):
+def categoryTree(obj, action, lower):
     data = dict(id=obj.id, name=obj.name)
     category_set = obj.category_set.all().prefetch_related('category_set')
-    data['sub'] = [categoryTree(x) for x in category_set]
+    data['sub'] = [categoryTree(x, action, lower) for x in category_set]
+    action == 'low' and not data['sub'] and lower.append(data)
     return data
 
 class CategoryViewSet(ViewSet):
@@ -383,14 +384,20 @@ class CategoryViewSet(ViewSet):
     @para_ok_or_400([{
         'name': 'search',
         'description': '搜索字段'
+    }, {
+        'name': 'action',
+        'description': {'low': '返回最低级的目录', 'top': '返回顶级目录'}
     }])
-    def list(self, request, search=None, **kwargs):
+    def list(self, request, search=None, action=None, **kwargs):
         """获取产品目录列表"""
         obj = m.Category.objects.filter(parent__isnull=True).prefetch_related('category_set').order_by('-updated')
         if search:
             obj = obj.filter(
                 Q(name__contains=search))
-        data = [categoryTree(x) for x in obj]
+        lower = []
+        data = [categoryTree(x, action, lower) for x in obj]
+        if action == 'low':
+            data = lower
         return self.result_class(data=data)()
 
     @para_ok_or_400([{
