@@ -16,7 +16,7 @@ class Backend(object):
                      **kwargs):
         account = (account and account.lower()) or (
             mobile and mobile.lower()) or (username and username.lower()) or ''
-        user = User.objects.filter(Q(email=account) | Q(mobile=account))
+        user = User.objects.filter(Q(email=account) | Q(mobile=account)).select_related('profile', 'group')
         if user:
             user = user[0]
             if user.check_password(password):

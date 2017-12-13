@@ -203,8 +203,8 @@ class Invitation(models.Model):
         on_delete=models.CASCADE,
         verbose_name="邀请码所属用户",
         related_name="invitations")
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, related_name="invited", verbose_name="受邀用户")
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name="invited", verbose_name="受邀用户")
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
 

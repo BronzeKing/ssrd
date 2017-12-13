@@ -1,24 +1,12 @@
 version: '2'
 
-volumes:
-  postgres_data_dev: {}
-  postgres_backup_dev: {}
-
 services:
-  postgres:
-    build: ./compose/postgres
-    env_file: .env
-    ports:
-      - "5432:5432"
-
   local:
     build:
       context: .
       dockerfile: ./compose/django/Dockerfile-dev
     command: /start-dev.sh
     env_file: .env
-    depends_on:
-      - postgres
     volumes:
       - .:/app
     ports:

@@ -26,10 +26,10 @@ urlpatterns = [
     url(settings.ADMIN_URL, admin.site.urls),
 
     # User management
-    url(r'', include('ssrd.users.urls', namespace='users')),
-    url(r'', include('ssrd.home.urls', namespace='home')),
-    url(r'', include('ssrd.accounts.urls', namespace='accounts')),
-    url('', include('social_django.urls', namespace='social'))
+    url(r'', include('ssrd.users.urls')),
+    url(r'', include('ssrd.home.urls')),
+    url(r'', include('ssrd.accounts.urls')),
+    url('', include('social_django.urls'))
 
     # Your stuff: custom urls includes go here
 ]

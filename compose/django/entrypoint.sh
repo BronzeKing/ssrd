@@ -18,7 +18,12 @@ export DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@postgres:5432/s
 function postgres_ready(){
 python << END
 import sys
-import psycopg2
+try:
+    import psycopg2
+except ImportError:
+    import time
+    time.sleep(5)
+    sys.exit(0)
 try:
     conn = psycopg2.connect(dbname="$POSTGRES_USER", user="$POSTGRES_USER", password="$POSTGRES_PASSWORD", host="postgres")
 except psycopg2.OperationalError:
