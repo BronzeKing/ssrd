@@ -223,5 +223,12 @@ class Valid(_Valid):
             return map.get(data) or reverseMap.get(data)
         return dict(method=inner, description=map)
 
+    def enum(self, map):
+        map = dict(map)
+        reverseMap = {y: x for x, y in map.items()}
+        def inner(data):
+            return map.get(data) or reverseMap.get(data)
+        return dict(method=inner, description=map)
+
 
 V = MethodProxy(Valid)

@@ -74,12 +74,10 @@ class UserViewSet(ViewSet):
 
     @para_ok_or_400([{
         'name': 'role',
-        'method': V.role,
-        'description': ("用户角色过滤", ) + const.ROLES
+        **V.enum(const.ROLES)
     }, {
         'name': 'status',
-        'method': V.Status,
-        'description': ("用户状态过滤", ) + const.STATUS
+        **V.enum(const.STATUS)
     }, {
         'name': 'search',
         'description': '按名称搜索',
@@ -838,14 +836,21 @@ class DocumentsViewSet(ViewSet):
         'name': 'search',
         'description': '搜索',
     }, {
+        'name': 'projectId',
+        'method': V.project,
+        'description': '所属项目ID',
+        'replace': 'project'
+    }, {
         'name': 'type',
         **V.make(const.DOCUMENTS)
     }])
-    def list(self, request, search=None, type=None, **kwargs):
+    def list(self, request, project=None, search=None, type=None, **kwargs):
         """获取文档列表"""
         query = dict()
         type and query.update(type=type)
         obj = m.Documents.objects.filter(**query).order_by('-id')
+        if project:
+            obj = obj.filter(Q(project=project) | Q(projectlog__project=project))
         if search:
             obj = obj.filter(Q(name__contains=search))
         return self.result_class(data=obj)(serialize=True)
