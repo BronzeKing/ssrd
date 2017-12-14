@@ -362,8 +362,7 @@ class ProjectViewSet(ViewSet):
         'type': 'file'
     }, {
         'name': 'type',
-        'description': ('项目类型', ) + const.ProjectType,
-        'method': lambda x: x in dict(const.ProjectType) and x,
+        **V.make(const.ProjectType)
     }, {
         'name': 'mobile',
         'description': '手机',
@@ -860,13 +859,15 @@ class DocumentsViewSet(ViewSet):
         'description': '文件',
         'type': 'file',
         'method': V.file,
-        'required': True
     }, {
         'name': 'type',
         **V.make(const.DOCUMENTS)
     }])
     def create(self, request, file=None, type=None, **kwargs):
         """新建文档"""
+        file = request.data.get('file')
+        if not file:
+            return self.result_class().error('file', '不能为空')
         file = File(file)
         obj = m.Documents.objects.create(name=file.name, file=file, type=type)
         return self.result_class(data=obj)(serialize=True)

@@ -1136,7 +1136,7 @@ class EnvView(APIView):
             news=news,
             roles=roles,  # {'ADMIN': 0}
             rolesReverse=rolesReverse,
-            ProjectType=[x[0] for x in const.ProjectType],
+            ProjectType=[x[1] for x in const.ProjectType],
             projectLog=projectLog,
             projectStatus=projectStatus,
             projectStatusReverse=projectStatusReverse,

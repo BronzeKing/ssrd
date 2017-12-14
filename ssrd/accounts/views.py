@@ -35,7 +35,7 @@ class LoginView(ObtainJSONWebToken):
     def get(self, request):
 
         user = request.user
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return self.result_class(data=dict(url='login'))()
         data = Serializer(User)(user).data
         profile = Serializer(Profile)(user.profile).data

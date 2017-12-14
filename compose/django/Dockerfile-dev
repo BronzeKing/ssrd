@@ -21,4 +21,4 @@ COPY . /app
 
 WORKDIR /app
 
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["pypy3", "manage.py", "runserver_plus", "0.0.0.0:8888"]

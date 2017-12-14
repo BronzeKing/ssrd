@@ -31,7 +31,7 @@ GROUP = (("internal", "对内"), ("external", "对外"))
 SOURCES = ((0, "荣誉资质"), (1, "合作伙伴"), (2, "操作视频"), (3, "文档下载"), (4, "合同"),
            (5, "签证"), (6, '常用软件'), (7, '设计方案'), (8, '说明文档'), (-1, '全部文档'))
 
-DOCUMENTS = ((0, "全部文档"), (1, "说明文档"), (2, "常用软件"), (3, "设计方案"), (4, "签证"))
+DOCUMENTS = ((0, "全部文档"), (1, "说明文档"), (2, "常用软件"), (3, "设计方案"), (4, "签证"), (5, '项目材料'))
 CredentialKeyMap = dict((('email', "邮箱"), ('mobile', "手机")))
 
 GENDER = (("male", "男"), ("female", "女"))
@@ -44,4 +44,4 @@ ProjectLog = ((1, '签字'), (2, '审核'), (3, '协助申请'), (4, '工作日�
               (6, '发货'), (7, '驳回'))
 ProjectLogMap = {y: x for (x, y) in ProjectLog}
 
-ProjectType = (('create', '新建项目'), ('maintain', '故障维护'), ('remove', '迁移、拆除'))
+ProjectType = (('create', '新建项目'), ('maintain', '故障维护'), ('remove', '迁移、拆除'), ('exhibition', '展会协助'))
