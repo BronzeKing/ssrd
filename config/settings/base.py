@@ -405,3 +405,5 @@ try:
     compat.register()
 except ImportError:
     pass
+
+PARAER_DATA_METHOD = 'ssrd.contrib.auth.paraerData'

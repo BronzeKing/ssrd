@@ -19,7 +19,7 @@ class Valid(_Valid):
     def documents(self, obj):
         if not isinstance(obj, list):
             obj = []
-        obj = [x for x in obj if str(x).isdigit()]
+        obj = [x.id for x in obj if hasattr(x, 'id')] or [x for x in obj if str(x).isdigit()]
         return users.Documents.objects.filter(id__in=obj)
 
     def document(self, pk):
@@ -102,6 +102,11 @@ class Valid(_Valid):
     def group(self, pk):
         self.msg = u"部门不存在或已停用"
         obj = users.Group.objects.get(id=pk)
+        return obj
+
+    def projectGroup(self, pk):
+        self.msg = u"项目组不存在或已停用"
+        obj = users.ProjectGroup.objects.get(id=pk)
         return obj
 
     def authorizecode(self, pk):

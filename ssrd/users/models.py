@@ -21,7 +21,7 @@ def generate_key(bit=None):
     return binascii.hexlify(os.urandom(20)).decode()[:bit]
 
 class Group(models.Model):
-    name = models.CharField("部门", max_length=50, unique=True)
+    name = models.CharField("名称", max_length=50, unique=True)
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
@@ -64,6 +64,10 @@ class BaseUserManager(models.Manager):
 
 def defaultUserGroup():
     obj, ok = Group.objects.get_or_create(name='客户')
+    return obj.id
+
+def defaultProjectGroup():
+    obj, ok = ProjectGroup.objects.get_or_create(name='默认')
     return obj.id
 
 class User(AbstractBaseUser):
@@ -213,6 +217,25 @@ class Invitation(models.Model):
 
     __repr__ = __str__
 
+class ProjectGroup(models.Model):
+    name = models.CharField("项目组", max_length=50)
+    created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
+    updated = models.DateTimeField("更新时间", auto_now=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name="所属用户",
+        related_name='projectGroups',
+        default=6)
+
+    class Meta:
+        unique_together = ('name', 'user')
+
+    def __str__(self):
+        return "<{}: {}>".format(self.name, self.created)
+
+    __repr__ = __str__
+
 
 class Project(models.Model):
     user = models.ForeignKey(
@@ -221,6 +244,12 @@ class Project(models.Model):
         verbose_name="所属用户",
         related_name='projects',
         default=1)
+    group = models.ForeignKey(
+        ProjectGroup,
+        on_delete=models.CASCADE,
+        verbose_name="所属项目组",
+        related_name='projects',
+        default=defaultProjectGroup)
     name = models.CharField("项目名称", max_length=50)
     type = models.CharField(
         "项目类型", choices=const.ProjectType, max_length=20, default=0)

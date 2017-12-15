@@ -11,7 +11,7 @@ from ssrd.contrib import APIView, UnAuthView, V, ViewSet
 from ssrd.contrib.serializer import Serializer, ProjectSerializer
 from ssrd.users import models as m
 
-from .models import AuthorizeCode, Collected, Invitation, Message, Profile, Project, User, ProjectLog, Documents
+from .models import AuthorizeCode, Collected, Invitation, Message, Profile, Project, ProjectGroup, User, ProjectLog, Documents
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
@@ -358,10 +358,11 @@ class ProjectViewSet(ViewSet):
     }, {
         'name': 'attatchment',
         'description': '项目文档',
-        'method': V.files,
+        'method': V.documents,
         'type': 'file'
     }, {
         'name': 'type',
+        'required': True,
         **V.make(const.ProjectType)
     }, {
         'name': 'mobile',
@@ -384,16 +385,23 @@ class ProjectViewSet(ViewSet):
     }, {
         'name': 'budget',
         'method': V.num,
+        'required': True,
         'description': '预算'
+    }, {
+        'name': 'group',
+        'method': V.name,
+        'description': '项目组'
     }, {
         'name': 'duration',
         'method': V.num,
+        'required': True,
         'description': '工期'
     }])
-    def create(self, request, attatchment=None, **kwargs):
+    def create(self, request, group=None, attatchment=None, **kwargs):
         """新建项目"""
-        obj, ok = Project.objects.get_or_create(user=request.user, **kwargs)
-        obj.attatchment.add(*Documents.bulk(attatchment or []))
+        group, ok = ProjectGroup.objects.get_or_create(user=request.user, name=group or kwargs['name'])
+        obj, ok = Project.objects.get_or_create(user=request.user, group=group, **kwargs)
+        attatchment and obj.attatchment.add(*attatchment)
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
@@ -443,6 +451,10 @@ class ProjectViewSet(ViewSet):
         'method': V.num,
         'description': '预算'
     }, {
+        'name': 'group',
+        'method': V.name,
+        'description': '项目组'
+    }, {
         'name': 'duration',
         'method': V.num,
         'description': '工期'
@@ -451,10 +463,12 @@ class ProjectViewSet(ViewSet):
         'method': lambda r, k: r.user.has_permission(k['obj']),
         'reason': '无权限更改此项目'
     }])
-    def update(self, request, obj=None, name=None, status=None, **kwargs):
+    def update(self, request, obj=None, group=None, name=None, status=None, **kwargs):
         """更新项目"""
+        group, ok = ProjectGroup.objects.get_or_create(name=group or name, user=obj.user)
         status and setattr(obj, 'status', status)
         name and setattr(obj, 'name', name)
+        group and setattr(obj, 'group', group)
         obj.save()
         return self.result_class(obj)(serialize=True)
 
@@ -499,6 +513,7 @@ class ProjectLogViewSet(ViewSet):
         'replace': 'project'
     }, {
         'name': 'action',
+        'required': True,
         **V.make(const.ProjectLog)
     }])
     def list(self, request, project=None, action=None, **kwargs):
@@ -883,3 +898,89 @@ class DocumentsViewSet(ViewSet):
         obj = obj[0]
         obj.delete()
         return self.result_class(data=obj)(serialize=True)
+
+class ProjectGroupViewSet(ViewSet):
+    serializer_class = Serializer(m.ProjectGroup, dep=0)
+    permission_classes = (IsAuthenticated, )
+
+    @para_ok_or_400([{
+        'name': 'search',
+        'description': '项目组搜索',
+    }])
+    def list(self, request, search='', **kwargs):
+        """
+        获取所有项目组
+        """
+        query = dict()
+        search and query.update(name__contains=search)
+        objs = m.ProjectGroup.objects.filter(**query, user=request.user)
+        return self.result_class(objs)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'name',
+        'method': V.name,
+        'description': '项目组名称',
+        'required': True
+    }])
+    def create(self, request, name=None, **kwargs):
+        """
+        新建项目组
+        """
+        obj, ok = ProjectGroup.objects.get_or_create(name=name, user=request.user)
+        return self.result_class(obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'id',
+        'method': V.projectGroup,
+        'description': '项目组ID',
+        'replace': 'obj'
+    }, {
+        'name': 'name',
+        'method': V.name,
+        'description': '项目组名称',
+        'required': True
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['obj']),
+        'reason': '无权限编辑此项目组'
+    }])
+    def update(self, request, obj=None, **kwargs):
+        """
+        编辑项目组
+        """
+        [setattr(obj, k, v) for k, v in kwargs.items() if v]
+        obj.save()
+        return self.result_class(obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.projectGroup,
+        'description': '项目组ID',
+        'replace': 'obj'
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['obj']),
+        'reason': '无权限删除此项目组'
+    }])
+    def destroy(self, request, obj=None, **kwargs):
+        """
+        删除项目组
+        """
+        obj.delete()
+        return self.result_class(obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.projectGroup,
+        'description': '项目组ID',
+        'replace': 'obj'
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['obj']),
+        'reason': '无权限查看此项目组'
+    }])
+    def retrieve(self, request, obj=None, **kwargs):
+        """
+        删除部门
+        """
+        return self.result_class(obj)(serialize=True)

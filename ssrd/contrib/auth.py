@@ -173,3 +173,8 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         from ssrd.users.models import Profile, Invitation
         Profile.objects.get_or_create(user=instance, name=instance.username)
+
+def paraerData(request):
+    data = dict(request.GET.items())
+    data.update(request.data.items())
+    return data
