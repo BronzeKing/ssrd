@@ -10,7 +10,6 @@ from paraer import Valid as _Valid, MethodProxy
 __all__ = ("V")
 ROLES = dict(const.ROLES)
 STATUS = dict(const.STATUS)
-ORDER_STATUS = dict(const.ORDER_STATUS)
 GENDER = dict(const.GENDER)
 
 
@@ -140,10 +139,6 @@ class Valid(_Valid):
             return ''
         if value in STATUS:
             return str(value)
-
-    def order_status(self, value):
-        self.msg = "错误的参数值：%s" % str(ORDER_STATUS)
-        return int(value) in ORDER_STATUS
 
     def name(self, name, length=200):
         if not name:

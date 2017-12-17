@@ -257,7 +257,7 @@ class Project(models.Model):
     mobile = models.CharField(
         _("Mobile Phone"), blank=True, default='', max_length=11)
     status = models.SmallIntegerField(
-        "项目状态", choices=const.ORDER_STATUS, default=1)
+        "项目状态", choices=const.ProjectStatus, default=1)
     remark = models.TextField("补充说明")
     duration = models.SmallIntegerField("工期", default=1)
     budget = models.SmallIntegerField("工期", default=1)

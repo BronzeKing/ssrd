@@ -1079,21 +1079,6 @@ class TerminalViewSet(ViewSet):
         obj = m.Terminal.objects.all()
         return self.result_class(data=obj)(serialize=True)
 
-class ConstView(APIView):
-    def get(self, request):
-        """
-        获取常量
-        """
-        data = {}
-        for x in const.__all__:
-            if not x.startswith('__'):
-                try:
-                    data[x] = dict(getattr(const, x))
-                except:
-                    pass
-        return self.result_class(data=data)()
-
-
 class EnvView(APIView):
     def get(self, request):
         """
@@ -1115,8 +1100,8 @@ class EnvView(APIView):
 
         projectLog = {y: x for x, y in const.ProjectLog}
         projectLogReverse = {x: y for x, y in const.ProjectLog}
-        projectStatus = {y: x for x, y in const.ORDER_STATUS}
-        projectStatusReverse= {x: y for x, y in const.ORDER_STATUS}
+        projectStatus = {y: x for x, y in const.ProjectStatus}
+        projectStatusReverse= {x: y for x, y in const.ProjectStatus}
 
         roles = {y: x for x, y in const.ROLES}
         rolesReverse = {x: y for x, y in const.ROLES}

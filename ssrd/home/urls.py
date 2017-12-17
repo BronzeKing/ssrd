@@ -31,7 +31,6 @@ router.register(
     base_name='systemCases')
 urlpatterns = [
     url(r'', include(router.urls)),
-    url(r'^const$', views.ConstView.as_view()),
     url(r'^env$', views.EnvView.as_view()),
     url('^aboutUs$', views.AboutUsView.as_view()),
     url('^aboutUs/(?P<id>\d+)', views.AboutUsView.as_view())

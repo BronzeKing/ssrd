@@ -330,8 +330,7 @@ class ProjectViewSet(ViewSet):
 
     @para_ok_or_400([{
         'name': 'status',
-        'method': V.status,
-        'description': ("项目状态过滤", ) + const.ORDER_STATUS
+        **V.enum(const.ProjectStatus)
     }, {
         'name': 'search',
         'description': '名称搜索过滤'
@@ -344,8 +343,10 @@ class ProjectViewSet(ViewSet):
         user = request.user
         query = dict()
         user.role > 0 and query.update(user=user)  # 管理员获取全量
-        status and query.update(status=status)
-        obj = Project.objects.filter(**query).select_related('user').prefetch_related('attatchment').order_by('-updated')
+        status = [x['value'] for x in const.StatusInRole.get(user.group.name, [])]
+        if 'status' in kwargs:
+            status = set(status + kwargs['status'])
+        obj = Project.objects.filter(status__in=status).filter(**query).select_related('user').prefetch_related('attatchment').order_by('-updated')
         if search:
             obj = obj.filter(name__contains=search)
         return self.result_class(data=obj)(serialize=True)
@@ -411,8 +412,7 @@ class ProjectViewSet(ViewSet):
         'replace': 'obj'
     }, {
         'name': 'status',
-        'method': V.order_status,
-        'description': ("项目状态", ) + const.ORDER_STATUS
+        **V.enum(const.ProjectStatus)
     }, {
         'name': 'name',
         'description': '项目名称',
