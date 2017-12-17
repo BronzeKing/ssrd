@@ -342,7 +342,7 @@ class ProjectViewSet(ViewSet):
 
         user = request.user
         query = dict()
-        user.role > 0 and query.update(user=user)  # 管理员获取全量
+        user.group.type and user.role > 0 and query.update(user=user)  # 内部员工获取全量项目
         status = [x['value'] for x in const.StatusInRole.get(user.group.name, [])]
         if 'status' in kwargs:
             status = set(status + kwargs['status'])

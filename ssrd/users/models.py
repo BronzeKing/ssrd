@@ -25,6 +25,10 @@ class Group(models.Model):
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
+    @property
+    def type(self):
+        return self.name == '客户' and 1 or 0
+
     def __str__(self):
         return "<{}: {}>".format(self.name, self.created)
 
