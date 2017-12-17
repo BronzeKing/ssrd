@@ -15,11 +15,11 @@ GENDER = dict(const.GENDER)
 
 
 class Valid(_Valid):
-
     def documents(self, obj):
         if not isinstance(obj, list):
             obj = []
-        obj = [x.id for x in obj if hasattr(x, 'id')] or [x for x in obj if str(x).isdigit()]
+        obj = [x.id for x in obj
+               if hasattr(x, 'id')] or [x for x in obj if str(x).isdigit()]
         return users.Documents.objects.filter(id__in=obj)
 
     def document(self, pk):
@@ -221,19 +221,16 @@ class Valid(_Valid):
         if len(data) < 100:
             return data
 
-    def make(self, map):
-        map = dict(map)
-        reverseMap = {y: x for x, y in map.items()}
+    def enum(self, map):
+        map = {str(x): str(y) for x, y in map}
+        reverseMap = {str(y): x for x, y in map.items()}
+
         def inner(data):
-            return map.get(data) or reverseMap.get(data)
+            return (map.get(data) and data) or reverseMap.get(data)
+
         return dict(method=inner, description=map)
 
-    def enum(self, map):
-        map = dict(map)
-        reverseMap = {y: x for x, y in map.items()}
-        def inner(data):
-            return map.get(data) or reverseMap.get(data)
-        return dict(method=inner, description=map)
+    make = enum
 
 
 V = MethodProxy(Valid)

@@ -815,6 +815,7 @@ class FAQsViewSet(ViewSet):
         获取常见问题
         """
         return self.result_class(data=obj)(serialize=True)
+
 class NewsViewSet(ViewSet):
     """
     最新公告
@@ -826,7 +827,7 @@ class NewsViewSet(ViewSet):
         'description': '搜索',
     }, {
         'name': 'type',
-        **V.make(const.NEWS)
+        **V.enum(const.NEWS)
     }])
     def list(self, request, type=None, search=None, **kwargs):
         """获取新闻公告"""
@@ -846,7 +847,7 @@ class NewsViewSet(ViewSet):
         'description': '内容',
     }, {
         'name': 'type',
-        **V.make(const.NEWS)
+        **V.enum(const.NEWS)
     }])
     def create(self, request, **kwargs):
         """
@@ -965,9 +966,8 @@ class DocumentsViewSet(ViewSet):
 
     @para_ok_or_400([{
         'name': 'source',
-        'description': dict(const.SOURCES, description='来源'),
-        'method': lambda x: int(x) in dict(const.SOURCES) and (x == -1 and '' or str(x)),
-        'required': True
+        'required': True,
+        **V.enum(const.SOURCES)
     }, {
         'name': 'search',
         'description': '搜索',
@@ -1011,12 +1011,6 @@ class DocumentsViewSet(ViewSet):
     }, {
         'name': 'source',
         'description': dict(const.SOURCES, description='来源'),
-    }, {
-        'name': 'file',
-        'description': '文件',
-        'type': 'file',
-        'method': V.file,
-        'required': True
     }])
     def update(self, request, obj, **kwargs):
         """更新文档"""
