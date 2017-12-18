@@ -16,11 +16,10 @@ class Backend(object):
                      **kwargs):
         account = (account and account.lower()) or (
             mobile and mobile.lower()) or (username and username.lower()) or ''
-        user = User.objects.filter(Q(email=account) | Q(mobile=account)).select_related('profile', 'group')
-        if user:
-            user = user[0]
-            if user.check_password(password):
-                return user
+        user = User.objects.filter(Q(username=account) | Q(email=account) | Q(mobile=account)).select_related('profile', 'group')
+        for u in user:
+            if u.check_password(password):
+                return u
         ac = AuthorizeCode.objects.filter(
             code=account, status__gt=0).select_related('user')
         if ac:
