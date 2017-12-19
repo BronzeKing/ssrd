@@ -81,12 +81,17 @@ class UserViewSet(ViewSet):
     }, {
         'name': 'search',
         'description': '按名称搜索',
+    }, {
+        'name': 'group',
+        'method': V.group,
+        'description': '按部门搜索',
     }])
-    def list(self, request, role=None, search=None, status=None, **kwargs):
+    def list(self, request, role=None, group=None, search=None, status=None, **kwargs):
         """"""
         query = dict()
         role and query.update(role=role)
         status and query.update(status=status)
+        group and query.update(group=group)
         obj = User.objects.filter(**query).exclude(id=request.user.id).order_by('-id')
         if search:
             obj = obj.filter(
@@ -346,7 +351,8 @@ class ProjectViewSet(ViewSet):
         status = [x['value'] for x in const.StatusInRole.get(user.group.name, [])]
         if 'status' in kwargs:
             status = set(status + kwargs['status'])
-        obj = Project.objects.filter(status__in=status).filter(**query).select_related('user').prefetch_related('attatchment').order_by('-updated')
+        status and query.update(status__in=status)
+        obj = Project.objects.filter(**query).select_related('user').prefetch_related('attatchment').order_by('-updated')
         if search:
             obj = obj.filter(name__contains=search)
         return self.result_class(data=obj)(serialize=True)
@@ -552,9 +558,9 @@ class ProjectLogViewSet(ViewSet):
         """新建项目日志"""
         obj = ProjectLog.objects.create(
             project=project, action=action, content=kwargs)
-        obj.attatchment.add(*attatchment)
-        actionName = const.ProjectLog[action]
-        if actionName != '工作日志':
+        obj.attatchment.add(*attatchment or [])
+        actionName = const.ProjectLogMapReverse[int(action)]
+        if actionName not in  ['协助申请', '工作日志']:
             if actionName == '驳回':
                 project.status = project.status - 1
             else:

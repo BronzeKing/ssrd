@@ -7,7 +7,7 @@ ROLES = ((0, '管理员'), (1, '经理'), (2, '成员'))
 STATUS = ((-1, "全部"), (0, "停用"), (1, "启用"))
 ProjectStatus = (
     (1, '下单'),
-    (2, '转发'),
+    (2, '转发'),  # 转发已经完成
     (3, '设计报价'),
     (4, '审核'),  # 领导审核
     (5, '审核'),  # 客户签字
@@ -21,44 +21,40 @@ ProjectStatus = (
 # 部门的项目权限
 StatusByRole = {'1':
     {
-        'group': ['客户', '商务部', '管理员']
+        'group': ['商务部']
     },
     '2':
     {
-        'group': ['商务部', '管理员']
+        'group': ['设计部']
     },
     '3':
     {
-        'group': ['设计部', '管理员']
+        'group': ['设计部']
     },
     '4':
     {
-        'group': ['设计部', '管理员']
+        'group': ['管理员']
     },
     '5':
     {
-        'group': ['客户', '管理员']
+        'group': ['商务部']
     },
     '6':
     {
-        'group': ['商务部', '管理员']
+        'group': ['仓库']
     },
     '7':
     {
-        'group': ['仓库', '管理员']
+        'group': ['工程部']
     },
     '8':
     {
-        'group': ['工程部', '管理员']
+        'group': []
     },
     '9':
     {
-        'group': ['客户', '管理员']
-    },
-    '0':
-    {
-        'group': ['客户', '商务部', '管理员']
-    },
+        'group': ['商务部', '管理员']
+    }
 }
 projectStatus = dict(ProjectStatus) # 0: '下单'
 projectStatusReverse = {y: x for x, y in ProjectStatus} #  '下单': 0
@@ -92,8 +88,10 @@ MESSAGE = ((0, '全部消息'), )
 NEWS = ((0, '全部新闻'), (4, '首页公告'), (1, '公司新闻'), (2, '公益咨询'), (3, '咨询文章'))
 
 ProjectLog = ((1, '签字'), (2, '审核'), (3, '协助申请'), (4, '工作日志'), (5, '设计报价'),
-              (6, '发货'), (7, '驳回'))
+              (6, '发货'), (7, '驳回'), (8, '转发'))
+
 ProjectLogMap = {y: x for (x, y) in ProjectLog}
+ProjectLogMapReverse = {x: y for (x, y) in ProjectLog}
 
 ProjectType = (('create', '新建项目'), ('maintain', '故障维护'), ('remove', '迁移、拆除'),
                ('exhibition', '展会协助'))
