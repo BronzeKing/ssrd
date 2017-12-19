@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.conf import settings
+from ssrd.users.models import User
 from ssrd import const
 
 ProjectType = dict(const.ProjectType)
@@ -25,11 +26,21 @@ class ProjectSerializer(serializers.BaseSerializer):
             linkman=o.linkman,
             budget=o.budget,
             address=o.address,
-            attatchment=[dict(name=x.name, url=x.file.url) for x in o.attatchment.all()],
+            attatchment=[
+                dict(
+                    name=x.name, url=x.file.url) for x in o.attatchment.all()
+            ],
             company=o.company,
             created=o.created,
             updated=o.updated,
-            user=dict(username=o.user.username, id=o.user.id))
+            user=dict(
+                username=o.user.username, id=o.user.id))
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        exclude = ['password']
+        model = User
 
 
 def modelFactory(Model, extra, dep):

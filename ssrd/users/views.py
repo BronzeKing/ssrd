@@ -8,7 +8,7 @@ from django.core.files import File
 
 from ssrd import const
 from ssrd.contrib import APIView, UnAuthView, V, ViewSet
-from ssrd.contrib.serializer import Serializer, ProjectSerializer
+from ssrd.contrib.serializer import Serializer, ProjectSerializer, UserSerializer
 from ssrd.users import models as m
 
 from .models import AuthorizeCode, Collected, Invitation, Message, Profile, Project, ProjectGroup, User, ProjectLog, Documents
@@ -62,14 +62,14 @@ def post(self,
 
 
 class UserView(UnAuthView):
-    serializer_class = Serializer(User)
+    serializer_class = UserSerializer
 
     post = post
     post.__doc__ = '新建用户'
 
 
 class UserViewSet(ViewSet):
-    serializer_class = Serializer(User)
+    serializer_class = UserSerializer
     permission_classes = (IsAuthenticated, )
 
     @para_ok_or_400([{

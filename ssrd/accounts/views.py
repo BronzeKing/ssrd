@@ -4,7 +4,7 @@ from paraer import para_ok_or_400
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.views import ObtainJSONWebToken
 
-from ssrd.contrib.serializer import Serializer
+from ssrd.contrib.serializer import Serializer, UserSerializer
 from ssrd.contrib import APIView, V, UnAuthView, Result
 from ssrd.users.models import User, Invitation, Profile, Group
 from ssrd import const
@@ -37,7 +37,7 @@ class LoginView(ObtainJSONWebToken):
         user = request.user
         if not user.is_authenticated:
             return self.result_class(data=dict(url='login'))()
-        data = Serializer(User)(user).data
+        data = UserSerializer(user).data
         profile = Serializer(Profile)(user.profile).data
         verified = {'email': False, 'mobile': False}
         verified.update({x.Type: x.verified for x in user.credentials.all()})
@@ -174,7 +174,7 @@ class CredentialView(APIView):
 
 
 class PasswordChangeView(APIView):
-    serializer_class = Serializer(User)
+    serializer_class = UserSerializer
     permission_classes = (IsAuthenticated, )
 
     @para_ok_or_400([{
