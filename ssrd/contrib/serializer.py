@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.conf import settings
-from ssrd.users.models import User
+from ssrd.users.models import User, Group
 from ssrd import const
 
 ProjectType = dict(const.ProjectType)
@@ -36,8 +36,14 @@ class ProjectSerializer(serializers.BaseSerializer):
             user=dict(
                 username=o.user.username, id=o.user.id))
 
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        exclude = []
 
 class UserSerializer(serializers.ModelSerializer):
+    group = GroupSerializer()
+
     class Meta:
         exclude = ['password']
         model = User
