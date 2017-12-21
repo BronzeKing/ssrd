@@ -19,13 +19,6 @@ ProjectStatus = (
     (0, '终止')  # 项目终止结束
 )
 
-class Step(object):
-    def __init__(self, step):
-        self.step = step
-
-    def ok(self, group, role):
-        pass
-
 # 部门的项目权限
 StatusByRole = {'1':
     {

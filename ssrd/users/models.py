@@ -351,3 +351,7 @@ class Documents(models.Model):
         files = [File(x) for x in files]
         return cls.objects.bulk_create(
             [cls(file=x, name=x.name) for x in files])
+
+
+class Audit(models.Model):
+    steps = JSONField('审核步骤')  # [15, 24]  存放userId
