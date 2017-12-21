@@ -337,10 +337,14 @@ class ProjectViewSet(ViewSet):
         'name': 'status',
         **V.enum(const.ProjectStatus)
     }, {
+        'name': 'group',
+        'method': V.projectGroup,
+        'description': '项目组ID'
+    }, {
         'name': 'search',
         'description': '名称搜索过滤'
     }])
-    def list(self, request, status=None, search=None, **kwargs):
+    def list(self, request, status=None, group=None, search=None, **kwargs):
         """
         获取受登录用户有权限的项目
         """
@@ -352,6 +356,7 @@ class ProjectViewSet(ViewSet):
         if 'status' in kwargs:
             status = set(status + kwargs['status'])
         status and query.update(status__in=status)
+        group and query.update(group=group)
         obj = Project.objects.filter(**query).select_related('user').prefetch_related('attatchment').order_by('-updated')
         if search:
             obj = obj.filter(name__contains=search)

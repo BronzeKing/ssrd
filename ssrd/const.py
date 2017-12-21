@@ -1,4 +1,5 @@
 import re
+from enum import Enum
 RE_EMAIL = re.compile('..*@.*\..*')
 RE_NAME = re.compile(
     u"^[ \u4e00-\u9fa5_＿ａ-ｚＡ-Ｚa-zA-Z0-9０-９\`\~\!\@\#\$\%\^\&()\-\_\=\+\[\{\]\}\',.·￣！＠＃￥％……＆×（）－——＝＋【｛】｝、｜；：「」『』‘’”“，《。》、？～＄＾＊＿]+$"
@@ -17,6 +18,13 @@ ProjectStatus = (
     (9, '签字'),  # 客户签字确认
     (0, '终止')  # 项目终止结束
 )
+
+class Step(object):
+    def __init__(self, step):
+        self.step = step
+
+    def ok(self, group, role):
+        pass
 
 # 部门的项目权限
 StatusByRole = {'1':
