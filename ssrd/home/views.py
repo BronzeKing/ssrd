@@ -277,9 +277,9 @@ class RecruitmentViewSet(ViewSet):
         obj = Recruitment.objects.all()
         if search:
             obj = obj.filter(
-                Q(name__contains=search) | Q(salary__contains=search) |
-                Q(jobDetail__contains=search) |
-                Q(jobResponsibilities__contains=search))
+                Q(name__contains=search) | Q(salary__contains=search)
+                | Q(jobDetail__contains=search)
+                | Q(jobResponsibilities__contains=search))
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([
@@ -371,12 +371,14 @@ class RecruitmentViewSet(ViewSet):
     def retrieve(self, request, obj=None, **kwargs):
         return self.result_class(data=obj)(serialize=True)
 
+
 def categoryTree(obj, action, lower):
     data = dict(id=obj.id, name=obj.name)
     category_set = obj.category_set.all().prefetch_related('category_set')
     data['sub'] = [categoryTree(x, action, lower) for x in category_set]
     action == 'low' and not data['sub'] and lower.append(data)
     return data
+
 
 class CategoryViewSet(ViewSet):
     serializer_class = Serializer(m.Category, dep=5)
@@ -386,14 +388,17 @@ class CategoryViewSet(ViewSet):
         'description': '搜索字段'
     }, {
         'name': 'action',
-        'description': {'low': '返回最低级的目录', 'top': '返回顶级目录'}
+        'description': {
+            'low': '返回最低级的目录',
+            'top': '返回顶级目录'
+        }
     }])
     def list(self, request, search=None, action=None, **kwargs):
         """获取产品目录列表"""
-        obj = m.Category.objects.filter(parent__isnull=True).prefetch_related('category_set').order_by('-updated')
+        obj = m.Category.objects.filter(parent__isnull=True).prefetch_related(
+            'category_set').order_by('-updated')
         if search:
-            obj = obj.filter(
-                Q(name__contains=search))
+            obj = obj.filter(Q(name__contains=search))
         lower = []
         data = [categoryTree(x, action, lower) for x in obj]
         if action == 'low':
@@ -816,6 +821,7 @@ class FAQsViewSet(ViewSet):
         """
         return self.result_class(data=obj)(serialize=True)
 
+
 class NewsViewSet(ViewSet):
     """
     最新公告
@@ -1068,6 +1074,7 @@ class SystemCaseViewSet(ViewSet):
         """
         return self.result_class(data=obj)(serialize=True)
 
+
 class TerminalViewSet(ViewSet):
     """
     远程终端访问平台
@@ -1078,6 +1085,7 @@ class TerminalViewSet(ViewSet):
         """获取案例展示"""
         obj = m.Terminal.objects.all()
         return self.result_class(data=obj)(serialize=True)
+
 
 class EnvView(APIView):
     def get(self, request):
@@ -1101,11 +1109,11 @@ class EnvView(APIView):
         projectLog = {y: x for x, y in const.ProjectLog}
         projectLogReverse = {x: y for x, y in const.ProjectLog}
         projectStatus = {y: x for x, y in const.ProjectStatus}
-        projectStatusReverse= {x: y for x, y in const.ProjectStatus}
+        projectStatusReverse = {x: y for x, y in const.ProjectStatus}
 
         roles = {y: x for x, y in const.ROLES}
         rolesReverse = {x: y for x, y in const.ROLES}
-        
+
         news = {y: x for x, y in const.NEWS}
         data = dict(
             oauth=oauth,

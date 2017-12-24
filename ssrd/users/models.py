@@ -353,5 +353,5 @@ class Documents(models.Model):
             [cls(file=x, name=x.name) for x in files])
 
 
-class Audit(models.Model):
+class Config(models.Model):
     steps = JSONField('审核步骤')  # [15, 24]  存放userId

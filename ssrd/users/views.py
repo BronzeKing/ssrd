@@ -10,6 +10,7 @@ from ssrd import const
 from ssrd.contrib import APIView, UnAuthView, V, ViewSet
 from ssrd.contrib.serializer import Serializer, ProjectSerializer, UserSerializer
 from ssrd.users import models as m
+from ssrd.users.steps import Step
 
 from .models import AuthorizeCode, Collected, Invitation, Message, Profile, Project, ProjectGroup, User, ProjectLog, Documents
 
@@ -352,7 +353,7 @@ class ProjectViewSet(ViewSet):
         user = request.user
         query = dict()
         user.group.type and user.role > 0 and query.update(user=user)  # 内部员工获取全量项目
-        status = [x['value'] for x in const.StatusInRole.get(user.group.name, [])]
+        status = [x.step for x in Step.steps(user)]
         if 'status' in kwargs:
             status = set(status + kwargs['status'])
         status and query.update(status__in=status)
@@ -564,13 +565,8 @@ class ProjectLogViewSet(ViewSet):
         obj = ProjectLog.objects.create(
             project=project, action=action, content=kwargs)
         obj.attatchment.add(*attatchment or [])
-        actionName = const.ProjectLogMapReverse[int(action)]
-        if actionName not in  ['协助申请', '工作日志']:
-            if actionName == '驳回':
-                project.status = project.status - 1
-            else:
-                project.status = project.status + 1
-            project.save()
+        project.status = Step(project.status)(request.user, action).step
+        project.save()
         return self.result_class(data=obj)(serialize=True)
 
 
