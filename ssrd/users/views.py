@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+
 from django.views.generic import RedirectView
 from django.db.models import Q
 from paraer import para_ok_or_400, perm_ok_or_403
@@ -564,7 +565,7 @@ class ProjectLogViewSet(ViewSet):
         """新建项目日志"""
         obj = ProjectLog.objects.create(
             project=project, action=action, content=kwargs)
-        obj.attatchment.add(*attatchment or [])
+        obj.attatchment.add(*(attatchment or []))
         project.status = Step(project.status)(request.user, action).step
         project.save()
         return self.result_class(data=obj)(serialize=True)

@@ -1,4 +1,7 @@
 ### OSX ###
+.mypy_cache
+.ropeproject
+
 .DS_Store
 .AppleDouble
 .LSOverride
