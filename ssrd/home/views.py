@@ -1086,6 +1086,26 @@ class TerminalViewSet(ViewSet):
         obj = m.Terminal.objects.all()
         return self.result_class(data=obj)(serialize=True)
 
+class ExhibitionViewSet(ViewSet):
+    """
+    展会协助
+    """
+    serializer_class = Serializer(m.Exhibition)
+
+    @para_ok_or_400([{
+        'name': 'type',
+        'description': '类型 tag?',
+    }])
+    def list(self, request, type=None, **kwargs):
+        """获取案例展示"""
+        obj = m.Exhibition.objects.all()
+        if not type:
+            return self.result_class(data=obj)(serialize=True)
+        obj = m.ExhibitionTag.objects.all()
+        obj = Serializer(m.ExhibitionTag)(obj, many=True).data
+        return self.result_class(data=obj)(serialize=False)
+
+
 
 class EnvView(APIView):
     def get(self, request):

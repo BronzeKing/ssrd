@@ -25,6 +25,7 @@ router.register(r'systems', views.SystemViewSet, base_name='systems')
 router.register(r'news', views.NewsViewSet, base_name='news')
 router.register(r'faqs', views.FAQsViewSet, base_name='faqs')
 router.register(r'terminals', views.TerminalViewSet, base_name='terminals')
+router.register(r'exhibitions', views.ExhibitionViewSet, base_name='exhibitions')
 router.register(
     r'systemCases',
     views.SystemCaseViewSet,

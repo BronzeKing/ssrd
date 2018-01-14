@@ -1,0 +1,474 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "85c075b98696512237cd82fa4d39bf89113793de175d8978b50dbb068e7e3268"
+        },
+        "host-environment-markers": {
+            "implementation_name": "pypy",
+            "implementation_version": "3.5.3",
+            "os_name": "posix",
+            "platform_machine": "x86_64",
+            "platform_python_implementation": "PyPy",
+            "platform_release": "17.3.0",
+            "platform_system": "Darwin",
+            "platform_version": "Darwin Kernel Version 17.3.0: Thu Nov  9 18:09:22 PST 2017; root:xnu-4570.31.3~1/RELEASE_X86_64",
+            "python_full_version": "3.5.3",
+            "python_version": "3.5",
+            "sys_platform": "darwin"
+        },
+        "pipfile-spec": 6,
+        "requires": {},
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.mirrors.ustc.edu.cn/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "alabaster": {
+            "hashes": [],
+            "version": "==0.7.10"
+        },
+        "argon2-cffi": {
+            "hashes": [],
+            "version": "==16.3.0"
+        },
+        "attrs": {
+            "hashes": [],
+            "version": "==17.4.0"
+        },
+        "awesome-slugify": {
+            "hashes": [],
+            "version": "==1.6.5"
+        },
+        "b64c3d9": {
+            "file": "https://github.com/Hypers-HFA/paraer/archive/develop.zip"
+        },
+        "babel": {
+            "hashes": [],
+            "version": "==2.5.1"
+        },
+        "certifi": {
+            "hashes": [],
+            "version": "==2017.11.5"
+        },
+        "cffi": {
+            "hashes": [],
+            "version": "==1.11.3"
+        },
+        "chardet": {
+            "hashes": [],
+            "version": "==3.0.4"
+        },
+        "coreapi": {
+            "hashes": [],
+            "version": "==2.3.3"
+        },
+        "coreschema": {
+            "hashes": [],
+            "version": "==0.0.4"
+        },
+        "coverage": {
+            "hashes": [],
+            "version": "==4.4.1"
+        },
+        "defusedxml": {
+            "hashes": [],
+            "version": "==0.5.0"
+        },
+        "django": {
+            "hashes": [],
+            "version": "==2.0.1"
+        },
+        "django-allauth": {
+            "hashes": [],
+            "version": "==0.32.0"
+        },
+        "django-braces": {
+            "hashes": [],
+            "version": "==1.11.0"
+        },
+        "django-cors-headers": {
+            "hashes": [],
+            "version": "==2.1.0"
+        },
+        "django-coverage-plugin": {
+            "hashes": [],
+            "version": "==1.5.0"
+        },
+        "django-crispy-forms": {
+            "hashes": [],
+            "version": "==1.6.1"
+        },
+        "django-debug-toolbar": {
+            "hashes": [],
+            "version": "==1.8"
+        },
+        "django-environ": {
+            "hashes": [],
+            "version": "==0.4.3"
+        },
+        "django-model-utils": {
+            "hashes": [],
+            "version": "==3.0.0"
+        },
+        "django-qiniu-storage": {
+            "hashes": [],
+            "version": "==2.3.1"
+        },
+        "django-redis": {
+            "hashes": [],
+            "version": "==4.8.0"
+        },
+        "django-redis-sessions": {
+            "hashes": [],
+            "version": "==0.3"
+        },
+        "django-rest-swagger": {
+            "hashes": [],
+            "version": "==2.1.2"
+        },
+        "django-storages-redux": {
+            "hashes": [],
+            "version": "==1.3.3"
+        },
+        "django-test-plus": {
+            "hashes": [],
+            "version": "==1.0.18"
+        },
+        "djangorestframework": {
+            "hashes": [],
+            "version": "==3.7.7"
+        },
+        "djangorestframework-jwt": {
+            "hashes": [],
+            "version": "==1.11.0"
+        },
+        "docutils": {
+            "hashes": [],
+            "version": "==0.14"
+        },
+        "factory-boy": {
+            "hashes": [],
+            "version": "==2.8.1"
+        },
+        "faker": {
+            "hashes": [],
+            "version": "==0.8.9"
+        },
+        "flake8": {
+            "hashes": [],
+            "version": "==3.5.0"
+        },
+        "gunicorn": {
+            "hashes": [],
+            "version": "==19.7.1"
+        },
+        "idna": {
+            "hashes": [],
+            "version": "==2.6"
+        },
+        "imagesize": {
+            "hashes": [],
+            "version": "==0.7.1"
+        },
+        "itypes": {
+            "hashes": [],
+            "version": "==1.1.0"
+        },
+        "jinja2": {
+            "hashes": [],
+            "version": "==2.10"
+        },
+        "jsonfield": {
+            "hashes": [],
+            "version": "==2.0.2"
+        },
+        "markupsafe": {
+            "hashes": [],
+            "version": "==1.0"
+        },
+        "mccabe": {
+            "hashes": [],
+            "version": "==0.6.1"
+        },
+        "oauthlib": {
+            "hashes": [],
+            "version": "==2.0.6"
+        },
+        "olefile": {
+            "hashes": [],
+            "version": "==0.44"
+        },
+        "openapi-codec": {
+            "hashes": [],
+            "version": "==1.3.2"
+        },
+        "pillow": {
+            "hashes": [],
+            "version": "==4.2.1"
+        },
+        "pluggy": {
+            "hashes": [],
+            "version": "==0.6.0"
+        },
+        "psycopg2cffi": {
+            "hashes": [],
+            "version": "==2.7.7"
+        },
+        "py": {
+            "hashes": [],
+            "version": "==1.5.2"
+        },
+        "pycodestyle": {
+            "hashes": [],
+            "version": "==2.3.1"
+        },
+        "pycparser": {
+            "hashes": [],
+            "version": "==2.18"
+        },
+        "pyflakes": {
+            "hashes": [],
+            "version": "==1.6.0"
+        },
+        "pygments": {
+            "hashes": [],
+            "version": "==2.2.0"
+        },
+        "pyjwt": {
+            "hashes": [],
+            "version": "==1.5.3"
+        },
+        "pytest": {
+            "hashes": [],
+            "version": "==3.3.2"
+        },
+        "pytest-django": {
+            "hashes": [],
+            "version": "==3.1.2"
+        },
+        "pytest-sugar": {
+            "hashes": [],
+            "version": "==0.8.0"
+        },
+        "python-dateutil": {
+            "hashes": [],
+            "version": "==2.6.1"
+        },
+        "python-social-auth": {
+            "hashes": [],
+            "version": "==0.3.6"
+        },
+        "python3-openid": {
+            "hashes": [],
+            "version": "==3.1.0"
+        },
+        "pytz": {
+            "hashes": [],
+            "version": "==2017.2"
+        },
+        "qiniu": {
+            "hashes": [],
+            "version": "==7.2.0"
+        },
+        "raven": {
+            "hashes": [],
+            "version": "==6.4.0"
+        },
+        "redis": {
+            "hashes": [],
+            "version": "==2.10.6"
+        },
+        "regex": {
+            "hashes": [],
+            "version": "==2018.1.10"
+        },
+        "requests": {
+            "hashes": [],
+            "version": "==2.18.4"
+        },
+        "requests-oauthlib": {
+            "hashes": [],
+            "version": "==0.8.0"
+        },
+        "simplejson": {
+            "hashes": [],
+            "version": "==3.13.2"
+        },
+        "six": {
+            "hashes": [],
+            "version": "==1.11.0"
+        },
+        "snowballstemmer": {
+            "hashes": [],
+            "version": "==1.2.1"
+        },
+        "social-auth-app-django": {
+            "hashes": [],
+            "version": "==2.1.0"
+        },
+        "social-auth-core": {
+            "hashes": [],
+            "version": "==1.6.0"
+        },
+        "sphinx": {
+            "hashes": [],
+            "version": "==1.6.3"
+        },
+        "sphinxcontrib-websupport": {
+            "hashes": [],
+            "version": "==1.0.1"
+        },
+        "sqlparse": {
+            "hashes": [],
+            "version": "==0.2.4"
+        },
+        "termcolor": {
+            "hashes": [],
+            "version": "==1.1.0"
+        },
+        "text-unidecode": {
+            "hashes": [],
+            "version": "==1.1"
+        },
+        "unidecode": {
+            "hashes": [],
+            "version": "==0.4.21"
+        },
+        "uritemplate": {
+            "hashes": [],
+            "version": "==3.0.0"
+        },
+        "urllib3": {
+            "hashes": [],
+            "version": "==1.22"
+        },
+        "werkzeug": {
+            "hashes": [],
+            "version": "==0.12.2"
+        }
+    },
+    "develop": {
+        "appnope": {
+            "hashes": [],
+            "markers": "sys_platform == 'darwin'",
+            "version": "==0.1.0"
+        },
+        "certifi": {
+            "hashes": [],
+            "version": "==2017.11.5"
+        },
+        "chardet": {
+            "hashes": [],
+            "version": "==3.0.4"
+        },
+        "configobj": {
+            "hashes": [],
+            "version": "==5.0.6"
+        },
+        "decorator": {
+            "hashes": [],
+            "version": "==4.1.2"
+        },
+        "django-extensions": {
+            "hashes": [],
+            "version": "==1.8.1"
+        },
+        "flake8": {
+            "hashes": [],
+            "version": "==3.5.0"
+        },
+        "idna": {
+            "hashes": [],
+            "version": "==2.6"
+        },
+        "ipdb": {
+            "hashes": [],
+            "version": "==0.10.3"
+        },
+        "ipython": {
+            "hashes": [],
+            "version": "==6.2.1"
+        },
+        "ipython-genutils": {
+            "hashes": [],
+            "version": "==0.2.0"
+        },
+        "jedi": {
+            "hashes": [],
+            "version": "==0.11.1"
+        },
+        "mccabe": {
+            "hashes": [],
+            "version": "==0.6.1"
+        },
+        "parso": {
+            "hashes": [],
+            "version": "==0.1.1"
+        },
+        "pexpect": {
+            "hashes": [],
+            "markers": "sys_platform != 'win32'",
+            "version": "==4.3.1"
+        },
+        "pickleshare": {
+            "hashes": [],
+            "version": "==0.7.4"
+        },
+        "prompt-toolkit": {
+            "hashes": [],
+            "version": "==1.0.15"
+        },
+        "ptyprocess": {
+            "hashes": [],
+            "version": "==0.5.2"
+        },
+        "pycodestyle": {
+            "hashes": [],
+            "version": "==2.3.1"
+        },
+        "pyflakes": {
+            "hashes": [],
+            "version": "==1.6.0"
+        },
+        "pygments": {
+            "hashes": [],
+            "version": "==2.2.0"
+        },
+        "repo": {
+            "hashes": [],
+            "version": "==0.1.0"
+        },
+        "requests": {
+            "hashes": [],
+            "version": "==2.18.4"
+        },
+        "simplegeneric": {
+            "hashes": [],
+            "version": "==0.8.1"
+        },
+        "six": {
+            "hashes": [],
+            "version": "==1.11.0"
+        },
+        "traitlets": {
+            "hashes": [],
+            "version": "==4.3.2"
+        },
+        "urllib3": {
+            "hashes": [],
+            "version": "==1.22"
+        },
+        "wcwidth": {
+            "hashes": [],
+            "version": "==0.1.7"
+        },
+        "yapf": {
+            "hashes": [],
+            "version": "==0.20.0"
+        }
+    }
+}
