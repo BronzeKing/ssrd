@@ -24,14 +24,16 @@ def import_module(dotted_path):
 
 def main():
     path, args = parser.path, parser.args or []
+    hasSetUp = False
     if not os.environ.get('VIRTUAL_ENV'):
         print('\n没有进入虚拟环境\n')
     if 'server' not in path:
         try:
             from django import setup
-            setup()
+            hasSetUp = True
         except ImportError:
             pass
+    hasSetUp and setup()
     func = import_module(path)
     func(*args)
 

@@ -263,3 +263,32 @@ class Terminal(models.Model):
         return "<Terminal: {}   {}>".format(self.name, self.link)
 
     __repr__ = __str__
+
+
+
+class ExhibitionTag(models.Model):
+    name = models.CharField("名称", max_length=255, unique=True)
+    created = models.DateField("项目时间", default='2017-09-15')
+    updated = models.DateTimeField("更新时间", auto_now=True)
+    picture = models.ImageField('背景图片')
+
+    def __str__(self):
+        return "<ExhibitionTag: {}   {}>".format(self.name, self.updated)
+
+    __repr__ = __str__
+
+class Exhibition(models.Model):
+    """
+    展会协助
+    """
+    tag = models.ForeignKey(
+        ExhibitionTag, on_delete=models.CASCADE, verbose_name='展会协助', related_name='exhibitions')
+    picture = models.ImageField('背景图片')
+    name = models.CharField("名称", max_length=255)
+    created = models.DateField("项目时间", default='2017-09-15')
+    updated = models.DateTimeField("更新时间", auto_now=True)
+
+    def __str__(self):
+        return "<Exhibition: {}   {}>".format(self.name, self.tag.name)
+
+    __repr__ = __str__
