@@ -20,7 +20,7 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False
 
     def get_redirect_url(self):
-        return '{}/{}'.format('/users', self.request.user.id)
+        return '{}/{}/profile'.format('/users', self.request.user.id)
 
 
 @para_ok_or_400([{

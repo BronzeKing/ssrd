@@ -47,6 +47,9 @@ DJANGO_APPS = [
     # Admin
     'django.contrib.admin',
 ]
+GRAPHENE = {
+    'SCHEMA': 'app.schema.schema' # Where your Graphene schema lives
+}
 THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
