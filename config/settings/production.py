@@ -57,12 +57,12 @@ ALLOWED_HOSTS = ["*"]
 # END SITE CONFIGURATION
 
 INSTALLED_APPS += [
-    'gunicorn', 'corsheaders', 'raven.contrib.django.raven_compat'
+    'gunicorn', 'corsheaders',
 ]
 MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = ('mum5.cn', '127.0.0.1:3000', 'www.mum5.cn', 'www.szssrd.com', 'szssrd.com')
+CORS_ORIGIN_WHITELIST = ('mum5.cn', '127.0.0.1:3000', 'www.mum5.cn', 'www.szssrd.com', 'szssrd.com', 'devs:8888')
 # STORAGE CONFIGURATION
 # ------------------------------------------------------------------------------
 # Uploaded Media Files
@@ -126,22 +126,6 @@ LOGGING = {
         },
     },
     'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': [
-                'require_debug_false',
-            ],
-            'class': 'django.utils.log.AdminEmailHandler'
-        },
-        'sentry': {
-            'level':
-            'ERROR',  # To capture more than ERROR, change to WARNING, INFO, etc.
-            'class':
-            'raven.contrib.django.raven_compat.handlers.SentryHandler',
-            'tags': {
-                'custom-tag': 'x'
-            },
-        },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
@@ -151,29 +135,16 @@ LOGGING = {
     'loggers': {
         'django.request': {
             'handlers': [
-                'mail_admins',
-            ],
-            'level': 'ERROR',
-            'propagate': True
-        },
-        'raven': {
-            'level': 'ERROR',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-        'sentry.errors': {
-            'level': 'ERROR',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-        'django.security.DisallowedHost': {
-            'level': 'ERROR',
-            'handlers': [
                 'console',
-                'mail_admins',
             ],
+            'level': 'ERROR',
             'propagate': True
-        }
+        },
+        'default': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
     }
 }
 
