@@ -20,7 +20,7 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False
 
     def get_redirect_url(self):
-        return '{}/{}/profile'.format('/users', self.request.user.id)
+        return 'http://devs.cn:8090/#/login?do=token'
 
 
 @para_ok_or_400([{

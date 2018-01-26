@@ -48,7 +48,7 @@ DJANGO_APPS = [
     'django.contrib.admin',
 ]
 GRAPHENE = {
-    'SCHEMA': 'app.schema.schema' # Where your Graphene schema lives
+    'SCHEMA': 'app.schema.schema'  # Where your Graphene schema lives
 }
 THIRD_PARTY_APPS = [
     'rest_framework',
@@ -324,7 +324,7 @@ SOCIALACCOUNT_ADAPTER = 'ssrd.users.adapters.SocialAccountAdapter'
 # Custom user app defaults
 # Select the correct user model
 AUTH_USER_MODEL = 'users.User'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = 'redirect'
 LOGIN_URL = 'login'
 
 # SLUGLIFIER
@@ -342,8 +342,11 @@ REST_FRAMEWORK = {
     "%Y-%m-%d",
     "TIME_FORMAT":
     "%Y-%m-%d %H:%M:%S",
-    'DEFAULT_AUTHENTICATION_CLASSES':
-    ('rest_framework_jwt.authentication.JSONWebTokenAuthentication', )
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    )
 }
 expiration = 12 * 60 * 60
 JWT_AUTH = {
@@ -396,9 +399,7 @@ CREDENTIAL_CONFIRMATION_EXPIRE_DAYS = 3
 CONFIRMATION_COOLDOWN = 3 * 60
 
 REDIS = env.cache('REDIS_URL')
-CACHES = {
-    'default': REDIS
-}
+CACHES = {'default': REDIS}
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 CSRF_COOKIE_HTTPONLY = SESSION_COOKIE_HTTPONLY = False

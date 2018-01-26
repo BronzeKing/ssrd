@@ -2,7 +2,9 @@ from django.contrib import auth
 from django.db.models import Q
 from paraer import para_ok_or_400
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_jwt.views import ObtainJSONWebToken
+from rest_framework.decorators import api_view
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework_jwt.settings import api_settings
 
 from ssrd.contrib.serializer import Serializer, UserSerializer
 from ssrd.contrib import APIView, V, UnAuthView, Result
@@ -10,8 +12,33 @@ from ssrd.users.models import User, Invitation, Profile, Group
 from ssrd import const
 from .models import Credential, Captcha
 
+from django.http import HttpResponse
+import json
 
-class LoginView(ObtainJSONWebToken):
+def jsonResponse(response):
+    response = json.dumps(response)
+    return HttpResponse(response, content_type='application/json')
+
+
+jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+def _tokenFromUser(user):
+    payload = jwt_payload_handler(user)
+    return jwt_encode_handler(payload)
+
+@csrf_exempt
+def tokenFromSession(request):
+    """
+    从session中获取token 用于微信、微博、qq等登录
+    """
+    token = ''
+    if request.user.is_authenticated:
+        token = _tokenFromUser(request.user)
+        auth.logout(request)
+    return jsonResponse(dict(token=token))
+
+class LoginView(APIView):
     authentication_classes = APIView.authentication_classes
     result_class = Result
 
@@ -26,11 +53,15 @@ class LoginView(ObtainJSONWebToken):
         'msg': '请输入密码'
     }])
     def post(self, request, **kwargs):
-        response = super(LoginView, self).post(request, **kwargs)
-        if response.status_code == 400:
+        mobile = kwargs.get('mobile')
+        if not mobile:
+            return self.result_class().error('mobile', '不能为空')()
+        user = auth.authenticate(**kwargs)
+        if not user:
             return self.result_class().error('mobile',
                                              '手机、邮箱、授权码或密码错误')(status=400)
-        return response
+        token = _tokenFromUser(user)
+        return self.result_class().data(dict(token=token))()
 
     def get(self, request):
 
@@ -108,7 +139,12 @@ class RegisterView(UnAuthView):
         return result.data(user)(serialize=True)
 
 
-captchaMap = {"register": "注册", "resetPassword": "重置密码", "changeEmail": "更改邮箱", 'changeMobile': '更改手机'}
+captchaMap = {
+    "register": "注册",
+    "resetPassword": "重置密码",
+    "changeEmail": "更改邮箱",
+    'changeMobile': '更改手机'
+}
 
 
 class CaptchaView(UnAuthView):
