@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.views.generic import RedirectView
 from django.db.models import Q
+from django.conf import settings
 from paraer import para_ok_or_400, perm_ok_or_403
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -20,7 +21,7 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False
 
     def get_redirect_url(self):
-        return 'http://devs.cn:8090/#/login?do=token'
+        return 'http://{}/#/login?do=token'.format(settings.FE_DOMAIN)
 
 
 @para_ok_or_400([{
