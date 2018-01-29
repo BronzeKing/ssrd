@@ -8,6 +8,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 
 from .managers import CredentialManager
+from ssrd.contrib.utils import SmsClient
 from ssrd import const
 
 
@@ -122,8 +123,8 @@ class EmailCaptcha(Captcha):
         Renders an e-mail to `email`.  `template_prefix` identifies the
         e-mail that is to be sent, e.g. "account/email/email_confirmation"
         """
-        subject = render_to_string('email/{0}_subject.txt'.format(template_prefix),
-                                   context)
+        subject = render_to_string(
+            'email/{0}_subject.txt'.format(template_prefix), context)
         # remove superfluous line breaks
         subject = " ".join(subject.splitlines()).strip()
 
@@ -157,7 +158,14 @@ class EmailCaptcha(Captcha):
 
 
 class MobileConfirmation(Captcha):
+    """
+    手机验证
+    """
     name = 'mobile'
 
     def send(self, request, action):
-        pass
+        """
+        发送验证码
+        """
+        mobile = getattr(self.user, self.name)
+        SmsClient.sendCaptcha(mobile, {'code': self.key})
