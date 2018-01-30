@@ -15,6 +15,7 @@ from .models import Credential, Captcha
 from django.http import HttpResponse
 import json
 
+
 def jsonResponse(response):
     response = json.dumps(response)
     return HttpResponse(response, content_type='application/json')
@@ -23,9 +24,11 @@ def jsonResponse(response):
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
+
 def _tokenFromUser(user):
     payload = jwt_payload_handler(user)
     return jwt_encode_handler(payload)
+
 
 @csrf_exempt
 def tokenFromSession(request):
@@ -37,6 +40,7 @@ def tokenFromSession(request):
         token = _tokenFromUser(request.user)
         auth.logout(request)
     return jsonResponse(dict(token=token))
+
 
 class LoginView(APIView):
     authentication_classes = APIView.authentication_classes
@@ -196,7 +200,7 @@ class CredentialView(APIView):
             result.error('email', '请填写邮箱')
             return result()
         Type = mobile and 'mobile' or 'email'
-        if captcha == Captcha.fromUser(request.user, Type):
+        if captcha == Captcha.fromUser(request.user, Type, action='destroy'):
             obj = Credential.objects.add_credential(
                 request, request.user, Type, action=True, confirm=False)
             obj.verified = True

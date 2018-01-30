@@ -59,4 +59,4 @@ djangorestframework-jwt
 python-dateutil
 jsonfield
 flake8
-https://github.com/wilslee/aliyun-sms/archive/v0.0.1.zip
+https://github.com/wilslee/aliyun-sms/archive/master.zip

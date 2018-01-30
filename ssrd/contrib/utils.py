@@ -23,5 +23,5 @@ class SmsClient(BaseClient):
         @phoneNumbers 手机号码 170xxxxxxxx 或[170xxxxxxxx]
         @param 短信模板参数 {'code': 'xxxx'}
         """
-        instance = cls(settings.ALIYUN_ACCESSKEY_ID, settings.ALIYUN_ACCESSKEY_SECRET, region='cn-shanghai')
+        instance = cls(settings.ALIYUN_ACCESSKEY_ID, settings.ALIYUN_ACCESSKEY_SECRET)
         return instance.send_sms(phoneNumbers, settings.ALIYUN_SIGN, settings.ALIYUN_TEMPLATE_CODE, param)

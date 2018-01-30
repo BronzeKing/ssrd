@@ -1,3 +1,5 @@
+import random
+
 from django.core.cache import cache
 from django.template import TemplateDoesNotExist
 from django.core.mail import EmailMessage, EmailMultiAlternatives
@@ -71,22 +73,35 @@ class Credential(models.Model):
         return {x.name: x for x in subclasses}
 
 
+CHARS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+
+
 def get_random_number():
-    return '111111'
+    return ''.join(random.choice(CHARS) for x in range(6))
 
 
 class Captcha(object):
-    def __init__(self, user):
+    def __init__(self, user, action: str = None):
+        """
+        user: User 所属用户
+        action: ['', 'destroy'] 获取验证码或者验证验证码
+        """
         self.user = user
-        self.key = get_random_number()
-        cache.set(
-            self.user.id,
-            self.key,
-            timeout=settings.CREDENTIAL_CONFIRMATION_EXPIRE_DAYS)
+        if not action:
+            self.key = get_random_number()
+            cache.set(
+                self.user.id,
+                self.key,
+                timeout=settings.CREDENTIAL_CONFIRMATION_EXPIRE_DAYS)
+        else:
+            self.key = cache.get(user.id, '')
+            cache.delete(user.id)
 
     @classmethod
-    def fromUser(cls, user, Type):
-        return {x.name: x for x in cls.__subclasses__()}[Type](user)
+    def fromUser(cls, user, Type: str, action: str = ''):
+        return {x.name: x
+                for x in cls.__subclasses__()}[Type](
+                    user, action=action)
 
     @classmethod
     def equal(cls, user, captcha):
@@ -116,7 +131,9 @@ class EmailCaptcha(Captcha):
 
     def send_mail(self, template_prefix, email, context):
         msg = self.render_mail(template_prefix, email, context)
+        print(1)
         msg.send()
+        print(2)
 
     def render_mail(self, template_prefix, email, context):
         """
