@@ -1,6 +1,7 @@
 ### OSX ###
 .mypy_cache
 .ropeproject
+Pipfile.lock
 
 .DS_Store
 .AppleDouble
