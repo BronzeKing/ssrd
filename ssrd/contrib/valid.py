@@ -21,6 +21,10 @@ class Valid(_Valid):
                if hasattr(x, 'id')] or [x for x in obj if str(x).isdigit()]
         return users.Documents.objects.filter(id__in=obj)
 
+    def directory(self, obj):
+        obj = users.Directory.objects.get(id=pk).delete()
+        return obj
+
     def document(self, pk):
         self.msg = "文档不存在"
         return home.Documents.objects.get(pk=pk)

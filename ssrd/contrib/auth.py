@@ -7,8 +7,6 @@ from rest_framework.views import APIView as _APIView
 from rest_framework.compat import coreapi
 from rest_framework.pagination import BasePagination
 from rest_framework.response import Response
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.conf import settings
 
 from paraer import Result as __Result
@@ -166,13 +164,6 @@ class UnAuthView(_APIView):
     @property
     def result_class(self):
         return partial(self.__result_class, serializer=self.serializer_class)
-
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        from ssrd.users.models import Profile, Invitation
-        Profile.objects.get_or_create(user=instance, name=instance.username)
 
 def paraerData(request):
     data = dict(request.GET.items())

@@ -20,6 +20,7 @@ def generate_key(bit=None):
         return binascii.hexlify(os.urandom(20)).decode()
     return binascii.hexlify(os.urandom(20)).decode()[:bit]
 
+
 class Group(models.Model):
     name = models.CharField("名称", max_length=50, unique=True)
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
@@ -78,7 +79,11 @@ class BaseUserManager(models.Manager):
         user.save(using=self._db)
         return user
 
-    def create_user(self, username=None, email=None, password=None, **extra_fields):
+    def create_user(self,
+                    username=None,
+                    email=None,
+                    password=None,
+                    **extra_fields):
         username = username or extra_fields.get('mobile', '')
         return self._create_user(username, email, password, **extra_fields)
 
@@ -87,9 +92,11 @@ def defaultUserGroup():
     obj, ok = Group.objects.get_or_create(name='客户')
     return obj.id
 
+
 def defaultProjectGroup():
     obj, ok = ProjectGroup.objects.get_or_create(name='默认')
     return obj.id
+
 
 class User(AbstractBaseUser):
     email = models.EmailField(_('email address'), blank=True, default='')
@@ -101,14 +108,17 @@ class User(AbstractBaseUser):
           ),
         error_messages={
             'unique': _("A user with that username already exists."),
-        }, )
-    mobile = models.CharField(
-        _("Mobile Phone"), unique=True, max_length=11)
+        },
+    )
+    mobile = models.CharField(_("Mobile Phone"), unique=True, max_length=11)
     role = models.SmallIntegerField("用户权限", choices=const.ROLES, default=2)
     created = models.DateTimeField(_('date joined'), default=timezone.now)
     status = models.SmallIntegerField("状态", choices=const.STATUS, default=1)
     group = models.ForeignKey(
-        'users.Group', default=defaultUserGroup, on_delete=models.SET_DEFAULT, related_name='users')
+        'users.Group',
+        default=defaultUserGroup,
+        on_delete=models.SET_DEFAULT,
+        related_name='users')
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'mobile'
     REQUIRED_FIELDS = []
@@ -135,10 +145,12 @@ class User(AbstractBaseUser):
 
     __repr__ = __str__
 
+
 def avator():
     from django.core.files import File
     avatorPath = str(settings.APPS_DIR) + '/static/images/avator.png'
     return File(open(avatorPath, 'rb'))
+
 
 class Profile(models.Model):
     user = models.OneToOneField(
@@ -202,7 +214,8 @@ class AuthorizeCode(models.Model):
         on_delete=models.CASCADE,
         verbose_name="所属用户",
         related_name="authorizecodes")
-    code = models.CharField("授权码", max_length=40, default=partial(generate_key, bit=6))
+    code = models.CharField(
+        "授权码", max_length=40, default=partial(generate_key, bit=6))
     status = models.SmallIntegerField("授权码状态", choices=const.STATUS, default=1)
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
@@ -228,8 +241,11 @@ class Invitation(models.Model):
         on_delete=models.CASCADE,
         verbose_name="邀请码所属用户",
         related_name="invitations")
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
-        related_name="invited", verbose_name="受邀用户")
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="invited",
+        verbose_name="受邀用户")
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
 
@@ -237,6 +253,7 @@ class Invitation(models.Model):
         return "<Invitation: {}, {}, {}>".format(self.creator, self.user)
 
     __repr__ = __str__
+
 
 class ProjectGroup(models.Model):
     name = models.CharField("项目组", max_length=50)
@@ -351,10 +368,36 @@ class Message(models.Model):
     __repr__ = __str__
 
 
+class Directory(models.Model):
+    name = models.CharField("文件名", max_length=255, default='')
+    parent = models.ForeignKey(
+        "self", null=True, blank=True, on_delete=models.CASCADE, related_name='dirs')
+    project = models.ForeignKey("users.Project", on_delete=models.CASCADE)
+    updated = models.DateTimeField("更新时间", auto_now=True)
+
+    def __str__(self):
+        return "<Directory: {}   {}>".format(self.project, self.name)
+
+    __repr__ = __str__
+
+
+class Media(models.Model):
+    type = models.SmallIntegerField("文件类型", choices=const.DOCUMENTS, default=1)
+    file = models.FileField("文件")
+    updated = models.DateTimeField("更新时间", auto_now=True)
+    name = models.CharField("文件名", max_length=255, default='')
+    directory = models.ForeignKey(Directory, on_delete=models.CASCADE, related_name='files')
+
+    def __str__(self):
+        return "<Media: {}   {}>".format(self.file, self.updated)
+
+    __repr__ = __str__
+
+
 class Documents(models.Model):
     name = models.CharField("文件名", max_length=255, default='')
     file = models.FileField("文件")
-    type = models.SmallIntegerField("文件类型", choices=const.DOCUMENTS, default=1) 
+    type = models.SmallIntegerField("文件类型", choices=const.DOCUMENTS, default=1)
     created = models.DateField("创建时间", auto_now_add=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 

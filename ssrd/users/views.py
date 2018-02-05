@@ -89,17 +89,24 @@ class UserViewSet(ViewSet):
         'method': V.group,
         'description': '按部门搜索',
     }])
-    def list(self, request, role=None, group=None, search=None, status=None, **kwargs):
+    def list(self,
+             request,
+             role=None,
+             group=None,
+             search=None,
+             status=None,
+             **kwargs):
         """"""
         query = dict()
         role and query.update(role=role)
         status and query.update(status=status)
         group and query.update(group=group)
-        obj = User.objects.filter(**query).exclude(id=request.user.id).order_by('-id')
+        obj = User.objects.filter(**query).exclude(
+            id=request.user.id).order_by('-id')
         if search:
             obj = obj.filter(
-                Q(username__contains=search) | Q(email__contains=search) | Q(
-                    mobile__contains=search))
+                Q(username__contains=search) | Q(email__contains=search)
+                | Q(mobile__contains=search))
         return self.result_class(data=obj)(serialize=True)
 
     create = post
@@ -130,10 +137,7 @@ class UserViewSet(ViewSet):
         'method': lambda r, k: r.user.has_permission(k['user']),
         'reason': '无权限'
     }])
-    def update(self,
-               request,
-               user=None,
-               **kwargs):
+    def update(self, request, user=None, **kwargs):
         """更新用户"""
         [setattr(user, k, v) for k, v in kwargs.items() if v]
         user.save()
@@ -354,13 +358,15 @@ class ProjectViewSet(ViewSet):
 
         user = request.user
         query = dict()
-        user.group.type and user.role > 0 and query.update(user=user)  # 内部员工获取全量项目
+        user.group.type and user.role > 0 and query.update(
+            user=user)  # 内部员工获取全量项目
         status = [x.step for x in Step.steps(user)]
         if 'status' in kwargs:
             status = set(status + kwargs['status'])
         status and query.update(status__in=status)
         group and query.update(group=group)
-        obj = Project.objects.filter(**query).select_related('user').prefetch_related('attatchment').order_by('-updated')
+        obj = Project.objects.filter(**query).select_related(
+            'user').prefetch_related('attatchment').order_by('-updated')
         if search:
             obj = obj.filter(name__contains=search)
         return self.result_class(data=obj)(serialize=True)
@@ -414,8 +420,10 @@ class ProjectViewSet(ViewSet):
     }])
     def create(self, request, group=None, attatchment=None, **kwargs):
         """新建项目"""
-        group, ok = ProjectGroup.objects.get_or_create(user=request.user, name=group or kwargs['name'])
-        obj, ok = Project.objects.get_or_create(user=request.user, group=group, **kwargs)
+        group, ok = ProjectGroup.objects.get_or_create(
+            user=request.user, name=group or kwargs['name'])
+        obj, ok = Project.objects.get_or_create(
+            user=request.user, group=group, **kwargs)
         attatchment and obj.attatchment.add(*attatchment)
         return self.result_class(data=obj)(serialize=True)
 
@@ -477,9 +485,16 @@ class ProjectViewSet(ViewSet):
         'method': lambda r, k: r.user.has_permission(k['obj']),
         'reason': '无权限更改此项目'
     }])
-    def update(self, request, obj=None, group=None, name=None, status=None, **kwargs):
+    def update(self,
+               request,
+               obj=None,
+               group=None,
+               name=None,
+               status=None,
+               **kwargs):
         """更新项目"""
-        group, ok = ProjectGroup.objects.get_or_create(name=group or name, user=obj.user)
+        group, ok = ProjectGroup.objects.get_or_create(
+            name=group or name, user=obj.user)
         status and setattr(obj, 'status', status)
         name and setattr(obj, 'name', name)
         group and setattr(obj, 'group', group)
@@ -562,7 +577,12 @@ class ProjectLogViewSet(ViewSet):
         'method': V.date,
         'description': '工作时间'
     }])
-    def create(self, request, project=None, action=None, attatchment=None, **kwargs):
+    def create(self,
+               request,
+               project=None,
+               action=None,
+               attatchment=None,
+               **kwargs):
         """新建项目日志"""
         obj = ProjectLog.objects.create(
             project=project, action=action, content=kwargs)
@@ -598,7 +618,8 @@ class CollectViewSet(ViewSet):
         """
         if not request.user.is_authenticated:
             request.user = User.objects.first()
-        obj, ok = Collected.objects.get_or_create(user=request.user, product=obj)
+        obj, ok = Collected.objects.get_or_create(
+            user=request.user, product=obj)
         return self.result_class(obj)(serialize=True)
 
     @para_ok_or_400([{
@@ -736,6 +757,7 @@ class MessageViewSet(ViewSet):
         """
         return self.result_class(obj)(serialize=True)
 
+
 class GroupViewSet(ViewSet):
     serializer_class = Serializer(m.Group, dep=0)
     permission_classes = (IsAuthenticated, )
@@ -822,6 +844,7 @@ class GroupViewSet(ViewSet):
         """
         return self.result_class(obj)(serialize=True)
 
+
 class CartView(APIView):
     serializer_class = Serializer(m.Cart, dep=0)
     permission_classes = (IsAuthenticated, )
@@ -842,12 +865,13 @@ class CartView(APIView):
         obj.save()
         return Response(obj.content)
 
-    def get(self, request,  **kwargs):
+    def get(self, request, **kwargs):
         """
         获取购物网车
         """
         obj, ok = m.Cart.objects.get_or_create(user=request.user)
         return Response(obj.content)
+
 
 class DocumentsViewSet(ViewSet):
     """
@@ -873,7 +897,8 @@ class DocumentsViewSet(ViewSet):
         type and query.update(type=type)
         obj = m.Documents.objects.filter(**query).order_by('-id')
         if project:
-            obj = obj.filter(Q(project=project) | Q(projectlog__project=project))
+            obj = obj.filter(
+                Q(project=project) | Q(projectlog__project=project))
         if search:
             obj = obj.filter(Q(name__contains=search))
         return self.result_class(data=obj)(serialize=True)
@@ -908,6 +933,105 @@ class DocumentsViewSet(ViewSet):
         obj.delete()
         return self.result_class(data=obj)(serialize=True)
 
+
+class MediaViewSet(ViewSet):
+    """
+    文档
+    """
+    serializer_class = Serializer(m.Media)
+
+    @para_ok_or_400([{
+        'name': 'search',
+        'description': '搜索',
+    }, {
+        'name': 'path',
+        'description': '搜索路径'
+    }, {
+        'name': 'projectId',
+        'method': V.project,
+        'description': '所属项目ID',
+        'replace': 'project'
+    }, {
+        'name': 'type',
+        **V.make(const.DOCUMENTS)
+    }])
+    def list(self, request, project=None, search=None, type=None, **kwargs):
+        """获取文档列表"""
+        project = m.Project.objects.get(id=83)
+        dirs = m.Directory.objects.filter(project=project)
+        files = []
+        result = [dict(timestamp=1493908313, type='dir', path=x.name, filename=x.name, dirname='', basename=x.name) for x in dirs]
+        result.extend([dict(type='file', basename=x.name, dirname='', path=x.name, **getExtension(x.name)) for x in files])
+        return Response(result)
+
+
+class DirectoryViewSet(ViewSet):
+    """
+    文档目录
+    """
+    serializer_class = Serializer(m.Directory)
+
+    @para_ok_or_400([{
+        'name': 'search',
+        'description': '搜索',
+    }, {
+        'name': 'projectId',
+        'method': V.project,
+        'description': '所属项目ID',
+        'replace': 'project'
+    }])
+    def list(self, request, project=None, search=None, type=None, **kwargs):
+        """获取文档列表"""
+        query = dict()
+        obj = m.Directory.objects.filter(**query).order_by('-id')
+        project and query.update(project=project)
+        if search:
+            obj = obj.filter(Q(name__contains=search))
+        return self.result_class(data=obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'projectId',
+        'method': V.project,
+        'description': '项目ID',
+        'replace': 'project',
+        'required': True
+    }, {
+        'name': 'name',
+        'description': '文件',
+        'required': True
+    }, {
+        'name': 'parent',
+        'description': '父级目录'
+    }])
+    def create(self, request, name=None, parent=None, project=None, **kwargs):
+        """
+        新建目录
+        """
+        paras = dict(project=project, name=name)
+        if parent:
+            parent, ok = m.Media.objects.get_or_create(project=project, name=parent)
+            paras.update(parent=parent)
+        obj, ok = m.Media.objects.get_or_create(**paras)
+        return self.result_class(obj)(serialize=True)
+
+    @para_ok_or_400([{
+        'name': 'pk',
+        'method': V.directory,
+        'description': '目录ID',
+        'replace': 'obj'
+    }])
+    @perm_ok_or_403([{
+        'method': lambda r, k: r.user.has_permission(k['obj']),
+        'reason': '无权限删除此项目组'
+    }])
+    def destroy(self, request, obj=None, **kwargs):
+        """
+        删除目录
+        """
+        obj.delete()
+        return self.result_class(obj)(serialize=True)
+
+
 class ProjectGroupViewSet(ViewSet):
     serializer_class = Serializer(m.ProjectGroup, dep=0)
     permission_classes = (IsAuthenticated, )
@@ -935,7 +1059,8 @@ class ProjectGroupViewSet(ViewSet):
         """
         新建项目组
         """
-        obj, ok = ProjectGroup.objects.get_or_create(name=name, user=request.user)
+        obj, ok = ProjectGroup.objects.get_or_create(
+            name=name, user=request.user)
         return self.result_class(obj)(serialize=True)
 
     @para_ok_or_400([{
