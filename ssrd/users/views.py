@@ -955,11 +955,15 @@ class MediaViewSet(ViewSet):
         'name': 'type',
         **V.make(const.DOCUMENTS)
     }])
-    def list(self, request, project=None, search=None, type=None, **kwargs):
+    def list(self, request, project=None, search=None, type=None, path=None, **kwargs):
         """获取文档列表"""
-        project = m.Project.objects.get(id=83)
-        dirs = m.Directory.objects.filter(project=project)
-        files = []
+        if path:
+            dir = m.Directory.objects.get_or_create(name=path, project=project)
+            files = dir.files.all()
+            dirs = dir.dirs.all()
+        else:
+            dirs = m.Directory.objects.filter(project=project, parent__isnull=True)
+            files = []
         result = [dict(timestamp=1493908313, type='dir', path=x.name, filename=x.name, dirname='', basename=x.name) for x in dirs]
         result.extend([dict(type='file', basename=x.name, dirname='', path=x.name, **getExtension(x.name)) for x in files])
         return Response(result)

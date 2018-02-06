@@ -371,7 +371,11 @@ class Message(models.Model):
 class Directory(models.Model):
     name = models.CharField("文件名", max_length=255, default='')
     parent = models.ForeignKey(
-        "self", null=True, blank=True, on_delete=models.CASCADE, related_name='dirs')
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name='dirs')
     project = models.ForeignKey("users.Project", on_delete=models.CASCADE)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
@@ -380,13 +384,17 @@ class Directory(models.Model):
 
     __repr__ = __str__
 
+    class Meta:
+        unique_together = ('parent', 'name')
+
 
 class Media(models.Model):
     type = models.SmallIntegerField("文件类型", choices=const.DOCUMENTS, default=1)
     file = models.FileField("文件")
     updated = models.DateTimeField("更新时间", auto_now=True)
     name = models.CharField("文件名", max_length=255, default='')
-    directory = models.ForeignKey(Directory, on_delete=models.CASCADE, related_name='files')
+    directory = models.ForeignKey(
+        Directory, on_delete=models.CASCADE, related_name='files')
 
     def __str__(self):
         return "<Media: {}   {}>".format(self.file, self.updated)

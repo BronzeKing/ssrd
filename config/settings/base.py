@@ -45,7 +45,6 @@ DJANGO_APPS = [
     # 'django.contrib.humanize',
 
     # Admin
-    'django.contrib.admin',
 ]
 GRAPHENE = {
     'SCHEMA': 'app.schema.schema'  # Where your Graphene schema lives
