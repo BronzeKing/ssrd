@@ -399,6 +399,9 @@ class Media(models.Model):
     def __str__(self):
         return "<Media: {}   {}>".format(self.file, self.updated)
 
+    class Meta:
+        unique_together = ('directory', 'name')
+
     __repr__ = __str__
 
 
