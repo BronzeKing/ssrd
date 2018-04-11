@@ -14,6 +14,7 @@ router.register(r'messages', views.MessageViewSet, base_name='messages')
 router.register(r'attatchment', views.DocumentsViewSet, base_name='attatchment')
 router.register(r'directories', views.DirectoryViewSet, base_name='directories')
 router.register(r'projects/(?P<projectId>\d+)/logs', views.ProjectLogViewSet, base_name='logs')
+router.register(r'medias', views.MediaViewSet, base_name='medias')
 routerSlash = DefaultRouter()
 routerSlash.register(r'medias', views.MediaViewSet, base_name='medias')
 

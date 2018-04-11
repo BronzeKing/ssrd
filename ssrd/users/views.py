@@ -945,7 +945,7 @@ class MediaViewSet(ViewSet):
         'description': '搜索',
     }, {
         'name': 'path',
-        'description': '搜索路径'
+        'description': '文件路径'
     }, {
         'name': 'projectId',
         'method': V.project,
@@ -955,18 +955,86 @@ class MediaViewSet(ViewSet):
         'name': 'type',
         **V.make(const.DOCUMENTS)
     }])
-    def list(self, request, project=None, search=None, type=None, path=None, **kwargs):
+    def list(self,
+             request,
+             project=None,
+             search=None,
+             type=None,
+             path='',
+             **kwargs):
         """获取文档列表"""
         if path:
-            dir = m.Directory.objects.get_or_create(name=path, project=project)
+            dir = getDirectory(path, project)
             files = dir.files.all()
             dirs = dir.dirs.all()
         else:
-            dirs = m.Directory.objects.filter(project=project, parent__isnull=True)
+            dirs = m.Directory.objects.filter(
+                project=project, parent__isnull=True)
             files = []
-        result = [dict(timestamp=1493908313, type='dir', path=x.name, filename=x.name, dirname='', basename=x.name) for x in dirs]
-        result.extend([dict(type='file', basename=x.name, dirname='', path=x.name, **getExtension(x.name)) for x in files])
+        result = [
+            dict(
+                timestamp=1493908313,
+                type='dir',
+                path=getPath(path, x.name),
+                filename=x.name,
+                dirname='',
+                basename=x.name) for x in dirs
+        ]
+        result.extend([
+            dict(
+                type='file',
+                basename=x.name,
+                dirname='',
+                path=getPath(path, x.name),
+                **getExtension(x.name)) for x in files
+        ])
         return Response(result)
+
+    @para_ok_or_400([{
+        'name': 'file',
+        'description': '文件',
+        'type': 'file',
+        'method': V.file,
+    }, {
+        'name': 'path',
+        'description': '文件路径'
+    }, {
+        'name': 'projectId',
+        'method': V.project,
+        'description': '所属项目ID',
+        'replace': 'project'
+    }, {
+        'name': 'type',
+        **V.make(const.DOCUMENTS)
+    }])
+    def create(self, request, file=None, project=None, type=None, path='', **kwargs):
+        """新建文档"""
+        file = request.data.get('file')
+        if not file:
+            return self.result_class().error('file', '不能为空')
+        directory = getDirectory(path, project)
+        file = File(file)
+        obj = m.Media.objects.create(name=file.name, file=file, directory=directory)
+        return self.result_class(data=obj)(serialize=True)
+
+
+
+def getDirectory(path, project):
+    path = path.split('/', 1)
+    dir, ok = m.Directory.objects.get_or_create(name=path[0], project=project)
+    if len(path) > 1:
+        return getDirectory(path[1], project)
+    return dir
+
+
+def getExtension(filename):
+    return filename.split('.')[-1]
+
+
+def getPath(path, filename):
+    if not path:
+        return filename
+    return '/'.join((path, filename))
 
 
 class DirectoryViewSet(ViewSet):
@@ -1013,7 +1081,8 @@ class DirectoryViewSet(ViewSet):
         """
         paras = dict(project=project, name=name)
         if parent:
-            parent, ok = m.Media.objects.get_or_create(project=project, name=parent)
+            parent, ok = m.Media.objects.get_or_create(
+                project=project, name=parent)
             paras.update(parent=parent)
         obj, ok = m.Media.objects.get_or_create(**paras)
         return self.result_class(obj)(serialize=True)

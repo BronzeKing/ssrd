@@ -1,6 +1,6 @@
 [[source]]
 
-url = "https://pypi.mirrors.ustc.edu.cn/simple"
+url = "http://mirrors.aliyun.com/pypi/simple"
 verify_ssl = true
 name = "pypi"
 
@@ -49,6 +49,7 @@ ipdb = "==0.10.3"
 yapf = "*"
 repo = "*"
 "db6cb30" = {file = "https://github.com/wilslee/aliyun-sms/archive/v0.0.1.zip"}
+future = "*"
 
 
 [dev-packages]
