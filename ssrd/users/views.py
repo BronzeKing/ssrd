@@ -964,7 +964,7 @@ class MediaViewSet(ViewSet):
              **kwargs):
         """获取文档列表"""
         if path:
-            dir = getDirectory(path, project)
+            dir, ok = m.Directory.objects.get_or_create(name=path, project=project)
             files = dir.files.all()
             dirs = dir.dirs.all()
         else:

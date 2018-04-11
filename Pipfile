@@ -7,8 +7,8 @@ name = "pypi"
 
 [packages]
 
-django = "*"
-django-environ = "==0.4.3"
+django = "==2.0.1"
+django-environ = "==0.4.4"
 django-braces = "==1.11.0"
 django-crispy-forms = "==1.6.1"
 django-model-utils = "==3.0.0"
@@ -48,8 +48,9 @@ django-extensions = "==1.8.1"
 ipdb = "==0.10.3"
 yapf = "*"
 repo = "*"
-"db6cb30" = {file = "https://github.com/wilslee/aliyun-sms/archive/v0.0.1.zip"}
 future = "*"
+"d9293b1" = {file = "https://github.com/wilslee/aliyun-sms/archive/master.zip"}
+line-profiler = "*"
 
 
 [dev-packages]
