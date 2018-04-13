@@ -3,6 +3,7 @@
 .ropeproject
 Pipfile.lock
 
+*.icloud
 .DS_Store
 .AppleDouble
 .LSOverride
@@ -32,6 +33,7 @@ compose/nginx/dhparams.pem
 
 # Basics
 *.py[cod]
+*.pyc
 __pycache__
 *__pycache__*
 

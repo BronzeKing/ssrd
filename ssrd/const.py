@@ -18,45 +18,37 @@ ProjectStatus = (
 )
 
 # 部门的项目权限
-StatusByRole = {'1':
-    {
+StatusByRole = {
+    '1': {
         'group': ['商务部']
     },
-    '2':
-    {
+    '2': {
         'group': ['设计部']
     },
-    '3':
-    {
+    '3': {
         'group': ['设计部']
     },
-    '4':
-    {
+    '4': {
         'group': ['管理员']
     },
-    '5':
-    {
+    '5': {
         'group': ['商务部']
     },
-    '6':
-    {
+    '6': {
         'group': ['仓库']
     },
-    '7':
-    {
+    '7': {
         'group': ['工程部']
     },
-    '8':
-    {
+    '8': {
         'group': []
     },
-    '9':
-    {
+    '9': {
         'group': ['商务部', '管理员']
     }
 }
-projectStatus = dict(ProjectStatus) # 0: '下单'
-projectStatusReverse = {y: x for x, y in ProjectStatus} #  '下单': 0
+projectStatus = dict(ProjectStatus)  # 0: '下单'
+projectStatusReverse = {y: x for x, y in ProjectStatus}  # '下单': 0
 StatusInRole = dict()
 for action, value in StatusByRole.items():
     for g in value['group']:
