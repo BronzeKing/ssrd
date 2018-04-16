@@ -1,6 +1,6 @@
 from ssrd import const
 import typing
-from .models import Config as AuditModel, User
+from .models import Config as AuditModel, User, Message, Group
 projectStatus = const.projectStatus
 
 
@@ -11,6 +11,17 @@ def getAudits() -> typing.List[User]:
     except Exception:
         users = []
     return users
+
+
+def createMessage(user: User, status: int):
+    groupNames = const.StatusByRole.get(str(status), {}).get('group', [])
+    users = list(User.objects.filter(group__name__in=groupNames))
+    users += [user]
+    objs = [
+        Message(title='test', content='content', userId=user.id)
+        for user in users
+    ]
+    Message.objects.bulk_create(objs)
 
 
 class Audit(object):
@@ -56,6 +67,7 @@ class Step(object):
             if audit:
                 return self
         step = self.step + 1
+        createMessage(user, step)
         return Step(step)
 
     def prev(self, user: User) -> 'Step':
@@ -64,6 +76,7 @@ class Step(object):
             if audit:
                 return self
         step = self.step - 1
+        createMessage(user, step)
         return Step(step)
 
     def __call__(self, user: User, action: str) -> 'Step':
@@ -86,4 +99,3 @@ class Step(object):
             if step.ok(user):
                 result.append(step)
         return result
-

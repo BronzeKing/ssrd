@@ -35,7 +35,7 @@ StatusByRole = {
         'group': ['商务部']
     },
     '6': {
-        'group': ['仓库']
+        'group': ['仓管']
     },
     '7': {
         'group': ['工程部']

@@ -542,7 +542,6 @@ class ProjectLogViewSet(ViewSet):
         'replace': 'project'
     }, {
         'name': 'action',
-        'required': True,
         **V.make(const.ProjectLog)
     }])
     def list(self, request, project=None, action=None, **kwargs):
