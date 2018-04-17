@@ -402,6 +402,7 @@ class ProjectViewSet(ViewSet):
         'description': '补充说明',
     }, {
         'name': 'content',
+        'method': V.json,
         'description': '项目内容'
     }, {
         'name': 'budget',
@@ -422,6 +423,7 @@ class ProjectViewSet(ViewSet):
         """新建项目"""
         group, ok = ProjectGroup.objects.get_or_create(
             user=request.user, name=group or kwargs['name'])
+        not kwargs['content'] and kwargs.update(content=[])
         obj, ok = Project.objects.get_or_create(
             user=request.user, group=group, **kwargs)
         attatchment and obj.attatchment.add(*attatchment)

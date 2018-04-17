@@ -105,7 +105,11 @@ class RegisterView(UnAuthView):
         'required': True
     }, {
         'name': 'group',
-        'description': '客户类型'
+        'description': '用户组'
+    }, {
+        'name': 'role',
+        'description': '客户角色',
+        **V.make(const.ROLES)
     }, {
         'name': 'mobile',
         'description': '手机',
@@ -127,6 +131,7 @@ class RegisterView(UnAuthView):
              email='',
              password=None,
              group=None,
+             role=None,
              invitation=None):
         result = self.result_class()
         if email and User.objects.filter(email=email):
@@ -134,7 +139,7 @@ class RegisterView(UnAuthView):
         if mobile and User.objects.filter(mobile=mobile):
             return result.error('mobile', '该手机已被注册')()
         group, ok = Group.objects.get_or_create(name=group)
-        data = dict(username=username, mobile=mobile, email=email, group=group)
+        data = dict(username=username, mobile=mobile, email=email, group=group, role=role)
         user = User(**data)
         user.set_password(password)
         user.save()
