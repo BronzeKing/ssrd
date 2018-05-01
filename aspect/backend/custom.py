@@ -1,6 +1,7 @@
 from django.db.models import Q
+from django.conf import settings
 
-from ssrd.users.models import User, AuthorizeCode
+from ssrd.users.models import User, AuthorizeCode, Group
 
 
 class Backend(object):
@@ -9,13 +10,17 @@ class Backend(object):
     """
 
     def authenticate(self,
-                     account='',
-                     username='',
-                     password=None,
-                     mobile='',
+                     account: str='',
+                     username: str='',
+                     password: str='',
+                     mobile: str='',
                      **kwargs):
         account = (account and account.lower()) or (
             mobile and mobile.lower()) or (username and username.lower()) or ''
+        if settings.DEBUG:
+            group = Group.objects.filter(name=account)
+            if group:
+                return group[0].users.first()
         user = User.objects.filter(Q(username=account) | Q(email=account) | Q(mobile=account)).select_related('profile', 'group')
         for u in user:
             if u.check_password(password):

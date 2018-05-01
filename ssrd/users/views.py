@@ -594,7 +594,7 @@ class ProjectLogViewSet(ViewSet):
 
 
 class CollectViewSet(ViewSet):
-    serializer_class = Serializer(Collected, dep=0)
+    serializer_class = Serializer(Collected, dep=1)
     permission_classes = (IsAuthenticated, )
 
     def list(self, request):
