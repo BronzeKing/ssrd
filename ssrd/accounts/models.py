@@ -77,6 +77,8 @@ CHARS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 
 def get_random_number():
+    if settings.DEBUG:
+        return '123456'
     return ''.join(random.choice(CHARS) for x in range(6))
 
 
@@ -131,9 +133,7 @@ class EmailCaptcha(Captcha):
 
     def send_mail(self, template_prefix, email, context):
         msg = self.render_mail(template_prefix, email, context)
-        print(1)
         msg.send()
-        print(2)
 
     def render_mail(self, template_prefix, email, context):
         """
