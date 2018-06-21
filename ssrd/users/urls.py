@@ -22,6 +22,7 @@ urlpatterns = [
     url(regex=r'^signup$', view=views.UserView.as_view()),
     url(r'^users/(?P<user>\d+)/profile$', view=views.ProfileView.as_view()),
     url(r'^carts', view=views.CartView.as_view()),
+    url(r'^medias/download/(?P<projectId>\d+)/$', view=views.MediaDownLoadView.as_view()),
     url(regex=r'^~redirect/$',
         view=views.UserRedirectView.as_view(),
         name='redirect'),

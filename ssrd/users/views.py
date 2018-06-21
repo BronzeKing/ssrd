@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.views.generic import RedirectView
@@ -935,6 +937,27 @@ class DocumentsViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
 
+def _get_directory_from_path(project, path, index=None):
+    paths = path.split('/')
+    base_directory = m.Directory.objects.get(project=project, name=paths[0])
+    for path in paths[1:index]:
+        base_directory = m.Directory.objects.get(parent=base_directory, name=path)
+    return base_directory
+
+
+
+
+class MediaDownLoadView(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        request = self.request
+        path = request.GET['path']
+        project = m.Project.objects.get(id=kwargs['projectId'])
+        directory = _get_directory_from_path(project, path, index=-1)
+        name = path.split('/')[-1]
+        obj = m.Media.objects.get(directory=directory, name=name)
+        return obj.file.url
+
+
 class MediaViewSet(ViewSet):
     """
     文档
@@ -965,7 +988,7 @@ class MediaViewSet(ViewSet):
              **kwargs):
         """获取文档列表"""
         if path:
-            dir, ok = m.Directory.objects.get_or_create(name=path, project=project)
+            dir = _get_directory_from_path(project, path)
             files = dir.files.all()
             dirs = dir.dirs.all()
         else:
@@ -1019,7 +1042,6 @@ class MediaViewSet(ViewSet):
         return self.result_class(data=obj)(serialize=True)
 
 
-
 def getDirectory(path, project):
     path = path.split('/', 1)
     dir, ok = m.Directory.objects.get_or_create(name=path[0], project=project)
@@ -1029,7 +1051,7 @@ def getDirectory(path, project):
 
 
 def getExtension(filename):
-    return filename.split('.')[-1]
+    return dict(ext=filename.split('.')[-1])
 
 
 def getPath(path, filename):

@@ -1,4 +1,8 @@
-from aliyunsms.services import BaseClient
+try:
+    from aliyunsms.services import BaseClient
+except Exception:
+    class BaseClient:
+        pass
 from django.conf import settings
 from django.core.mail import send_mail as _send_mail
 

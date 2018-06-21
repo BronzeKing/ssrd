@@ -290,7 +290,7 @@ class Project(models.Model):
         default=defaultProjectGroup)
     name = models.CharField("项目名称", max_length=50)
     type = models.CharField(
-        "项目类型", choices=const.ProjectType, max_length=20, default=0)
+        "项目类型", choices=const.ProjectType, max_length=20, default='create')
     content = JSONField("内容", default=[])
     mobile = models.CharField(
         _("Mobile Phone"), blank=True, default='', max_length=11)
@@ -380,7 +380,7 @@ class Directory(models.Model):
     updated = models.DateTimeField("更新时间", auto_now=True)
 
     def __str__(self):
-        return "<Directory: {}   {}>".format(self.project, self.name)
+        return "<Directory: {} {}>".format(self.parent, self.name)
 
     __repr__ = __str__
 
@@ -390,14 +390,14 @@ class Directory(models.Model):
 
 class Media(models.Model):
     type = models.SmallIntegerField("文件类型", choices=const.DOCUMENTS, default=1)
-    file = models.FileField("文件")
+    file = models.FileField("文件", max_length=512)
     updated = models.DateTimeField("更新时间", auto_now=True)
-    name = models.CharField("文件名", max_length=255, default='')
+    name = models.CharField("文件名", max_length=512, default='')
     directory = models.ForeignKey(
         Directory, on_delete=models.CASCADE, related_name='files')
 
     def __str__(self):
-        return "<Media: {}   {}>".format(self.file, self.updated)
+        return "<Media: {}   {}>".format(self.directory, self.name)
 
     class Meta:
         unique_together = ('directory', 'name')
