@@ -20,6 +20,11 @@ class Result(__Result):
         self.serializer = serializer
         self.dataset = data
         self.paginator = paginator
+        self.cookies = []
+
+    def set_cookie(self, key, value):
+        self.cookies.append((key, value))
+        return self
 
     def response(self, status, serialize=False, paginate=True, **kwargs):
         """
@@ -43,7 +48,10 @@ class Result(__Result):
                 data, self.paginator.request, paginate=paginate)
         elif should_serialize:
             data = self.serializer(data).data
-        return Response(data, status=status, **kwargs)
+        response = Response(data, status=status, **kwargs)
+        for key, value in self.cookies:
+            response.set_cookie(key, value, domain='.szssrd.com')
+        return response
 
     def redirect(self, url):
         return Response(dict(url=url), status=302)

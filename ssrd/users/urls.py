@@ -26,6 +26,8 @@ urlpatterns = [
     url(regex=r'^~redirect/$',
         view=views.UserRedirectView.as_view(),
         name='redirect'),
+    url(regex=r'^media$',
+        view=views.MediaRedirectView.as_view()),
     url(r'', include(router.urls)),
     url(r'', include(routerSlash.urls)),
 ]

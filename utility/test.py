@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.test import RequestFactory
 
-from ssrd.users.models import User
+from ssrd.users.models import User, Project
+from ssrd.users.filebrowser import FileBrowser
 from ssrd.accounts.models import Credential
 from allauth.utils import build_absolute_uri
 
@@ -38,3 +39,9 @@ def profile():
 def sms():
     from ssrd.contrib.utils import SmsClient
     SmsClient.sendCaptcha('14574820226', {'code': '1234'})
+
+def file():
+    p = Project.objects.all()
+    for x in p:
+        response = FileBrowser.auth(x)
+        print(response)

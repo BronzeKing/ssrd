@@ -86,3 +86,6 @@ ProjectLogMapReverse = {x: y for (x, y) in ProjectLog}
 
 ProjectType = (('create', '新建项目'), ('maintain', '故障维护'), ('remove', '迁移、拆除'),
                ('exhibition', '展会协助'))
+
+MediaDomain = 'storage.mum5.cn'
+MediaUrl = f'http://{MediaDomain}'

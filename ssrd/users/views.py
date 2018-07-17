@@ -1,6 +1,7 @@
 import os
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+import requests
 
 from django.views.generic import RedirectView
 from django.db.models import Q
@@ -8,6 +9,7 @@ from django.conf import settings
 from paraer import para_ok_or_400, perm_ok_or_403
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_jwt.settings import api_settings
 from django.core.files import File
 
 from ssrd import const
@@ -15,15 +17,37 @@ from ssrd.contrib import APIView, UnAuthView, V, ViewSet
 from ssrd.contrib.serializer import Serializer, ProjectSerializer, UserSerializer
 from ssrd.users import models as m
 from ssrd.users.steps import Step
+from .filebrowser import FileBrowser
 
 from .models import AuthorizeCode, Collected, Invitation, Message, Profile, Project, ProjectGroup, User, ProjectLog, Documents
 
+
+jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False
 
     def get_redirect_url(self):
         return 'http://{}/#/login?do=token'.format(settings.FE_DOMAIN)
+
+class MediaRedirectView(RedirectView):
+    permanent = False
+
+    def get_redirect_url(self):
+        return const.MediaUrl
+
+    def dispatch(self, request, *args, **kwargs):
+        response = super(MediaRedirectView, self).dispatch(request, *args, **kwargs)
+        projectId, token  = request.GET['projectId'], request.GET['token'].split(' ')[-1]
+        userId = jwt_decode_handler(token)['user_id']
+        project = Project.objects.get(id=projectId)
+        token = FileBrowser.auth(project=project)
+        if 'Forbidden' in token: 
+            FileBrowser.createUser(project)
+            token = FileBrowser.auth(project=project)
+        response.set_cookie('auth', token, domain='.' + const.MediaDomain)
+        return response
+
 
 
 @para_ok_or_400([{
@@ -429,6 +453,7 @@ class ProjectViewSet(ViewSet):
         obj, ok = Project.objects.get_or_create(
             user=request.user, group=group, **kwargs)
         attatchment and obj.attatchment.add(*attatchment)
+        FileBrowser(request).createUser(project)
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400([{
