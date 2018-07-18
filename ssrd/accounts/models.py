@@ -17,15 +17,17 @@ from ssrd import const
 class Credential(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        verbose_name=_('user'),
+        verbose_name=_("user"),
         related_name="credentials",
-        on_delete=models.CASCADE)  # 可能发送多封验证短信或者邮件， 这里保持onetoone还是ForeignKey ?
+        on_delete=models.CASCADE,
+    )  # 可能发送多封验证短信或者邮件， 这里保持onetoone还是ForeignKey ?
     Type = models.CharField(
         "类型",
         choices=[(k, v) for k, v in const.CredentialKeyMap.items()],
         max_length=10,
-        default='email')  # 存储user的属性key，这样当user的email或者手机变更时，可以自动的获取到最新值
-    verified = models.BooleanField(verbose_name=_('verified'), default=False)
+        default="email",
+    )  # 存储user的属性key，这样当user的email或者手机变更时，可以自动的获取到最新值
+    verified = models.BooleanField(verbose_name=_("verified"), default=False)
 
     objects = CredentialManager()
 
@@ -73,13 +75,13 @@ class Credential(models.Model):
         return {x.name: x for x in subclasses}
 
 
-CHARS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+CHARS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 
 def get_random_number():
     if settings.DEBUG:
-        return '123456'
-    return ''.join(random.choice(CHARS) for x in range(6))
+        return "123456"
+    return "".join(random.choice(CHARS) for x in range(6))
 
 
 class Captcha(object):
@@ -94,16 +96,15 @@ class Captcha(object):
             cache.set(
                 self.user.id,
                 self.key,
-                timeout=settings.CREDENTIAL_CONFIRMATION_EXPIRE_DAYS)
+                timeout=settings.CREDENTIAL_CONFIRMATION_EXPIRE_DAYS,
+            )
         else:
-            self.key = cache.get(user.id, '')
+            self.key = cache.get(user.id, "")
             cache.delete(user.id)
 
     @classmethod
-    def fromUser(cls, user, Type: str, action: str = ''):
-        return {x.name: x
-                for x in cls.__subclasses__()}[Type](
-                    user, action=action)
+    def fromUser(cls, user, Type: str, action: str = ""):
+        return {x.name: x for x in cls.__subclasses__()}[Type](user, action=action)
 
     @classmethod
     def equal(cls, user, captcha):
@@ -119,13 +120,13 @@ class Captcha(object):
 
 
 class EmailCaptcha(Captcha):
-    name = 'email'
+    name = "email"
 
     def send(self, request, action):
         current_site = get_current_site(request)
         ctx = {
             "user": self.user,
-            "activate_url": 'http://127.0.0.1',
+            "activate_url": "http://127.0.0.1",
             "current_site": current_site,
             "captcha": self.key,
         }
@@ -141,33 +142,33 @@ class EmailCaptcha(Captcha):
         e-mail that is to be sent, e.g. "account/email/email_confirmation"
         """
         subject = render_to_string(
-            'email/{0}_subject.txt'.format(template_prefix), context)
+            "email/{0}_subject.txt".format(template_prefix), context
+        )
         # remove superfluous line breaks
         subject = " ".join(subject.splitlines()).strip()
 
         from_email = settings.DEFAULT_FROM_EMAIL
 
         bodies = {}
-        for ext in ['html', 'txt']:
+        for ext in ["html", "txt"]:
             try:
-                template_name = 'email/{0}.{1}'.format(template_prefix, ext)
+                template_name = "email/{0}.{1}".format(template_prefix, ext)
                 bodies[ext] = render_to_string(template_name, context).strip()
             except TemplateDoesNotExist:
-                if ext == 'txt' and not bodies:
+                if ext == "txt" and not bodies:
                     # We need at least one body
                     raise
-        if 'txt' in bodies:
-            msg = EmailMultiAlternatives(subject, bodies['txt'], from_email,
-                                         [email])
-            if 'html' in bodies:
-                msg.attach_alternative(bodies['html'], 'text/html')
+        if "txt" in bodies:
+            msg = EmailMultiAlternatives(subject, bodies["txt"], from_email, [email])
+            if "html" in bodies:
+                msg.attach_alternative(bodies["html"], "text/html")
         else:
-            msg = EmailMessage(subject, bodies['html'], from_email, [email])
-            msg.content_subtype = 'html'  # Main content is now text/html
+            msg = EmailMessage(subject, bodies["html"], from_email, [email])
+            msg.content_subtype = "html"  # Main content is now text/html
         return msg
 
     def format_email_subject(self, subject):
-        prefix = 'ssed'
+        prefix = "ssed"
         if prefix is None:
             site = get_current_site(self.request)
             prefix = "[{name}] ".format(name=site.name)
@@ -178,11 +179,12 @@ class MobileConfirmation(Captcha):
     """
     手机验证
     """
-    name = 'mobile'
+
+    name = "mobile"
 
     def send(self, request, action):
         """
         发送验证码
         """
         mobile = getattr(self.user, self.name)
-        SmsClient.sendCaptcha(mobile, {'code': self.key})
+        SmsClient.sendCaptcha(mobile, {"code": self.key})

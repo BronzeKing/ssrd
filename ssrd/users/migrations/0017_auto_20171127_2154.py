@@ -8,14 +8,14 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0016_auto_20171123_2128'),
-    ]
+    dependencies = [("users", "0016_auto_20171123_2128")]
 
     operations = [
         migrations.AlterField(
-            model_name='cart',
-            name='content',
-            field=django.contrib.postgres.fields.jsonb.JSONField(default='[]', verbose_name='内容'),
-        ),
+            model_name="cart",
+            name="content",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                default="[]", verbose_name="内容"
+            ),
+        )
     ]

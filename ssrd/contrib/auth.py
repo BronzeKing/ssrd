@@ -13,8 +13,7 @@ from paraer import Result as __Result
 
 
 class Result(__Result):
-    def __init__(self, data=None, errors=None, serializer=None,
-                 paginator=None):
+    def __init__(self, data=None, errors=None, serializer=None, paginator=None):
         self.errors = errors or []
         self._error = self.errors.append
         self.serializer = serializer
@@ -40,17 +39,19 @@ class Result(__Result):
         elif self.errors:
             status = 400
             data = dict(msg="表单校验失败", errors=self.errors)
-        if isinstance(data, collections.Iterable) and not (isinstance(
-                data, dict) or hasattr(data, '_meta')):
+        if isinstance(data, collections.Iterable) and not (
+            isinstance(data, dict) or hasattr(data, "_meta")
+        ):
             if should_serialize:
                 data = self.serializer(data, many=True).data
             data = self.paginator.paginate_queryset(
-                data, self.paginator.request, paginate=paginate)
+                data, self.paginator.request, paginate=paginate
+            )
         elif should_serialize:
             data = self.serializer(data).data
         response = Response(data, status=status, **kwargs)
         for key, value in self.cookies:
-            response.set_cookie(key, value, domain='.szssrd.com')
+            response.set_cookie(key, value, domain=".szssrd.com")
         return response
 
     def redirect(self, url):
@@ -62,30 +63,31 @@ class Result(__Result):
 
 class PageNumberPager(BasePagination):
     page_size = 5
-    page_query_param = 'PageIndex'
-    page_size_query_param = 'PageSize'
+    page_query_param = "PageIndex"
+    page_size_query_param = "PageSize"
     display_page_controls = False
 
     def paginate_queryset(self, data, request, view=None, paginate=True):
         # 传了分页参数才做分页处理
         paras = self.request.GET.get
-        PageIndex = paras('pageIndex', '')
-        PageSize = paras('pageSize', '')
+        PageIndex = paras("pageIndex", "")
+        PageSize = paras("pageSize", "")
         should_page = PageSize.isdigit() and paginate
         PageSize = PageSize.isdigit() and int(PageSize) or 10
         PageIndex = PageIndex.isdigit() and int(PageIndex) or 1
         RecordCount = len(data)
         PageCount = math.ceil(RecordCount / PageSize)
-        result = dict(
-            RecordCount=RecordCount, PageCount=PageCount, Records=data)
+        result = dict(RecordCount=RecordCount, PageCount=PageCount, Records=data)
         if should_page:
             startRecord = (PageIndex - 1) * PageSize
 
-            endRecord = RecordCount if ((RecordCount- startRecord) <
-                                        PageSize) else (startRecord + PageSize)
+            endRecord = (
+                RecordCount
+                if ((RecordCount - startRecord) < PageSize)
+                else (startRecord + PageSize)
+            )
             data = data[startRecord:endRecord]
-            result = dict(
-                RecordCount=RecordCount, PageCount=PageCount, Records=data)
+            result = dict(RecordCount=RecordCount, PageCount=PageCount, Records=data)
         return result
 
     def get_schema_fields(self, view):
@@ -93,18 +95,21 @@ class PageNumberPager(BasePagination):
             coreapi.Field(
                 name=self.page_query_param,
                 required=False,
-                location='query',
-                description=u'分页参数：当为空时，获取全量数据',
-                type='integer')
+                location="query",
+                description=u"分页参数：当为空时，获取全量数据",
+                type="integer",
+            )
         ]
         if self.page_size_query_param is not None:
             fields.append(
                 coreapi.Field(
                     name=self.page_size_query_param,
                     required=False,
-                    location='query',
-                    description=u'分页参数：当为空时，获取全量数据',
-                    type='integer'))
+                    location="query",
+                    description=u"分页参数：当为空时，获取全量数据",
+                    type="integer",
+                )
+            )
         return fields
 
 
@@ -119,16 +124,15 @@ class ViewSet(_ViewSet):
         paginator = self.paginator
         paginator.request = self.request
         return partial(
-            self.__result_class,
-            serializer=self.serializer_class,
-            paginator=paginator)
+            self.__result_class, serializer=self.serializer_class, paginator=paginator
+        )
 
     @property
     def paginator(self):
         """
         The paginator instance associated with the view, or `None`.
         """
-        if not hasattr(self, '_paginator'):
+        if not hasattr(self, "_paginator"):
             if self.pagination_class is None:
                 self._paginator = None
             else:
@@ -147,16 +151,15 @@ class APIView(_APIView):
         paginator = self.paginator
         paginator.request = self.request
         return partial(
-            self.__result_class,
-            serializer=self.serializer_class,
-            paginator=paginator)
+            self.__result_class, serializer=self.serializer_class, paginator=paginator
+        )
 
     @property
     def paginator(self):
         """
         The paginator instance associated with the view, or `None`.
         """
-        if not hasattr(self, '_paginator'):
+        if not hasattr(self, "_paginator"):
             if self.pagination_class is None:
                 self._paginator = None
             else:
@@ -172,6 +175,7 @@ class UnAuthView(_APIView):
     @property
     def result_class(self):
         return partial(self.__result_class, serializer=self.serializer_class)
+
 
 def paraerData(request):
     data = dict(request.GET.items())

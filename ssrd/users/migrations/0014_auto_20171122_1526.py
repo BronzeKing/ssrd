@@ -10,30 +10,50 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('home', '0012_auto_20171121_1336'),
-        ('users', '0013_auto_20171121_1447'),
+        ("home", "0012_auto_20171121_1336"),
+        ("users", "0013_auto_20171121_1447"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Collected',
+            name="Collected",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, null=True, verbose_name='创建时间')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='更新时间')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='home.Product', verbose_name='收藏的产品')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='collects', to=settings.AUTH_USER_MODEL, verbose_name='所属用户')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(
+                        auto_now_add=True, null=True, verbose_name="创建时间"
+                    ),
+                ),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="更新时间")),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="home.Product",
+                        verbose_name="收藏的产品",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="collects",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="所属用户",
+                    ),
+                ),
             ],
         ),
-        migrations.RemoveField(
-            model_name='collect',
-            name='product',
-        ),
-        migrations.RemoveField(
-            model_name='collect',
-            name='user',
-        ),
-        migrations.DeleteModel(
-            name='Collect',
-        ),
+        migrations.RemoveField(model_name="collect", name="product"),
+        migrations.RemoveField(model_name="collect", name="user"),
+        migrations.DeleteModel(name="Collect"),
     ]

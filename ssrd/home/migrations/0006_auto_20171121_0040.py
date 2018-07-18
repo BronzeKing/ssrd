@@ -7,17 +7,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0005_news_type'),
-    ]
+    dependencies = [("home", "0005_news_type")]
 
     operations = [
-        migrations.DeleteModel(
-            name='AboutUs',
-        ),
+        migrations.DeleteModel(name="AboutUs"),
         migrations.AlterField(
-            model_name='documents',
-            name='name',
-            field=models.CharField(db_index=True, max_length=100, verbose_name='文档名称'),
+            model_name="documents",
+            name="name",
+            field=models.CharField(db_index=True, max_length=100, verbose_name="文档名称"),
         ),
     ]

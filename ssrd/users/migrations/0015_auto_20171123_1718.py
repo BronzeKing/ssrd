@@ -10,31 +10,46 @@ import jsonfield.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0014_auto_20171122_1526'),
-    ]
+    dependencies = [("users", "0014_auto_20171122_1526")]
 
     operations = [
         migrations.CreateModel(
-            name='Cart',
+            name="Cart",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', jsonfield.fields.JSONField(verbose_name='内容')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='所属用户')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("content", jsonfield.fields.JSONField(verbose_name="内容")),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="所属用户",
+                    ),
+                ),
             ],
         ),
-        migrations.RemoveField(
-            model_name='project',
-            name='content',
+        migrations.RemoveField(model_name="project", name="content"),
+        migrations.AlterField(
+            model_name="documents",
+            name="created",
+            field=models.DateField(auto_now_add=True, verbose_name="创建时间"),
         ),
         migrations.AlterField(
-            model_name='documents',
-            name='created',
-            field=models.DateField(auto_now_add=True, verbose_name='创建时间'),
-        ),
-        migrations.AlterField(
-            model_name='profile',
-            name='gender',
-            field=models.CharField(choices=[('male', '男'), ('female', '女')], default='male', max_length=10, verbose_name='性别'),
+            model_name="profile",
+            name="gender",
+            field=models.CharField(
+                choices=[("male", "男"), ("female", "女")],
+                default="male",
+                max_length=10,
+                verbose_name="性别",
+            ),
         ),
     ]

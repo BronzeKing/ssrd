@@ -8,19 +8,19 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0009_remove_project_picture'),
-    ]
+    dependencies = [("users", "0009_remove_project_picture")]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='group',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='users.Group'),
+            model_name="profile",
+            name="group",
+            field=models.ForeignKey(
+                default=1, on_delete=django.db.models.deletion.CASCADE, to="users.Group"
+            ),
         ),
         migrations.AlterField(
-            model_name='group',
-            name='name',
-            field=models.CharField(max_length=50, unique=True, verbose_name='部门'),
+            model_name="group",
+            name="name",
+            field=models.CharField(max_length=50, unique=True, verbose_name="部门"),
         ),
     ]

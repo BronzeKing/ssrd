@@ -7,24 +7,39 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0029_auto_20171205_1830'),
-    ]
+    dependencies = [("users", "0029_auto_20171205_1830")]
 
     operations = [
         migrations.AlterField(
-            model_name='profile',
-            name='avator',
-            field=models.ImageField(default=(b''))
+            model_name="profile", name="avator", field=models.ImageField(default=(b""))
         ),
         migrations.AlterField(
-            model_name='project',
-            name='status',
-            field=models.SmallIntegerField(choices=[(1, '下单'), (2, '转发'), (3, '设计报价'), (4, '审核'), (5, '审核'), (6, '审核'), (7, '发货'), (8, '实施'), (9, '签字'), (0, '终止')], default=1, verbose_name='项目状态'),
+            model_name="project",
+            name="status",
+            field=models.SmallIntegerField(
+                choices=[
+                    (1, "下单"),
+                    (2, "转发"),
+                    (3, "设计报价"),
+                    (4, "审核"),
+                    (5, "审核"),
+                    (6, "审核"),
+                    (7, "发货"),
+                    (8, "实施"),
+                    (9, "签字"),
+                    (0, "终止"),
+                ],
+                default=1,
+                verbose_name="项目状态",
+            ),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='role',
-            field=models.SmallIntegerField(choices=[(0, '管理员'), (1, '经理'), (2, '成员')], default=2, verbose_name='用户权限'),
+            model_name="user",
+            name="role",
+            field=models.SmallIntegerField(
+                choices=[(0, "管理员"), (1, "经理"), (2, "成员")],
+                default=2,
+                verbose_name="用户权限",
+            ),
         ),
     ]

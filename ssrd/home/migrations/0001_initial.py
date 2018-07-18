@@ -10,230 +10,489 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='AboutUs',
+            name="AboutUs",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('introduction', models.TextField(verbose_name='简介')),
-                ('culture', models.TextField(verbose_name='企业文化')),
-                ('honour', models.TextField(verbose_name='荣耀')),
-                ('cooperativePartner', models.TextField(verbose_name='合作伙伴')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("introduction", models.TextField(verbose_name="简介")),
+                ("culture", models.TextField(verbose_name="企业文化")),
+                ("honour", models.TextField(verbose_name="荣耀")),
+                ("cooperativePartner", models.TextField(verbose_name="合作伙伴")),
             ],
         ),
         migrations.CreateModel(
-            name='CharityActivity',
+            name="CharityActivity",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                )
             ],
         ),
         migrations.CreateModel(
-            name='ConsultationArticles',
+            name="ConsultationArticles",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200, verbose_name='文章主题')),
-                ('content', models.TextField(verbose_name='文章内容')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200, verbose_name="文章主题")),
+                ("content", models.TextField(verbose_name="文章内容")),
             ],
         ),
         migrations.CreateModel(
-            name='Document',
+            name="Document",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(db_index=True, max_length=100, verbose_name='姓名')),
-                ('source', models.SmallIntegerField(choices=[(0, '荣誉资质'), (1, '合作伙伴'), (2, '操作视频'), (3, '文档下载'), (4, '合同'), (5, '签证'), (6, '常用软件'), (7, '设计方案'), (8, '说明文档'), (-1, '全部文档')], verbose_name='来源')),
-                ('file', models.FileField(upload_to='', verbose_name='文件')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='更新时间')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(db_index=True, max_length=100, verbose_name="姓名"),
+                ),
+                (
+                    "source",
+                    models.SmallIntegerField(
+                        choices=[
+                            (0, "荣誉资质"),
+                            (1, "合作伙伴"),
+                            (2, "操作视频"),
+                            (3, "文档下载"),
+                            (4, "合同"),
+                            (5, "签证"),
+                            (6, "常用软件"),
+                            (7, "设计方案"),
+                            (8, "说明文档"),
+                            (-1, "全部文档"),
+                        ],
+                        verbose_name="来源",
+                    ),
+                ),
+                ("file", models.FileField(upload_to="", verbose_name="文件")),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="更新时间")),
             ],
         ),
         migrations.CreateModel(
-            name='FAQs',
+            name="FAQs",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('questioin', models.TextField(db_index=True, verbose_name='问题')),
-                ('answer', models.TextField(verbose_name='回答')),
-                ('rank', models.IntegerField(default=100, verbose_name='排序')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='创建时间')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("questioin", models.TextField(db_index=True, verbose_name="问题")),
+                ("answer", models.TextField(verbose_name="回答")),
+                ("rank", models.IntegerField(default=100, verbose_name="排序")),
+                (
+                    "created",
+                    models.DateTimeField(auto_now_add=True, verbose_name="创建时间"),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='FeedBack',
+            name="FeedBack",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, verbose_name='姓名')),
-                ('mobile', models.CharField(blank=True, max_length=11, verbose_name='手机号码')),
-                ('email', models.EmailField(blank=True, max_length=254, verbose_name='邮箱')),
-                ('content', models.TextField(verbose_name='反馈内容')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='创建时间')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, verbose_name="姓名")),
+                (
+                    "mobile",
+                    models.CharField(blank=True, max_length=11, verbose_name="手机号码"),
+                ),
+                (
+                    "email",
+                    models.EmailField(blank=True, max_length=254, verbose_name="邮箱"),
+                ),
+                ("content", models.TextField(verbose_name="反馈内容")),
+                (
+                    "created",
+                    models.DateTimeField(auto_now_add=True, verbose_name="创建时间"),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='IndustryLink',
+            name="IndustryLink",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, verbose_name='名称')),
-                ('picture', models.ImageField(null=True, upload_to='', verbose_name='背景图片')),
-                ('link', models.TextField(verbose_name='行业链接')),
-                ('rank', models.IntegerField(default=100, verbose_name='排序')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255, verbose_name="名称")),
+                (
+                    "picture",
+                    models.ImageField(null=True, upload_to="", verbose_name="背景图片"),
+                ),
+                ("link", models.TextField(verbose_name="行业链接")),
+                ("rank", models.IntegerField(default=100, verbose_name="排序")),
             ],
         ),
         migrations.CreateModel(
-            name='Job',
+            name="Job",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, verbose_name='姓名')),
-                ('job', models.TextField(max_length=100, verbose_name='职位')),
-                ('mobile', models.CharField(blank=True, max_length=11, verbose_name='手机号码')),
-                ('email', models.CharField(max_length=100, verbose_name='邮箱')),
-                ('attatchment', models.FileField(upload_to='', verbose_name='附件')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='更新时间')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, verbose_name="姓名")),
+                ("job", models.TextField(max_length=100, verbose_name="职位")),
+                (
+                    "mobile",
+                    models.CharField(blank=True, max_length=11, verbose_name="手机号码"),
+                ),
+                ("email", models.CharField(max_length=100, verbose_name="邮箱")),
+                ("attatchment", models.FileField(upload_to="", verbose_name="附件")),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="更新时间")),
             ],
         ),
         migrations.CreateModel(
-            name='News',
+            name="News",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.TextField(verbose_name='标题')),
-                ('content', models.TextField(verbose_name='内容')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='创建时间')),
-                ('rank', models.IntegerField(default=100, verbose_name='排序')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.TextField(verbose_name="标题")),
+                ("content", models.TextField(verbose_name="内容")),
+                (
+                    "created",
+                    models.DateTimeField(auto_now_add=True, verbose_name="创建时间"),
+                ),
+                ("rank", models.IntegerField(default=100, verbose_name="排序")),
             ],
         ),
         migrations.CreateModel(
-            name='Product',
+            name="Product",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(db_index=True, max_length=50, verbose_name='产品名称')),
-                ('description', models.TextField(verbose_name='产品描述')),
-                ('summary', models.TextField(verbose_name='产品概述')),
-                ('techParameter', models.TextField(verbose_name='技术参数')),
-                ('domain', models.TextField(verbose_name='应用领域')),
-                ('other', models.TextField(verbose_name='其他')),
-                ('background', models.ImageField(upload_to='', verbose_name='背景图片')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='创建时间')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='更新时间')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(db_index=True, max_length=50, verbose_name="产品名称"),
+                ),
+                ("description", models.TextField(verbose_name="产品描述")),
+                ("summary", models.TextField(verbose_name="产品概述")),
+                ("techParameter", models.TextField(verbose_name="技术参数")),
+                ("domain", models.TextField(verbose_name="应用领域")),
+                ("other", models.TextField(verbose_name="其他")),
+                ("background", models.ImageField(upload_to="", verbose_name="背景图片")),
+                (
+                    "created",
+                    models.DateTimeField(auto_now_add=True, verbose_name="创建时间"),
+                ),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="更新时间")),
             ],
         ),
         migrations.CreateModel(
-            name='ProductCategory',
+            name="ProductCategory",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, verbose_name='产品类别')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='创建时间')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='更新时间')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, verbose_name="产品类别")),
+                (
+                    "created",
+                    models.DateTimeField(auto_now_add=True, verbose_name="创建时间"),
+                ),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="更新时间")),
             ],
         ),
         migrations.CreateModel(
-            name='ProductImages',
+            name="ProductImages",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to='', verbose_name='图片')),
-                ('obj', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pictures', to='home.Product')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("image", models.ImageField(upload_to="", verbose_name="图片")),
+                (
+                    "obj",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="pictures",
+                        to="home.Product",
+                    ),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
         migrations.CreateModel(
-            name='Recruitment',
+            name="Recruitment",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(db_index=True, max_length=100, verbose_name='职位名称')),
-                ('salary', models.CharField(max_length=50, verbose_name='薪资待遇')),
-                ('jobDetail', models.TextField(verbose_name='职位简介')),
-                ('jobResponsibilities', models.TextField(verbose_name='岗位职责')),
-                ('address', models.CharField(default='', max_length=100, verbose_name='地点')),
-                ('number', models.CharField(default='1', max_length=20, verbose_name='招聘数量')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='创建时间')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='更新时间')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='RecruitmentCategory',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, verbose_name='职位名称')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='创建时间')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='更新时间')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='ServiceNet',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, verbose_name='网点名称')),
-                ('linkman', models.CharField(max_length=50, verbose_name='联系人')),
-                ('mobile', models.CharField(max_length=11, verbose_name='联系手机')),
-                ('email', models.EmailField(max_length=254, verbose_name='email address')),
-                ('address', models.CharField(max_length=100, verbose_name='联系地址')),
-                ('rank', models.IntegerField(default=100, verbose_name='排序')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='ServicePromise',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=100)),
-                ('content', models.TextField()),
-                ('rank', models.IntegerField(default=100, verbose_name='排序')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='System',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, verbose_name='名称')),
-                ('summary', models.TextField(verbose_name='简介摘要')),
-                ('picture', models.ImageField(upload_to='', verbose_name='简介摘要插图')),
-                ('introduction', models.TextField(verbose_name='系统介绍')),
-                ('systemFeature', models.TextField(verbose_name='系统特性')),
-                ('structure', models.ImageField(null=True, upload_to='', verbose_name='系统结构')),
-                ('funtionalFeature', models.TextField(verbose_name='功能特性')),
-                ('rank', models.IntegerField(default=100, verbose_name='排序')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        db_index=True, max_length=100, verbose_name="职位名称"
+                    ),
+                ),
+                ("salary", models.CharField(max_length=50, verbose_name="薪资待遇")),
+                ("jobDetail", models.TextField(verbose_name="职位简介")),
+                ("jobResponsibilities", models.TextField(verbose_name="岗位职责")),
+                (
+                    "address",
+                    models.CharField(default="", max_length=100, verbose_name="地点"),
+                ),
+                (
+                    "number",
+                    models.CharField(default="1", max_length=20, verbose_name="招聘数量"),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(auto_now_add=True, verbose_name="创建时间"),
+                ),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="更新时间")),
             ],
         ),
         migrations.CreateModel(
-            name='SystemCase',
+            name="RecruitmentCategory",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=255, verbose_name='标题')),
-                ('summary', models.TextField(verbose_name='摘要')),
-                ('description', models.TextField(verbose_name='描述')),
-                ('address', models.CharField(max_length=100, verbose_name='工程地址')),
-                ('content', models.TextField(verbose_name='工程内容')),
-                ('picture', models.ImageField(upload_to='', verbose_name='背景图片')),
-                ('created', models.DateField(default='2017-09-15', verbose_name='项目时间')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='更新时间')),
-                ('systems', models.ManyToManyField(related_name='systemCases', to='home.System', verbose_name='系统')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, verbose_name="职位名称")),
+                (
+                    "created",
+                    models.DateTimeField(auto_now_add=True, verbose_name="创建时间"),
+                ),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="更新时间")),
             ],
         ),
         migrations.CreateModel(
-            name='SystemCasePicture',
+            name="ServiceNet",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to='', verbose_name='图片')),
-                ('obj', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pictures', to='home.SystemCase')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, verbose_name="网点名称")),
+                ("linkman", models.CharField(max_length=50, verbose_name="联系人")),
+                ("mobile", models.CharField(max_length=11, verbose_name="联系手机")),
+                (
+                    "email",
+                    models.EmailField(max_length=254, verbose_name="email address"),
+                ),
+                ("address", models.CharField(max_length=100, verbose_name="联系地址")),
+                ("rank", models.IntegerField(default=100, verbose_name="排序")),
             ],
-            options={
-                'abstract': False,
-            },
         ),
         migrations.CreateModel(
-            name='SystemPicture',
+            name="ServicePromise",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to='', verbose_name='图片')),
-                ('obj', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pictures', to='home.System')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=100)),
+                ("content", models.TextField()),
+                ("rank", models.IntegerField(default=100, verbose_name="排序")),
             ],
-            options={
-                'abstract': False,
-            },
+        ),
+        migrations.CreateModel(
+            name="System",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255, verbose_name="名称")),
+                ("summary", models.TextField(verbose_name="简介摘要")),
+                ("picture", models.ImageField(upload_to="", verbose_name="简介摘要插图")),
+                ("introduction", models.TextField(verbose_name="系统介绍")),
+                ("systemFeature", models.TextField(verbose_name="系统特性")),
+                (
+                    "structure",
+                    models.ImageField(null=True, upload_to="", verbose_name="系统结构"),
+                ),
+                ("funtionalFeature", models.TextField(verbose_name="功能特性")),
+                ("rank", models.IntegerField(default=100, verbose_name="排序")),
+            ],
+        ),
+        migrations.CreateModel(
+            name="SystemCase",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=255, verbose_name="标题")),
+                ("summary", models.TextField(verbose_name="摘要")),
+                ("description", models.TextField(verbose_name="描述")),
+                ("address", models.CharField(max_length=100, verbose_name="工程地址")),
+                ("content", models.TextField(verbose_name="工程内容")),
+                ("picture", models.ImageField(upload_to="", verbose_name="背景图片")),
+                (
+                    "created",
+                    models.DateField(default="2017-09-15", verbose_name="项目时间"),
+                ),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="更新时间")),
+                (
+                    "systems",
+                    models.ManyToManyField(
+                        related_name="systemCases", to="home.System", verbose_name="系统"
+                    ),
+                ),
+            ],
+        ),
+        migrations.CreateModel(
+            name="SystemCasePicture",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("image", models.ImageField(upload_to="", verbose_name="图片")),
+                (
+                    "obj",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="pictures",
+                        to="home.SystemCase",
+                    ),
+                ),
+            ],
+            options={"abstract": False},
+        ),
+        migrations.CreateModel(
+            name="SystemPicture",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("image", models.ImageField(upload_to="", verbose_name="图片")),
+                (
+                    "obj",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="pictures",
+                        to="home.System",
+                    ),
+                ),
+            ],
+            options={"abstract": False},
         ),
         migrations.AddField(
-            model_name='product',
-            name='category',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='home.ProductCategory', verbose_name='产品分类'),
+            model_name="product",
+            name="category",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="home.ProductCategory",
+                verbose_name="产品分类",
+            ),
         ),
     ]

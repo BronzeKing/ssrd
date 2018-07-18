@@ -5,13 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0044_auto_20171225_0003'),
-    ]
+    dependencies = [("users", "0044_auto_20171225_0003")]
 
-    operations = [
-        migrations.RenameModel(
-            old_name='Audit',
-            new_name='Config',
-        ),
-    ]
+    operations = [migrations.RenameModel(old_name="Audit", new_name="Config")]

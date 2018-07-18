@@ -5,19 +5,42 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0045_auto_20171225_0008'),
-    ]
+    dependencies = [("users", "0045_auto_20171225_0008")]
 
     operations = [
         migrations.AlterField(
-            model_name='documents',
-            name='type',
-            field=models.SmallIntegerField(choices=[(0, '全部文档'), (1, '说明文档'), (2, '常用软件'), (3, '设计方案'), (4, '签证'), (5, '项目材料'), (6, '审核')], default=1, verbose_name='文件类型'),
+            model_name="documents",
+            name="type",
+            field=models.SmallIntegerField(
+                choices=[
+                    (0, "全部文档"),
+                    (1, "说明文档"),
+                    (2, "常用软件"),
+                    (3, "设计方案"),
+                    (4, "签证"),
+                    (5, "项目材料"),
+                    (6, "审核"),
+                ],
+                default=1,
+                verbose_name="文件类型",
+            ),
         ),
         migrations.AlterField(
-            model_name='project',
-            name='status',
-            field=models.SmallIntegerField(choices=[(1, '下单'), (2, '转发'), (3, '设计报价'), (4, '审核'), (5, '发货'), (6, '实施'), (7, '签字'), (0, '终止')], default=1, verbose_name='项目状态'),
+            model_name="project",
+            name="status",
+            field=models.SmallIntegerField(
+                choices=[
+                    (1, "下单"),
+                    (2, "转发"),
+                    (3, "设计报价"),
+                    (4, "审核"),
+                    (5, "发货"),
+                    (6, "实施"),
+                    (7, "签字"),
+                    (0, "终止"),
+                ],
+                default=1,
+                verbose_name="项目状态",
+            ),
         ),
     ]

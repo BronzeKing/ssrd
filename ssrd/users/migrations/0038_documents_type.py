@@ -7,14 +7,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0037_auto_20171207_1438'),
-    ]
+    dependencies = [("users", "0037_auto_20171207_1438")]
 
     operations = [
         migrations.AddField(
-            model_name='documents',
-            name='type',
-            field=models.SmallIntegerField(choices=[(0, '全部文档'), (1, '说明文档'), (2, '常用软件'), (3, '设计方案'), (4, '签证')], default=1, verbose_name='文件类型'),
-        ),
+            model_name="documents",
+            name="type",
+            field=models.SmallIntegerField(
+                choices=[(0, "全部文档"), (1, "说明文档"), (2, "常用软件"), (3, "设计方案"), (4, "签证")],
+                default=1,
+                verbose_name="文件类型",
+            ),
+        )
     ]

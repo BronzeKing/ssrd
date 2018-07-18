@@ -7,29 +7,27 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0013_terminal'),
-    ]
+    dependencies = [("home", "0013_terminal")]
 
     operations = [
         migrations.AlterField(
-            model_name='system',
-            name='funtionalFeature',
-            field=models.TextField(default='', verbose_name='功能特性'),
+            model_name="system",
+            name="funtionalFeature",
+            field=models.TextField(default="", verbose_name="功能特性"),
         ),
         migrations.AlterField(
-            model_name='system',
-            name='introduction',
-            field=models.TextField(default='', verbose_name='系统介绍'),
+            model_name="system",
+            name="introduction",
+            field=models.TextField(default="", verbose_name="系统介绍"),
         ),
         migrations.AlterField(
-            model_name='system',
-            name='summary',
-            field=models.TextField(default='', verbose_name='简介摘要'),
+            model_name="system",
+            name="summary",
+            field=models.TextField(default="", verbose_name="简介摘要"),
         ),
         migrations.AlterField(
-            model_name='system',
-            name='systemFeature',
-            field=models.TextField(default='', verbose_name='系统特性'),
+            model_name="system",
+            name="systemFeature",
+            field=models.TextField(default="", verbose_name="系统特性"),
         ),
     ]

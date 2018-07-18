@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0028_auto_20171205_1800'),
-    ]
+    dependencies = [("users", "0028_auto_20171205_1800")]
 
     operations = [
         migrations.AlterField(
-            model_name='profile',
-            name='avator',
-            field=models.ImageField(null=True, upload_to='', verbose_name='系统结构'),
-        ),
+            model_name="profile",
+            name="avator",
+            field=models.ImageField(null=True, upload_to="", verbose_name="系统结构"),
+        )
     ]

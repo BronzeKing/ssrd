@@ -7,13 +7,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0008_project_projectlog'),
-    ]
+    dependencies = [("users", "0008_project_projectlog")]
 
-    operations = [
-        migrations.RemoveField(
-            model_name='project',
-            name='picture',
-        ),
-    ]
+    operations = [migrations.RemoveField(model_name="project", name="picture")]

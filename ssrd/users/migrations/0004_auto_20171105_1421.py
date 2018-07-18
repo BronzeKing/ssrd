@@ -7,13 +7,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0003_collect'),
-    ]
+    dependencies = [("users", "0003_collect")]
 
-    operations = [
-        migrations.RenameModel(
-            old_name='Document',
-            new_name='Documents',
-        ),
-    ]
+    operations = [migrations.RenameModel(old_name="Document", new_name="Documents")]

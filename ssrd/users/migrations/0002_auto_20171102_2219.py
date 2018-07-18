@@ -7,25 +7,33 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0001_initial'),
-    ]
+    dependencies = [("users", "0001_initial")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='collect',
-            name='product',
-        ),
-        migrations.RemoveField(
-            model_name='collect',
-            name='user',
-        ),
+        migrations.RemoveField(model_name="collect", name="product"),
+        migrations.RemoveField(model_name="collect", name="user"),
         migrations.AlterField(
-            model_name='user',
-            name='role',
-            field=models.SmallIntegerField(choices=[(0, 'ADMIN'), (1, 'BOSS'), (10, '市场部'), (11, '市场部组长'), (12, '市场部组员'), (20, '工程部'), (21, '工程部经理'), (22, '工程部组长'), (23, '工程部组员'), (31, '行业用户'), (32, '分销商'), (41, '个人用户'), (42, '常规用户')], default=42, verbose_name='用户权限'),
+            model_name="user",
+            name="role",
+            field=models.SmallIntegerField(
+                choices=[
+                    (0, "ADMIN"),
+                    (1, "BOSS"),
+                    (10, "市场部"),
+                    (11, "市场部组长"),
+                    (12, "市场部组员"),
+                    (20, "工程部"),
+                    (21, "工程部经理"),
+                    (22, "工程部组长"),
+                    (23, "工程部组员"),
+                    (31, "行业用户"),
+                    (32, "分销商"),
+                    (41, "个人用户"),
+                    (42, "常规用户"),
+                ],
+                default=42,
+                verbose_name="用户权限",
+            ),
         ),
-        migrations.DeleteModel(
-            name='Collect',
-        ),
+        migrations.DeleteModel(name="Collect"),
     ]

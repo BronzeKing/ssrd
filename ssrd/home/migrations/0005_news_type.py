@@ -7,14 +7,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0004_auto_20171105_1421'),
-    ]
+    dependencies = [("home", "0004_auto_20171105_1421")]
 
     operations = [
         migrations.AddField(
-            model_name='news',
-            name='type',
-            field=models.SmallIntegerField(choices=[(0, '全部新闻'), (1, '公司新闻'), (2, '公益咨询')], default=1, verbose_name='类型'),
-        ),
+            model_name="news",
+            name="type",
+            field=models.SmallIntegerField(
+                choices=[(0, "全部新闻"), (1, "公司新闻"), (2, "公益咨询")],
+                default=1,
+                verbose_name="类型",
+            ),
+        )
     ]

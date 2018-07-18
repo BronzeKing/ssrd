@@ -5,8 +5,8 @@ from ssrd import const
 
 ProjectType = dict(const.ProjectType)
 _methodMap = {
-    'created': lambda x: x.strftime(settings.REST_FRAMEWORK['DATE_FORMAT']),
-    'updated': lambda x: x.strftime(settings.REST_FRAMEWORK['DATETIME_FORMAT'])
+    "created": lambda x: x.strftime(settings.REST_FRAMEWORK["DATE_FORMAT"]),
+    "updated": lambda x: x.strftime(settings.REST_FRAMEWORK["DATETIME_FORMAT"]),
 }
 
 
@@ -27,25 +27,26 @@ class ProjectSerializer(serializers.BaseSerializer):
             budget=o.budget,
             address=o.address,
             attatchment=[
-                dict(
-                    name=x.name, url=x.file.url) for x in o.attatchment.all()
+                dict(name=x.name, url=x.file.url) for x in o.attatchment.all()
             ],
             company=o.company,
             created=o.created,
             updated=o.updated,
-            user=dict(
-                username=o.user.username, id=o.user.id))
+            user=dict(username=o.user.username, id=o.user.id),
+        )
+
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         exclude = []
 
+
 class UserSerializer(serializers.ModelSerializer):
     group = GroupSerializer()
 
     class Meta:
-        exclude = ['password']
+        exclude = ["password"]
         model = User
 
 
@@ -64,7 +65,7 @@ def modelFactory(Model, extra, dep):
                 depth = 1
 
         def to_representation(self, instance):
-            if hasattr(instance, 'data'):
+            if hasattr(instance, "data"):
                 return to_repr(instance.data())
             return super(factory, self).to_representation(instance)
 
@@ -72,8 +73,8 @@ def modelFactory(Model, extra, dep):
 
 
 def Serializer(Model, extra=None, dep=None):
-    if not hasattr(Model, '_meta'):
+    if not hasattr(Model, "_meta"):
         return
     factory = modelFactory(Model, extra, dep)
-    factory.__name__ = Model._meta.object_name + 'Serializer'
+    factory.__name__ = Model._meta.object_name + "Serializer"
     return factory

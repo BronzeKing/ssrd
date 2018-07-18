@@ -8,14 +8,16 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0011_auto_20171121_1408'),
-    ]
+    dependencies = [("users", "0011_auto_20171121_1408")]
 
     operations = [
         migrations.AlterField(
-            model_name='profile',
-            name='group',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.SET_DEFAULT, to='users.Group'),
-        ),
+            model_name="profile",
+            name="group",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.SET_DEFAULT,
+                to="users.Group",
+            ),
+        )
     ]

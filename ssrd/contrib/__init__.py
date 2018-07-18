@@ -8,4 +8,4 @@ from .valid import V
 from .auth import ViewSet, APIView, Result, UnAuthView
 from . import signals
 
-__all__ = ('ViewSet', 'APIView', 'Result', 'V', 'UnAuthView', 'send_mail')
+__all__ = ("ViewSet", "APIView", "Result", "V", "UnAuthView", "send_mail")

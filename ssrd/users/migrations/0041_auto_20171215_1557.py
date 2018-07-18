@@ -9,23 +9,43 @@ import ssrd.users.models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0040_auto_20171215_1555'),
-    ]
+    dependencies = [("users", "0040_auto_20171215_1555")]
 
     operations = [
         migrations.CreateModel(
-            name='ProjectGroup',
+            name="ProjectGroup",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(db_index=True, max_length=50, verbose_name='部门')),
-                ('created', models.DateTimeField(auto_now_add=True, null=True, verbose_name='创建时间')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='更新时间')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(db_index=True, max_length=50, verbose_name="部门"),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(
+                        auto_now_add=True, null=True, verbose_name="创建时间"
+                    ),
+                ),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="更新时间")),
             ],
         ),
         migrations.AddField(
-            model_name='project',
-            name='group',
-            field=models.ForeignKey(default=ssrd.users.models.defaultProjectGroup, on_delete=django.db.models.deletion.CASCADE, related_name='projects', to='users.ProjectGroup', verbose_name='所属项目组'),
+            model_name="project",
+            name="group",
+            field=models.ForeignKey(
+                default=ssrd.users.models.defaultProjectGroup,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="projects",
+                to="users.ProjectGroup",
+                verbose_name="所属项目组",
+            ),
         ),
     ]

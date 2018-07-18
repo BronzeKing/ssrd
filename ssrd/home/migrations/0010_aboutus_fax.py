@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0009_aboutus'),
-    ]
+    dependencies = [("home", "0009_aboutus")]
 
     operations = [
         migrations.AddField(
-            model_name='aboutus',
-            name='fax',
-            field=models.CharField(default='', max_length=20, verbose_name='传真'),
-        ),
+            model_name="aboutus",
+            name="fax",
+            field=models.CharField(default="", max_length=20, verbose_name="传真"),
+        )
     ]

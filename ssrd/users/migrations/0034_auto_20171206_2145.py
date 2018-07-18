@@ -8,14 +8,14 @@ import ssrd.users.models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0033_auto_20171206_2143'),
-    ]
+    dependencies = [("users", "0033_auto_20171206_2143")]
 
     operations = [
         migrations.AlterField(
-            model_name='profile',
-            name='avator',
-            field=models.ImageField(default=ssrd.users.models.avator, upload_to='', verbose_name='系统结构'),
-        ),
+            model_name="profile",
+            name="avator",
+            field=models.ImageField(
+                default=ssrd.users.models.avator, upload_to="", verbose_name="系统结构"
+            ),
+        )
     ]

@@ -11,20 +11,50 @@ import ssrd.users.models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0018_auto_20171127_2246'),
-    ]
+    dependencies = [("users", "0018_auto_20171127_2246")]
 
     operations = [
         migrations.CreateModel(
-            name='Order',
+            name="Order",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', django.contrib.postgres.fields.jsonb.JSONField(default=[], verbose_name='内容')),
-                ('code', models.CharField(default=ssrd.users.models.generate_key, max_length=40, verbose_name='订单号')),
-                ('created', models.DateTimeField(auto_now_add=True, null=True, verbose_name='创建时间')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='更新时间')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='所属用户')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "content",
+                    django.contrib.postgres.fields.jsonb.JSONField(
+                        default=[], verbose_name="内容"
+                    ),
+                ),
+                (
+                    "code",
+                    models.CharField(
+                        default=ssrd.users.models.generate_key,
+                        max_length=40,
+                        verbose_name="订单号",
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(
+                        auto_now_add=True, null=True, verbose_name="创建时间"
+                    ),
+                ),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="更新时间")),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="所属用户",
+                    ),
+                ),
             ],
-        ),
+        )
     ]

@@ -5,17 +5,13 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0048_auto_20180620_1452'),
-    ]
+    dependencies = [("users", "0048_auto_20180620_1452")]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='directory',
-            unique_together={('parent', 'name')},
+            name="directory", unique_together={("parent", "name")}
         ),
         migrations.AlterUniqueTogether(
-            name='media',
-            unique_together={('directory', 'name')},
+            name="media", unique_together={("directory", "name")}
         ),
     ]

@@ -7,18 +7,24 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0012_auto_20171121_1336'),
-    ]
+    dependencies = [("home", "0012_auto_20171121_1336")]
 
     operations = [
         migrations.CreateModel(
-            name='Terminal',
+            name="Terminal",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, verbose_name='名称')),
-                ('link', models.CharField(max_length=255, verbose_name='链接')),
-                ('picture', models.ImageField(upload_to='', verbose_name='背景图片')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255, verbose_name="名称")),
+                ("link", models.CharField(max_length=255, verbose_name="链接")),
+                ("picture", models.ImageField(upload_to="", verbose_name="背景图片")),
             ],
-        ),
+        )
     ]

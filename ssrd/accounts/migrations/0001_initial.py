@@ -11,26 +11,46 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-    ]
+    dependencies = [migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
 
     operations = [
         migrations.CreateModel(
-            name='Credential',
+            name="Credential",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('Type', models.CharField(choices=[('email', '邮箱'), ('mobile', '手机')], default='email', max_length=10, verbose_name='类型')),
-                ('verified', models.BooleanField(default=False, verbose_name='verified')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='user')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "Type",
+                    models.CharField(
+                        choices=[("email", "邮箱"), ("mobile", "手机")],
+                        default="email",
+                        max_length=10,
+                        verbose_name="类型",
+                    ),
+                ),
+                (
+                    "verified",
+                    models.BooleanField(default=False, verbose_name="verified"),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="user",
+                    ),
+                ),
             ],
-            options={
-                'verbose_name': 'credential',
-                'verbose_name_plural': 'credential',
-            },
+            options={"verbose_name": "credential", "verbose_name_plural": "credential"},
         ),
         migrations.AlterUniqueTogether(
-            name='credential',
-            unique_together=set([('user', 'Type')]),
+            name="credential", unique_together=set([("user", "Type")])
         ),
     ]

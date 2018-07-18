@@ -28,7 +28,7 @@ from .models import (
     Project,
     ProjectGroup,
     ProjectLog,
-    User
+    User,
 )
 
 jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
@@ -56,7 +56,9 @@ class MediaRedirectView(RedirectView):
         if "Forbidden" in token:
             FileBrowser.createUser(project)
             token = FileBrowser.auth(project=project)
-        response.set_cookie("auth", token, domain="." + const.MediaDomain)
+        response.set_cookie(
+            "auth", token, domain="." + const.MediaDomain.split(".", 1)[-1]
+        )
         return response
 
 
@@ -347,7 +349,7 @@ class ProjectViewSet(ViewSet):
 
         user = request.user
         query = dict()
-        user.group.type and user.role > 0 and query.update(user=user)  # 内部员工获取全量项目
+        query.update(user=user)  # 内部员工获取全量项目
         status = [x.step for x in Step.steps(user)]
         if "status" in kwargs:
             status = set(status + kwargs["status"])

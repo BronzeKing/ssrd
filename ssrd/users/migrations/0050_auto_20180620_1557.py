@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0049_auto_20180620_1455'),
-    ]
+    dependencies = [("users", "0049_auto_20180620_1455")]
 
     operations = [
         migrations.AlterField(
-            model_name='media',
-            name='file',
-            field=models.FileField(max_length=512, upload_to='', verbose_name='文件'),
-        ),
+            model_name="media",
+            name="file",
+            field=models.FileField(max_length=512, upload_to="", verbose_name="文件"),
+        )
     ]

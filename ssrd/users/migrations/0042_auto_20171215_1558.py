@@ -9,23 +9,26 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0041_auto_20171215_1557'),
-    ]
+    dependencies = [("users", "0041_auto_20171215_1557")]
 
     operations = [
         migrations.AddField(
-            model_name='projectgroup',
-            name='user',
-            field=models.ForeignKey(default=6, on_delete=django.db.models.deletion.CASCADE, related_name='projectGroups', to=settings.AUTH_USER_MODEL, verbose_name='所属用户'),
+            model_name="projectgroup",
+            name="user",
+            field=models.ForeignKey(
+                default=6,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="projectGroups",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="所属用户",
+            ),
         ),
         migrations.AlterField(
-            model_name='projectgroup',
-            name='name',
-            field=models.CharField(max_length=50, verbose_name='部门'),
+            model_name="projectgroup",
+            name="name",
+            field=models.CharField(max_length=50, verbose_name="部门"),
         ),
         migrations.AlterUniqueTogether(
-            name='projectgroup',
-            unique_together=set([('name', 'user')]),
+            name="projectgroup", unique_together=set([("name", "user")])
         ),
     ]

@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0042_auto_20171215_1558'),
-    ]
+    dependencies = [("users", "0042_auto_20171215_1558")]
 
     operations = [
         migrations.AlterField(
-            model_name='projectgroup',
-            name='name',
-            field=models.CharField(max_length=50, verbose_name='项目组'),
-        ),
+            model_name="projectgroup",
+            name="name",
+            field=models.CharField(max_length=50, verbose_name="项目组"),
+        )
     ]

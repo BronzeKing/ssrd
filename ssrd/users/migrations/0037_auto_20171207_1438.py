@@ -9,14 +9,16 @@ import ssrd.users.models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0036_auto_20171206_2227'),
-    ]
+    dependencies = [("users", "0036_auto_20171206_2227")]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='group',
-            field=models.ForeignKey(default=ssrd.users.models.defaultUserGroup, on_delete=django.db.models.deletion.SET_DEFAULT, to='users.Group'),
-        ),
+            model_name="user",
+            name="group",
+            field=models.ForeignKey(
+                default=ssrd.users.models.defaultUserGroup,
+                on_delete=django.db.models.deletion.SET_DEFAULT,
+                to="users.Group",
+            ),
+        )
     ]

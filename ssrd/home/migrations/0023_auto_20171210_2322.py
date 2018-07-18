@@ -7,19 +7,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0022_product_code'),
-    ]
+    dependencies = [("home", "0022_product_code")]
 
     operations = [
         migrations.AlterField(
-            model_name='product',
-            name='code',
-            field=models.CharField(max_length=50, unique=True, verbose_name='产品编号'),
+            model_name="product",
+            name="code",
+            field=models.CharField(max_length=50, unique=True, verbose_name="产品编号"),
         ),
         migrations.AlterField(
-            model_name='product',
-            name='name',
-            field=models.CharField(max_length=50, verbose_name='产品名称'),
+            model_name="product",
+            name="name",
+            field=models.CharField(max_length=50, verbose_name="产品名称"),
         ),
     ]

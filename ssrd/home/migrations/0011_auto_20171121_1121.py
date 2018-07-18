@@ -7,19 +7,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0010_aboutus_fax'),
-    ]
+    dependencies = [("home", "0010_aboutus_fax")]
 
     operations = [
         migrations.AddField(
-            model_name='aboutus',
-            name='tel',
-            field=models.CharField(default='', max_length=20, verbose_name='电话'),
+            model_name="aboutus",
+            name="tel",
+            field=models.CharField(default="", max_length=20, verbose_name="电话"),
         ),
         migrations.AlterField(
-            model_name='aboutus',
-            name='postcode',
-            field=models.CharField(max_length=10, verbose_name='邮编'),
+            model_name="aboutus",
+            name="postcode",
+            field=models.CharField(max_length=10, verbose_name="邮编"),
         ),
     ]

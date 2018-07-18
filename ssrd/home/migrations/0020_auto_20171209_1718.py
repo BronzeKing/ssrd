@@ -7,18 +7,15 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0019_auto_20171209_1658'),
-    ]
+    dependencies = [("home", "0019_auto_20171209_1658")]
 
     operations = [
         migrations.AlterField(
-            model_name='category',
-            name='name',
-            field=models.CharField(max_length=50, verbose_name='产品类别'),
+            model_name="category",
+            name="name",
+            field=models.CharField(max_length=50, verbose_name="产品类别"),
         ),
         migrations.AlterUniqueTogether(
-            name='category',
-            unique_together=set([('name', 'parent')]),
+            name="category", unique_together=set([("name", "parent")])
         ),
     ]

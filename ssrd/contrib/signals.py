@@ -21,6 +21,5 @@ def createDirectory(sender, instance=None, created=False, **kwargs):
 
 
 def _createDirectory(project):
-    names = ['签证', '设计方案', '合同']
-    Directory.objects.bulk_create(
-        [Directory(project=project, name=x) for x in (names)])
+    names = ["签证", "设计方案", "合同"]
+    Directory.objects.bulk_create([Directory(project=project, name=x) for x in (names)])

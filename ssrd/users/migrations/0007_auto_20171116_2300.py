@@ -7,27 +7,12 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0006_auto_20171106_1746'),
-    ]
+    dependencies = [("users", "0006_auto_20171106_1746")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='project',
-            name='user',
-        ),
-        migrations.RemoveField(
-            model_name='projectlog',
-            name='attatchment',
-        ),
-        migrations.RemoveField(
-            model_name='projectlog',
-            name='project',
-        ),
-        migrations.DeleteModel(
-            name='Project',
-        ),
-        migrations.DeleteModel(
-            name='ProjectLog',
-        ),
+        migrations.RemoveField(model_name="project", name="user"),
+        migrations.RemoveField(model_name="projectlog", name="attatchment"),
+        migrations.RemoveField(model_name="projectlog", name="project"),
+        migrations.DeleteModel(name="Project"),
+        migrations.DeleteModel(name="ProjectLog"),
     ]

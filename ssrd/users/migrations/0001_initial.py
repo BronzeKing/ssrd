@@ -13,134 +13,464 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ('home', '__first__'),
-    ]
+    dependencies = [("home", "__first__")]
 
     operations = [
         migrations.CreateModel(
-            name='User',
+            name="User",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('email', models.EmailField(max_length=254, unique=True, verbose_name='email address')),
-                ('username', models.CharField(error_messages={'unique': 'A user with that username already exists.'}, help_text='Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.', max_length=150, unique=True, verbose_name='username')),
-                ('mobile', models.CharField(blank=True, default='', max_length=11, verbose_name='Mobile Phone')),
-                ('role', models.SmallIntegerField(choices=[(0, 'ADMIN'), (1, 'BOSS'), (10, '市场部'), (11, '市场部组长'), (12, '市场部组员'), (20, '工程部'), (21, '工程部经理'), (22, '工程部组长'), (23, '工程部组员'), (31, '行业用户'), (32, '分销商'), (41, '个人用户'), (42, '常规用户')], default=1, verbose_name='用户权限')),
-                ('created', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
-                ('status', models.SmallIntegerField(choices=[(-1, '全部'), (0, '停用'), (1, '启用')], default=1, verbose_name='状态')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("password", models.CharField(max_length=128, verbose_name="password")),
+                (
+                    "last_login",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="last login"
+                    ),
+                ),
+                (
+                    "email",
+                    models.EmailField(
+                        max_length=254, unique=True, verbose_name="email address"
+                    ),
+                ),
+                (
+                    "username",
+                    models.CharField(
+                        error_messages={
+                            "unique": "A user with that username already exists."
+                        },
+                        help_text="Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+                        max_length=150,
+                        unique=True,
+                        verbose_name="username",
+                    ),
+                ),
+                (
+                    "mobile",
+                    models.CharField(
+                        blank=True,
+                        default="",
+                        max_length=11,
+                        verbose_name="Mobile Phone",
+                    ),
+                ),
+                (
+                    "role",
+                    models.SmallIntegerField(
+                        choices=[
+                            (0, "ADMIN"),
+                            (1, "BOSS"),
+                            (10, "市场部"),
+                            (11, "市场部组长"),
+                            (12, "市场部组员"),
+                            (20, "工程部"),
+                            (21, "工程部经理"),
+                            (22, "工程部组长"),
+                            (23, "工程部组员"),
+                            (31, "行业用户"),
+                            (32, "分销商"),
+                            (41, "个人用户"),
+                            (42, "常规用户"),
+                        ],
+                        default=1,
+                        verbose_name="用户权限",
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, verbose_name="date joined"
+                    ),
+                ),
+                (
+                    "status",
+                    models.SmallIntegerField(
+                        choices=[(-1, "全部"), (0, "停用"), (1, "启用")],
+                        default=1,
+                        verbose_name="状态",
+                    ),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
         migrations.CreateModel(
-            name='AuthorizeCode',
+            name="AuthorizeCode",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, verbose_name='授权码名称')),
-                ('code', models.CharField(default=ssrd.users.models.generate_key, max_length=40, verbose_name='授权码')),
-                ('status', models.SmallIntegerField(choices=[(-1, '全部'), (0, '停用'), (1, '启用')], default=1, verbose_name='授权码状态')),
-                ('created', models.DateTimeField(auto_now_add=True, null=True, verbose_name='创建时间')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='更新时间')),
-                ('creator', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='authorizecodes', to=settings.AUTH_USER_MODEL, verbose_name='所属用户')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='authorizecode', to=settings.AUTH_USER_MODEL, verbose_name='授权码对应用户')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, verbose_name="授权码名称")),
+                (
+                    "code",
+                    models.CharField(
+                        default=ssrd.users.models.generate_key,
+                        max_length=40,
+                        verbose_name="授权码",
+                    ),
+                ),
+                (
+                    "status",
+                    models.SmallIntegerField(
+                        choices=[(-1, "全部"), (0, "停用"), (1, "启用")],
+                        default=1,
+                        verbose_name="授权码状态",
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(
+                        auto_now_add=True, null=True, verbose_name="创建时间"
+                    ),
+                ),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="更新时间")),
+                (
+                    "creator",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="authorizecodes",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="所属用户",
+                    ),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="authorizecode",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="授权码对应用户",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Collect',
+            name="Collect",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, null=True, verbose_name='创建时间')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='更新时间')),
-                ('product', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='home.Product', verbose_name='收藏的产品')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='collects', to=settings.AUTH_USER_MODEL, verbose_name='所属用户')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(
+                        auto_now_add=True, null=True, verbose_name="创建时间"
+                    ),
+                ),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="更新时间")),
+                (
+                    "product",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="home.Product",
+                        verbose_name="收藏的产品",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="collects",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="所属用户",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Document',
+            name="Document",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(default='', max_length=255, verbose_name='文件名')),
-                ('file', models.FileField(upload_to='', verbose_name='文件')),
-                ('created', models.DateField(auto_now_add=True, verbose_name='项目时间')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='更新时间')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(default="", max_length=255, verbose_name="文件名"),
+                ),
+                ("file", models.FileField(upload_to="", verbose_name="文件")),
+                ("created", models.DateField(auto_now_add=True, verbose_name="项目时间")),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="更新时间")),
             ],
         ),
         migrations.CreateModel(
-            name='Group',
+            name="Group",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, unique=True)),
-                ('created', models.DateTimeField(auto_now_add=True, null=True, verbose_name='创建时间')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='更新时间')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, unique=True)),
+                (
+                    "created",
+                    models.DateTimeField(
+                        auto_now_add=True, null=True, verbose_name="创建时间"
+                    ),
+                ),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="更新时间")),
             ],
         ),
         migrations.CreateModel(
-            name='Invitation',
+            name="Invitation",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, null=True, verbose_name='创建时间')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='更新时间')),
-                ('creator', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='invitations', to=settings.AUTH_USER_MODEL, verbose_name='邀请码所属用户')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='invited', to=settings.AUTH_USER_MODEL, verbose_name='受邀用户')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(
+                        auto_now_add=True, null=True, verbose_name="创建时间"
+                    ),
+                ),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="更新时间")),
+                (
+                    "creator",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="invitations",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="邀请码所属用户",
+                    ),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="invited",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="受邀用户",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Message',
+            name="Message",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('userId', models.IntegerField(verbose_name='所属用户')),
-                ('title', models.TextField(verbose_name='标题')),
-                ('content', models.TextField(verbose_name='内容')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='创建时间')),
-                ('category', models.SmallIntegerField(choices=[(0, '全部消息')], default=0, verbose_name='消息类型')),
-                ('read', models.SmallIntegerField(choices=[('0', '未读'), ('1', '已读')], default=0, verbose_name='已读')),
-                ('rank', models.IntegerField(default=100, verbose_name='排序')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("userId", models.IntegerField(verbose_name="所属用户")),
+                ("title", models.TextField(verbose_name="标题")),
+                ("content", models.TextField(verbose_name="内容")),
+                (
+                    "created",
+                    models.DateTimeField(auto_now_add=True, verbose_name="创建时间"),
+                ),
+                (
+                    "category",
+                    models.SmallIntegerField(
+                        choices=[(0, "全部消息")], default=0, verbose_name="消息类型"
+                    ),
+                ),
+                (
+                    "read",
+                    models.SmallIntegerField(
+                        choices=[("0", "未读"), ("1", "已读")], default=0, verbose_name="已读"
+                    ),
+                ),
+                ("rank", models.IntegerField(default=100, verbose_name="排序")),
             ],
         ),
         migrations.CreateModel(
-            name='Profile',
+            name="Profile",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, verbose_name='真实姓名')),
-                ('gender', models.CharField(choices=[('male', '男'), ('female', '女')], max_length=10, verbose_name='性别')),
-                ('birthday', models.DateField(auto_now=True, verbose_name='生日')),
-                ('company', models.CharField(max_length=255, null=True, verbose_name='所属公司')),
-                ('position', models.CharField(max_length=255, null=True, verbose_name='职位')),
-                ('qq', models.CharField(max_length=20, null=True, verbose_name='QQ号码')),
-                ('address', models.CharField(max_length=255, null=True, verbose_name='地址')),
-                ('code', models.CharField(default=ssrd.users.models.generate_key, max_length=40, verbose_name='邀请码')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='所属用户')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, verbose_name="真实姓名")),
+                (
+                    "gender",
+                    models.CharField(
+                        choices=[("male", "男"), ("female", "女")],
+                        max_length=10,
+                        verbose_name="性别",
+                    ),
+                ),
+                ("birthday", models.DateField(auto_now=True, verbose_name="生日")),
+                (
+                    "company",
+                    models.CharField(max_length=255, null=True, verbose_name="所属公司"),
+                ),
+                (
+                    "position",
+                    models.CharField(max_length=255, null=True, verbose_name="职位"),
+                ),
+                ("qq", models.CharField(max_length=20, null=True, verbose_name="QQ号码")),
+                (
+                    "address",
+                    models.CharField(max_length=255, null=True, verbose_name="地址"),
+                ),
+                (
+                    "code",
+                    models.CharField(
+                        default=ssrd.users.models.generate_key,
+                        max_length=40,
+                        verbose_name="邀请码",
+                    ),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="所属用户",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Project',
+            name="Project",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, unique=True, verbose_name='项目名称')),
-                ('status', models.SmallIntegerField(choices=[(1, '用户下订单'), (2, '商务部对接转发'), (3, '设计部上传方案报价'), (4, '领导审核'), (5, '客户审核上传确认'), (6, '商务部审核'), (7, '仓库发货'), (8, '工程部实施'), (9, '客户签字确认'), (0, '终止')], default=1, verbose_name='项目状态')),
-                ('picture', models.ImageField(null=True, upload_to='', verbose_name='背景图片')),
-                ('created', models.DateTimeField(auto_now_add=True, null=True, verbose_name='创建时间')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='更新时间')),
-                ('user', models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='projects', to=settings.AUTH_USER_MODEL, verbose_name='所属用户')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(max_length=50, unique=True, verbose_name="项目名称"),
+                ),
+                (
+                    "status",
+                    models.SmallIntegerField(
+                        choices=[
+                            (1, "用户下订单"),
+                            (2, "商务部对接转发"),
+                            (3, "设计部上传方案报价"),
+                            (4, "领导审核"),
+                            (5, "客户审核上传确认"),
+                            (6, "商务部审核"),
+                            (7, "仓库发货"),
+                            (8, "工程部实施"),
+                            (9, "客户签字确认"),
+                            (0, "终止"),
+                        ],
+                        default=1,
+                        verbose_name="项目状态",
+                    ),
+                ),
+                (
+                    "picture",
+                    models.ImageField(null=True, upload_to="", verbose_name="背景图片"),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(
+                        auto_now_add=True, null=True, verbose_name="创建时间"
+                    ),
+                ),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="更新时间")),
+                (
+                    "user",
+                    models.ForeignKey(
+                        default=1,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="projects",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="所属用户",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='ProjectLog',
+            name="ProjectLog",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('action', models.SmallIntegerField(choices=[(0, '签字'), (1, '审核'), (2, '协助申请'), (3, '工作日志'), (4, '设计报价'), (5, '发货')], default=0, verbose_name='行为')),
-                ('content', models.TextField(verbose_name='内容')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='创建时间')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='更新时间')),
-                ('attatchment', models.ManyToManyField(to='users.Document', verbose_name='附件')),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='logs', to='users.Project', verbose_name='所属项目')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "action",
+                    models.SmallIntegerField(
+                        choices=[
+                            (0, "签字"),
+                            (1, "审核"),
+                            (2, "协助申请"),
+                            (3, "工作日志"),
+                            (4, "设计报价"),
+                            (5, "发货"),
+                        ],
+                        default=0,
+                        verbose_name="行为",
+                    ),
+                ),
+                ("content", models.TextField(verbose_name="内容")),
+                (
+                    "created",
+                    models.DateTimeField(auto_now_add=True, verbose_name="创建时间"),
+                ),
+                ("updated", models.DateTimeField(auto_now=True, verbose_name="更新时间")),
+                (
+                    "attatchment",
+                    models.ManyToManyField(to="users.Document", verbose_name="附件"),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="logs",
+                        to="users.Project",
+                        verbose_name="所属项目",
+                    ),
+                ),
             ],
         ),
         migrations.AlterUniqueTogether(
-            name='profile',
-            unique_together=set([('user',)]),
+            name="profile", unique_together=set([("user",)])
         ),
     ]

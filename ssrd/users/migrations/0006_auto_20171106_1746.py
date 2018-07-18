@@ -8,14 +8,12 @@ import jsonfield.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0005_auto_20171106_1636'),
-    ]
+    dependencies = [("users", "0005_auto_20171106_1636")]
 
     operations = [
         migrations.AlterField(
-            model_name='projectlog',
-            name='content',
-            field=jsonfield.fields.JSONField(verbose_name='内容'),
-        ),
+            model_name="projectlog",
+            name="content",
+            field=jsonfield.fields.JSONField(verbose_name="内容"),
+        )
     ]

@@ -8,18 +8,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0020_project_company'),
-        ('home', '0014_auto_20171126_1655'),
+        ("users", "0020_project_company"),
+        ("home", "0014_auto_20171126_1655"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='job',
-            name='attatchment',
-        ),
+        migrations.RemoveField(model_name="job", name="attatchment"),
         migrations.AddField(
-            model_name='job',
-            name='attatchment',
-            field=models.ManyToManyField(to='users.Documents', verbose_name='附件'),
+            model_name="job",
+            name="attatchment",
+            field=models.ManyToManyField(to="users.Documents", verbose_name="附件"),
         ),
     ]

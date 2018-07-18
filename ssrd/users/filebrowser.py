@@ -6,14 +6,15 @@ from ssrd.contrib import APIView, UnAuthView, V, ViewSet
 
 
 base = const.MediaUrl
+
+
 class Api(object):
     resource = base + "/api/resource/"
     users = base + "/api/users/"
-    auth = base + '/api/auth/get'
+    auth = base + "/api/auth/get"
 
 
 class BaseFileBrowser(object):
-
     def create(self, path):
         return requests.post(f"{Api.resource}/{path}", headers=self.headers)
 
@@ -22,11 +23,11 @@ class BaseFileBrowser(object):
 
     def auth(self, project=None, identify=None):
         if project:
-            identify = {'username': project.name, 'password': f'{project.id}'}
+            identify = {"username": project.name, "password": f"{project.id}"}
         return requests.get(f"{Api.auth}", json=identify).text
 
     def createUser(self, project):
-        token = self.auth(identify=dict(username='admin', password='admin'))
+        token = self.auth(identify=dict(username="admin", password="admin"))
         data = {
             "what": "user",
             "which": "new",
@@ -48,6 +49,9 @@ class BaseFileBrowser(object):
                 "viewMode": "mosaic",
             },
         }
-        return requests.post(f"{Api.users}", headers={'Authorization': token}, json=data)
+        return requests.post(
+            f"{Api.users}", headers={"Authorization": token}, json=data
+        )
 
-FileBrowser = BaseFileBrowser() 
+
+FileBrowser = BaseFileBrowser()

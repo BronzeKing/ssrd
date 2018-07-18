@@ -27,8 +27,7 @@ class RecruitmentCategory(models.Model):
 
 class Category(models.Model):
     name = models.CharField("产品类别", max_length=50)
-    parent = models.ForeignKey(
-        "self", null=True, blank=True, on_delete=models.CASCADE)
+    parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
     created = models.DateTimeField("创建时间", auto_now_add=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
@@ -38,7 +37,7 @@ class Category(models.Model):
     __repr__ = __str__
 
     class Meta:
-        unique_together = ['name', 'parent']
+        unique_together = ["name", "parent"]
 
 
 class AboutUs(models.Model):
@@ -47,11 +46,11 @@ class AboutUs(models.Model):
     address = models.CharField("联系地址", max_length=100)
     email = models.EmailField("邮箱")
     postcode = models.CharField("邮编", max_length=10)
-    tel = models.CharField("电话", max_length=20, default='')
-    fax = models.CharField("传真", max_length=20, default='')
+    tel = models.CharField("电话", max_length=20, default="")
+    fax = models.CharField("传真", max_length=20, default="")
 
     def __str__(self):
-        return '关于我们'
+        return "关于我们"
 
     __repr__ = __str__
 
@@ -59,15 +58,16 @@ class AboutUs(models.Model):
 class FAQs(models.Model):
     question = models.TextField("问题", db_index=True)
     answer = models.TextField("回答")
-    rank = models.IntegerField('排序', default=100)
+    rank = models.IntegerField("排序", default=100)
     created = models.DateTimeField("创建时间", auto_now_add=True)
 
     def __str__(self):
-        return '<常见问答: ({}, {})>'.format(self.questioin, self.answer)
+        return "<常见问答: ({}, {})>".format(self.questioin, self.answer)
 
 
 class FeedBack(models.Model):
     """意见反馈"""
+
     name = models.CharField("姓名", max_length=50)
     mobile = models.CharField("手机号码", blank=True, max_length=11)
     email = models.EmailField("邮箱", blank=True)
@@ -75,8 +75,9 @@ class FeedBack(models.Model):
     created = models.DateTimeField("创建时间", auto_now_add=True)
 
     def __str__(self):
-        return '<意见反馈({}, {}, {}): {}>'.format(self.name, self.mobile,
-                                               self.meail, self.content)
+        return "<意见反馈({}, {}, {}): {}>".format(
+            self.name, self.mobile, self.meail, self.content
+        )
 
     __repr__ = __str__
 
@@ -85,13 +86,14 @@ class ServiceNet(models.Model):
     name = models.CharField("网点名称", max_length=50)
     linkman = models.CharField("联系人", max_length=50)
     mobile = models.CharField("联系手机", max_length=11)
-    email = models.EmailField(_('email address'))
+    email = models.EmailField(_("email address"))
     address = models.CharField("联系地址", max_length=100)
-    rank = models.IntegerField('排序', default=100)
+    rank = models.IntegerField("排序", default=100)
 
     def __str__(self):
-        return '<(服务网点, ({}, {}, {}, {}, {})>'.format(
-            self.name, self.linkman, self.mobile, self.email, self.address)
+        return "<(服务网点, ({}, {}, {}, {}, {})>".format(
+            self.name, self.linkman, self.mobile, self.email, self.address
+        )
 
     __repr__ = __str__
 
@@ -99,36 +101,36 @@ class ServiceNet(models.Model):
 class ServicePromise(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
-    rank = models.IntegerField('排序', default=100)
+    rank = models.IntegerField("排序", default=100)
 
     def __str__(self):
-        return '<服务承诺: ({}, {})>'.format(self.title, self.content)
+        return "<服务承诺: ({}, {})>".format(self.title, self.content)
 
     __repr__ = __str__
 
 
 class Recruitment(models.Model):
     """招贤纳士"""
+
     name = models.CharField("职位名称", max_length=100, db_index=True)
     salary = models.CharField("薪资待遇", max_length=50)
     jobDetail = models.TextField("职位简介")
     jobResponsibilities = models.TextField("岗位职责")
-    address = models.CharField("地点", max_length=100, default='')
-    number = models.CharField("招聘数量", max_length=20, default='1')
+    address = models.CharField("地点", max_length=100, default="")
+    number = models.CharField("招聘数量", max_length=20, default="1")
     # category = models.ForeignKey(
     # RecruitmentCategory, verbose_name="职位类别")
     created = models.DateTimeField("创建时间", auto_now_add=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
     def __str__(self):
-        return '<招贤纳士: {}>'.format(self.name)
+        return "<招贤纳士: {}>".format(self.name)
 
     __repr__ = __str__
 
 
 def defaultCategory():
-    return Category.objects.first() or Category.objects.get_or_create(
-        name='')[0]
+    return Category.objects.first() or Category.objects.get_or_create(name="")[0]
 
 
 class Product(models.Model):
@@ -139,12 +141,13 @@ class Product(models.Model):
     pictures = models.ManyToManyField("home.Images", verbose_name="产品插图")
     background = models.ImageField("背景图片")
     category = models.ForeignKey(
-        Category, verbose_name="产品分类", on_delete=models.SET(defaultCategory))
+        Category, verbose_name="产品分类", on_delete=models.SET(defaultCategory)
+    )
     created = models.DateTimeField("创建时间", auto_now_add=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
     def __str__(self):
-        return '<产品: {}, {}>'.format(self.name, 'self.category.name')
+        return "<产品: {}, {}>".format(self.name, "self.category.name")
 
     __repr__ = __str__
 
@@ -177,13 +180,13 @@ class IndustryLink(models.Model):
 
 class System(models.Model):
     name = models.CharField("名称", max_length=255)
-    summary = models.TextField("简介摘要", default='')
+    summary = models.TextField("简介摘要", default="")
     picture = models.ImageField("简介摘要插图")
-    introduction = models.TextField("系统介绍", default='')
+    introduction = models.TextField("系统介绍", default="")
     pictures = models.ManyToManyField("home.Images", verbose_name="系统插图")
-    systemFeature = models.TextField("系统特性", default='')
+    systemFeature = models.TextField("系统特性", default="")
     structure = models.ImageField("系统结构", null=True)
-    funtionalFeature = models.TextField("功能特性", default='')
+    funtionalFeature = models.TextField("功能特性", default="")
     rank = models.IntegerField("排序", default=100)
 
     def __str__(self):
@@ -201,8 +204,7 @@ class News(models.Model):
     rank = models.IntegerField("排序", default=100)
 
     def __str__(self):
-        return "<News: {}, {}   {}>".format(self.title, self.content,
-                                            self.created)
+        return "<News: {}, {}   {}>".format(self.title, self.content, self.created)
 
     __repr__ = __str__
 
@@ -235,17 +237,19 @@ class Documents(models.Model):
 
 class SystemCase(models.Model):
     """系统案例"""
+
     title = models.CharField("标题", max_length=255)
     summary = models.TextField("摘要")
     description = models.TextField("描述")
     address = models.CharField("工程地址", max_length=100)
     content = models.TextField("工程内容")
     picture = models.ImageField("背景图片")
-    created = models.DateField("项目时间", default='2017-09-15')
+    created = models.DateField("项目时间", default="2017-09-15")
     updated = models.DateTimeField("更新时间", auto_now=True)
     pictures = models.ManyToManyField("home.Images", verbose_name="系统案例插图")
     systems = models.ManyToManyField(
-        "home.System", verbose_name="系统", related_name="systemCases")
+        "home.System", verbose_name="系统", related_name="systemCases"
+    )
 
     def __str__(self):
         return "<SystemCase: {}   {}>".format(self.title, self.summary)
@@ -255,6 +259,7 @@ class SystemCase(models.Model):
 
 class Terminal(models.Model):
     """系统案例"""
+
     name = models.CharField("名称", max_length=255)
     link = models.CharField("链接", max_length=255)
     picture = models.ImageField("背景图片")
@@ -265,27 +270,32 @@ class Terminal(models.Model):
     __repr__ = __str__
 
 
-
 class ExhibitionTag(models.Model):
     name = models.CharField("名称", max_length=255, unique=True)
-    created = models.DateField("项目时间", default='2017-09-15')
+    created = models.DateField("项目时间", default="2017-09-15")
     updated = models.DateTimeField("更新时间", auto_now=True)
-    picture = models.ImageField('背景图片')
+    picture = models.ImageField("背景图片")
 
     def __str__(self):
         return "<ExhibitionTag: {}   {}>".format(self.name, self.updated)
 
     __repr__ = __str__
 
+
 class Exhibition(models.Model):
     """
     展会协助
     """
+
     tag = models.ForeignKey(
-        ExhibitionTag, on_delete=models.CASCADE, verbose_name='展会协助', related_name='exhibitions')
-    picture = models.ImageField('背景图片')
+        ExhibitionTag,
+        on_delete=models.CASCADE,
+        verbose_name="展会协助",
+        related_name="exhibitions",
+    )
+    picture = models.ImageField("背景图片")
     name = models.CharField("名称", max_length=255)
-    created = models.DateField("项目时间", default='2017-09-15')
+    created = models.DateField("项目时间", default="2017-09-15")
     updated = models.DateTimeField("更新时间", auto_now=True)
 
     def __str__(self):

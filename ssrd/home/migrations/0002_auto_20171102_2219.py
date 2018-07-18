@@ -7,55 +7,33 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0002_auto_20171102_2219'),
-        ('home', '0001_initial'),
-    ]
+    dependencies = [("users", "0002_auto_20171102_2219"), ("home", "0001_initial")]
 
     operations = [
         migrations.CreateModel(
-            name='Images',
+            name="Images",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to='', verbose_name='图片')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("image", models.ImageField(upload_to="", verbose_name="图片")),
             ],
         ),
-        migrations.RemoveField(
-            model_name='product',
-            name='category',
-        ),
-        migrations.RemoveField(
-            model_name='productimages',
-            name='obj',
-        ),
-        migrations.RemoveField(
-            model_name='systemcase',
-            name='systems',
-        ),
-        migrations.RemoveField(
-            model_name='systemcasepicture',
-            name='obj',
-        ),
-        migrations.RemoveField(
-            model_name='systempicture',
-            name='obj',
-        ),
-        migrations.DeleteModel(
-            name='Product',
-        ),
-        migrations.DeleteModel(
-            name='ProductImages',
-        ),
-        migrations.DeleteModel(
-            name='System',
-        ),
-        migrations.DeleteModel(
-            name='SystemCase',
-        ),
-        migrations.DeleteModel(
-            name='SystemCasePicture',
-        ),
-        migrations.DeleteModel(
-            name='SystemPicture',
-        ),
+        migrations.RemoveField(model_name="product", name="category"),
+        migrations.RemoveField(model_name="productimages", name="obj"),
+        migrations.RemoveField(model_name="systemcase", name="systems"),
+        migrations.RemoveField(model_name="systemcasepicture", name="obj"),
+        migrations.RemoveField(model_name="systempicture", name="obj"),
+        migrations.DeleteModel(name="Product"),
+        migrations.DeleteModel(name="ProductImages"),
+        migrations.DeleteModel(name="System"),
+        migrations.DeleteModel(name="SystemCase"),
+        migrations.DeleteModel(name="SystemCasePicture"),
+        migrations.DeleteModel(name="SystemPicture"),
     ]

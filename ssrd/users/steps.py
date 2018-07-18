@@ -1,6 +1,7 @@
 from ssrd import const
 import typing
 from .models import Config as AuditModel, User, Message, Group
+
 projectStatus = const.projectStatus
 
 
@@ -14,13 +15,10 @@ def getAudits() -> typing.List[User]:
 
 
 def createMessage(user: User, status: int):
-    groupNames = const.StatusByRole.get(str(status), {}).get('group', [])
+    groupNames = const.StatusByRole.get(str(status), {}).get("group", [])
     users = list(User.objects.filter(group__name__in=groupNames))
     users += [user]
-    objs = [
-        Message(title='test', content='content', userId=user.id)
-        for user in users
-    ]
+    objs = [Message(title="test", content="content", userId=user.id) for user in users]
     Message.objects.bulk_create(objs)
 
 
@@ -60,9 +58,9 @@ class Step(object):
     def ok(self, user: User) -> bool:
         return True
 
-    def next(self, user: User) -> 'Step':
+    def next(self, user: User) -> "Step":
         step = self.step
-        if self.name == '审核':
+        if self.name == "审核":
             audit = Audit.next(user)
             if audit:
                 return self
@@ -70,8 +68,8 @@ class Step(object):
         createMessage(user, step)
         return Step(step)
 
-    def prev(self, user: User) -> 'Step':
-        if self.name == '驳回':
+    def prev(self, user: User) -> "Step":
+        if self.name == "驳回":
             audit = Audit.prev(user)
             if audit:
                 return self
@@ -79,20 +77,20 @@ class Step(object):
         createMessage(user, step)
         return Step(step)
 
-    def __call__(self, user: User, action: str) -> 'Step':
+    def __call__(self, user: User, action: str) -> "Step":
         actionName = const.ProjectLogMapReverse[int(action)]
         if actionName not in projectStatus.values():
             return self
-        if actionName == '驳回':
+        if actionName == "驳回":
             return self.prev(user)
         return self.next(user)
 
     @classmethod
-    def steps(cls, user: User) -> typing.List['Step']:
-        '''
+    def steps(cls, user: User) -> typing.List["Step"]:
+        """
         @group 用户组
         @role 用户权限
-        '''
+        """
         result = []
         for _step in projectStatus:
             step = cls(_step)

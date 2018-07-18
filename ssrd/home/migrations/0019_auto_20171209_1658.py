@@ -8,14 +8,16 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0018_auto_20171209_1637'),
-    ]
+    dependencies = [("home", "0018_auto_20171209_1637")]
 
     operations = [
         migrations.AlterField(
-            model_name='product',
-            name='category',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='home.Category', verbose_name='产品分类'),
-        ),
+            model_name="product",
+            name="category",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                to="home.Category",
+                verbose_name="产品分类",
+            ),
+        )
     ]

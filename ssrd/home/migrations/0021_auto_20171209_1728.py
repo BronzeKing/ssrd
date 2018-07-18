@@ -8,14 +8,16 @@ import ssrd.home.models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0020_auto_20171209_1718'),
-    ]
+    dependencies = [("home", "0020_auto_20171209_1718")]
 
     operations = [
         migrations.AlterField(
-            model_name='product',
-            name='category',
-            field=models.ForeignKey(on_delete=models.SET(ssrd.home.models.defaultCategory), to='home.Category', verbose_name='产品分类'),
-        ),
+            model_name="product",
+            name="category",
+            field=models.ForeignKey(
+                on_delete=models.SET(ssrd.home.models.defaultCategory),
+                to="home.Category",
+                verbose_name="产品分类",
+            ),
+        )
     ]

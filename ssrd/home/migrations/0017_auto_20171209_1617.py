@@ -8,18 +8,18 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0016_auto_20171209_1608'),
-    ]
+    dependencies = [("home", "0016_auto_20171209_1608")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='category',
-            name='parent_id',
-        ),
+        migrations.RemoveField(model_name="category", name="parent_id"),
         migrations.AddField(
-            model_name='category',
-            name='parent',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='home.Category'),
+            model_name="category",
+            name="parent",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="home.Category",
+            ),
         ),
     ]

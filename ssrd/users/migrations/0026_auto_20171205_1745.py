@@ -9,24 +9,44 @@ import ssrd.users.models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0025_auto_20171128_2144'),
-    ]
+    dependencies = [("users", "0025_auto_20171128_2144")]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='structure',
-            field=models.ImageField(default='/Users/huangjun/Documents/ssrd/ssrd/static/images/avator.png', upload_to='', verbose_name='系统结构'),
+            model_name="profile",
+            name="structure",
+            field=models.ImageField(
+                default="/Users/huangjun/Documents/ssrd/ssrd/static/images/avator.png",
+                upload_to="",
+                verbose_name="系统结构",
+            ),
         ),
         migrations.AlterField(
-            model_name='authorizecode',
-            name='code',
-            field=models.CharField(default=functools.partial(ssrd.users.models.generate_key, *(), **{'bit': 6}), max_length=40, verbose_name='授权码'),
+            model_name="authorizecode",
+            name="code",
+            field=models.CharField(
+                default=functools.partial(
+                    ssrd.users.models.generate_key, *(), **{"bit": 6}
+                ),
+                max_length=40,
+                verbose_name="授权码",
+            ),
         ),
         migrations.AlterField(
-            model_name='projectlog',
-            name='action',
-            field=models.SmallIntegerField(choices=[(1, '签字'), (2, '审核'), (3, '协助申请'), (4, '工作日志'), (5, '设计报价'), (6, '发货'), (7, '驳回')], default=0, verbose_name='行为'),
+            model_name="projectlog",
+            name="action",
+            field=models.SmallIntegerField(
+                choices=[
+                    (1, "签字"),
+                    (2, "审核"),
+                    (3, "协助申请"),
+                    (4, "工作日志"),
+                    (5, "设计报价"),
+                    (6, "发货"),
+                    (7, "驳回"),
+                ],
+                default=0,
+                verbose_name="行为",
+            ),
         ),
     ]

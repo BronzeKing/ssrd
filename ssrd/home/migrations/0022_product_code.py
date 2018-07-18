@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('home', '0021_auto_20171209_1728'),
-    ]
+    dependencies = [("home", "0021_auto_20171209_1728")]
 
     operations = [
         migrations.AddField(
-            model_name='product',
-            name='code',
-            field=models.CharField(default='', max_length=50, verbose_name='产品编号'),
-        ),
+            model_name="product",
+            name="code",
+            field=models.CharField(default="", max_length=50, verbose_name="产品编号"),
+        )
     ]
