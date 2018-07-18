@@ -1,4 +1,4 @@
-FROM python:3.5
+FROM python:3.6
 
 ENV PYTHONUNBUFFERED 1
 RUN sed -i s@archive.ubuntu.com@mirrors.aliyun.com@g /etc/apt/sources.list
