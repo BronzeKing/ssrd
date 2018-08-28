@@ -1,6 +1,9 @@
-from ssrd import const
 import typing
-from .models import Config as AuditModel, User, Message, Group
+
+from ssrd import const
+
+from .models import Config as AuditModel
+from .models import Group, Message, Project, User
 
 projectStatus = const.projectStatus
 
@@ -14,11 +17,21 @@ def getAudits() -> typing.List[User]:
     return users
 
 
-def createMessage(user: User, status: int):
+messageTpl = """尊敬的{}:
+    项目{}需要您的处理
+"""
+
+
+def createMessage(user: User, status: int, project: Project):
     groupNames = const.StatusByRole.get(str(status), {}).get("group", [])
     users = list(User.objects.filter(group__name__in=groupNames))
     users += [user]
-    objs = [Message(title="test", content="content", userId=user.id) for user in users]
+    actionStr = const.ProjectStatus[project.status]
+    content = messageTpl.format(user.username, project.name)
+    objs = [
+        Message(title=f"{project.name} {actionStr}通知", content=content, userId=user.id)
+        for user in users
+    ]
     Message.objects.bulk_create(objs)
 
 
@@ -56,34 +69,39 @@ class Step(object):
         self.name = projectStatus[step]
 
     def ok(self, user: User) -> bool:
-        return True
+        """
+        该用户对此状态的项目是否有权限
+        """
+        return user.group.name in const.StatusByRole[str(self.step)]["group"]
 
-    def next(self, user: User) -> "Step":
+    def next(self, user: User, project: Project = None) -> "Step":
         step = self.step
         if self.name == "审核":
             audit = Audit.next(user)
             if audit:
                 return self
         step = self.step + 1
-        createMessage(user, step)
+        if project:
+            createMessage(user, step, project)
         return Step(step)
 
-    def prev(self, user: User) -> "Step":
+    def prev(self, user: User, project: Project = None) -> "Step":
         if self.name == "驳回":
             audit = Audit.prev(user)
             if audit:
                 return self
         step = self.step - 1
-        createMessage(user, step)
+        if project:
+            createMessage(user, step, project)
         return Step(step)
 
-    def __call__(self, user: User, action: str) -> "Step":
+    def __call__(self, user: User, action: str, project: Project = None) -> "Step":
         actionName = const.ProjectLogMapReverse[int(action)]
         if actionName not in projectStatus.values():
             return self
         if actionName == "驳回":
-            return self.prev(user)
-        return self.next(user)
+            return self.prev(user, project)
+        return self.next(user, project)
 
     @classmethod
     def steps(cls, user: User) -> typing.List["Step"]:

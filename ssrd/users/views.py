@@ -349,7 +349,7 @@ class ProjectViewSet(ViewSet):
 
         user = request.user
         query = dict()
-        query.update(user=user)  # 内部员工获取全量项目
+        user.group.type and user.role > 0 and query.update(user=user)  # 内部员工获取全量项目
         status = [x.step for x in Step.steps(user)]
         if "status" in kwargs:
             status = set(status + kwargs["status"])
@@ -405,7 +405,7 @@ class ProjectViewSet(ViewSet):
             user=request.user, group=group, **kwargs
         )
         attatchment and obj.attatchment.add(*attatchment)
-        FileBrowser(request).createUser(project)
+        FileBrowser.createUser(obj)
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400(
@@ -525,10 +525,13 @@ class ProjectLogViewSet(ViewSet):
         ]
     )
     def create(self, request, project=None, action=None, attatchment=None, **kwargs):
-        """新建项目日志"""
+        """
+        新建项目日志
+        content: {date: '', content: ''}
+        """
         obj = ProjectLog.objects.create(project=project, action=action, content=kwargs)
         obj.attatchment.add(*(attatchment or []))
-        project.status = Step(project.status)(request.user, action).step
+        project.status = Step(project.status)(request.user, action, project=project).step
         project.save()
         return self.result_class(data=obj)(serialize=True)
 

@@ -18,7 +18,7 @@ STATUS = ((-1, "全部"), (0, "停用"), (1, "启用"))
 ProjectStatus = (
     (1, "下单"),
     (2, "转发"),  # 转发已经完成
-    (3, "设计报价"),
+    (3, "设计方案"),
     (4, "审核"),  # 审核链
     (5, "发货"),  # 仓库发货
     (6, "实施"),  # 工程部实施
@@ -28,9 +28,10 @@ ProjectStatus = (
 
 # 部门的项目权限
 StatusByRole = {
+    "0": {"group": ["商务部", "管理员"]},
     "1": {"group": ["商务部"]},
     "2": {"group": ["设计部"]},
-    "3": {"group": ["设计部"]},
+    "3": {"group": ["管理员"]},
     "4": {"group": ["管理员"]},
     "5": {"group": ["商务部"]},
     "6": {"group": ["仓管"]},
@@ -40,7 +41,7 @@ StatusByRole = {
 }
 projectStatus = dict(ProjectStatus)  # 0: '下单'
 projectStatusReverse = {y: x for x, y in ProjectStatus}  # '下单': 0
-StatusInRole = dict()
+StatusInRole = dict()  # {'商务部': [1, 5, 9]}
 for action, value in StatusByRole.items():
     for g in value["group"]:
         if g not in StatusInRole:
@@ -95,7 +96,7 @@ ProjectLog = (
     (2, "审核"),
     (3, "协助申请"),
     (4, "工作日志"),
-    (5, "设计报价"),
+    (5, "设计方案"),
     (6, "发货"),
     (7, "驳回"),
     (8, "转发"),

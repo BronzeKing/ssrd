@@ -21,7 +21,6 @@ django-crispy-forms==1.6.1
 django-model-utils==3.0.0
 
 # Images
-Pillow==4.2.1
 
 # Password storage
 argon2-cffi==16.3.0
@@ -59,4 +58,4 @@ djangorestframework-jwt
 python-dateutil
 jsonfield
 flake8
-https://github.com/wilslee/aliyun-sms/archive/master.zip
+#https://github.com/wilslee/aliyun-sms/archive/master.zip
