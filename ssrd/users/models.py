@@ -108,12 +108,12 @@ class User(AbstractBaseUser):
     role = models.SmallIntegerField("用户权限", choices=const.ROLES, default=2)
     created = models.DateTimeField(_("date joined"), default=timezone.now)
     status = models.SmallIntegerField("状态", choices=const.STATUS, default=1)
-    group = models.ForeignKey(
-        "users.Group",
-        default=defaultUserGroup,
-        on_delete=models.SET_DEFAULT,
-        related_name="users",
-    )
+    # group = models.ForeignKey(
+        # "users.Group",
+        # default=defaultUserGroup,
+        # on_delete=models.SET_DEFAULT,
+        # related_name="users",
+    # )
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "mobile"
     REQUIRED_FIELDS = []

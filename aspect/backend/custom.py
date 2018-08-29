@@ -21,7 +21,7 @@ class Backend(object):
             group = Group.objects.filter(name=account)
             if group:
                 return group[0].users.first()
-        user = User.objects.filter(Q(username=account) | Q(email=account) | Q(mobile=account)).select_related('profile', 'group')
+        user = User.objects.filter(Q(username=account) | Q(email=account) | Q(mobile=account)).select_related('profile')
         for u in user:
             if u.check_password(password):
                 return u
