@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             model_name="user",
             name="group",
             field=models.ForeignKey(
-                default=ssrd.users.models.defaultUserGroup,
+                default=0,
                 on_delete=django.db.models.deletion.SET_DEFAULT,
                 to="users.Group",
             ),

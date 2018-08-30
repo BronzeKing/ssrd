@@ -345,11 +345,13 @@ class ProjectViewSet(ViewSet):
     def list(self, request, status=None, group=None, search=None, **kwargs):
         """
         获取受登录用户有权限的项目
+        内部员工获取全量的 && 处于有权限的状态的项目
+        外部员工获取全量的有权限的项目
         """
 
         user = request.user
         query = dict()
-        user.group.type and user.role > 0 and query.update(user=user)  # 内部员工获取全量项目
+        user.group.isCustom() and user.role > 0 and query.update(user=user)  # 内部员工获取全量项目
         status = [x.step for x in Step.steps(user)]
         if "status" in kwargs:
             status = set(status + kwargs["status"])

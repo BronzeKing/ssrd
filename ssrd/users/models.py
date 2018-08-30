@@ -1,92 +1,28 @@
-import os
 import binascii
+import os
 from functools import partial
 
-from django.utils import timezone
-from django.utils.crypto import get_random_string
-from django.contrib.auth.models import AbstractBaseUser
+from django.conf import settings
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group
+from django.contrib.postgres.fields import JSONField
+from django.core.files import File
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.conf import settings
-from django.core.files import File
-from django.contrib.postgres.fields import JSONField
 
 from ssrd import const
 
+def isCustom(self):
+    return self.name == '客户'
+
+
+Group.isCustom = isCustom
 
 def generate_key(bit=None):
     if not bit:
         return binascii.hexlify(os.urandom(20)).decode()
     return binascii.hexlify(os.urandom(20)).decode()[:bit]
-
-
-class Group(models.Model):
-    name = models.CharField("名称", max_length=50, unique=True)
-    created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
-    updated = models.DateTimeField("更新时间", auto_now=True)
-
-    @property
-    def type(self):
-        return self.name == "客户" and 1 or 0
-
-    def __str__(self):
-        return "<{}: {}>".format(self.name, self.created)
-
-    __repr__ = __str__
-
-
-class BaseUserManager(models.Manager):
-    @classmethod
-    def normalize_email(cls, email):
-        """
-        Normalize the email address by lowercasing the domain part of it.
-        """
-        email = email or ""
-        try:
-            email_name, domain_part = email.strip().rsplit("@", 1)
-        except ValueError:
-            pass
-        else:
-            email = "@".join([email_name, domain_part.lower()])
-        return email
-
-    def make_random_password(
-        self,
-        length=10,
-        allowed_chars="abcdefghjkmnpqrstuvwxyz" "ABCDEFGHJKLMNPQRSTUVWXYZ" "23456789",
-    ):
-        """
-        Generate a random password with the given length and given
-        allowed_chars. The default value of allowed_chars does not have "I" or
-        "O" or letters and digits that look similar -- just to avoid confusion.
-        """
-        return get_random_string(length, allowed_chars)
-
-    def get_by_natural_key(self, username):
-        return self.get(**{self.model.USERNAME_FIELD: username})
-
-    def _create_user(self, username, email, password, **extra_fields):
-        """
-        Create and save a user with the given username, email, and password.
-        """
-        if not username:
-            raise ValueError("The given username must be set")
-        email = self.normalize_email(email)
-        username = self.model.normalize_username(username)
-        user = self.model(username=username, email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_user(self, username=None, email=None, password=None, **extra_fields):
-        username = username or extra_fields.get("mobile", "")
-        return self._create_user(username, email, password, **extra_fields)
-
-
-def defaultUserGroup():
-    obj, ok = Group.objects.get_or_create(name="客户")
-    return obj.id
 
 
 def defaultProjectGroup():
@@ -108,12 +44,18 @@ class User(AbstractBaseUser):
     role = models.SmallIntegerField("用户权限", choices=const.ROLES, default=2)
     created = models.DateTimeField(_("date joined"), default=timezone.now)
     status = models.SmallIntegerField("状态", choices=const.STATUS, default=1)
-    # group = models.ForeignKey(
-        # "users.Group",
-        # default=defaultUserGroup,
-        # on_delete=models.SET_DEFAULT,
-        # related_name="users",
-    # )
+    group = models.ForeignKey(
+        Group,
+        verbose_name=_('groups'),
+        blank=True,
+        help_text=_(
+            'The groups this user belongs to. A user will get all permissions '
+            'granted to each of their groups.'
+        ),
+        related_name="user_set",
+        related_query_name="user",
+        on_delete=models.CASCADE
+    )
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "mobile"
     REQUIRED_FIELDS = []

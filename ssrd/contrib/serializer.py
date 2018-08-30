@@ -43,7 +43,6 @@ class GroupSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    group = GroupSerializer()
 
     class Meta:
         exclude = ["password"]
