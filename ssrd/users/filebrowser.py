@@ -53,5 +53,8 @@ class BaseFileBrowser(object):
             f"{Api.users}", headers={"Authorization": token}, json=data
         )
 
+    def createFile(self, project, type, file):
+        pass
+
 
 FileBrowser = BaseFileBrowser()

@@ -774,8 +774,6 @@ class DocumentsViewSet(ViewSet):
     文档
     """
 
-    serializer_class = Serializer(m.Documents)
-
     @para_ok_or_400(
         [
             {"name": "search", "description": "搜索"},
@@ -802,17 +800,19 @@ class DocumentsViewSet(ViewSet):
     @para_ok_or_400(
         [
             {"name": "file", "description": "文件", "type": "file", "method": V.file},
+            {
+                "name": "projectId",
+                "method": V.project,
+                "description": "所属项目ID",
+                "replace": "project",
+            },
             {"name": "type", **V.make(const.DOCUMENTS)},
         ]
     )
-    def create(self, request, file=None, type=None, **kwargs):
+    def create(self, request, file=None, type=None, project=None, **kwargs):
         """新建文档"""
-        file = request.data.get("file")
-        if not file:
-            return self.result_class().error("file", "不能为空")
-        file = File(file)
-        obj = m.Documents.objects.create(name=file.name, file=file, type=type)
-        return self.result_class(data=obj)(serialize=True)
+        FileBrowser.createFile(project, type, file)
+        return self.result_class(data={})()
 
     @para_ok_or_400(
         [{"name": "pk", "description": "ID", "type": "file", "method": V.documents}]
