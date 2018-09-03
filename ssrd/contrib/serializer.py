@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.conf import settings
 from ssrd.users.models import User, Group
 from ssrd import const
+from ssrd.users.filebrowser import FileBrowser
 
 ProjectType = dict(const.ProjectType)
 _methodMap = {
@@ -13,6 +14,19 @@ _methodMap = {
 def to_repr(data):
     return {x: _methodMap.get(x, lambda x: x)(y) for x, y in data.items()}
 
+
+
+class ProjectLogSerializer(serializers.BaseSerializer):
+    def to_representation(self, o):
+        return dict(
+            project=ProjectSerializer(o.project).data,
+            id=o.id,
+            created=o.created,
+            updated=o.updated,
+            action=o.action,
+            content=o.content,
+            attatchment=[FileBrowser.getFile(o.project, x) for x in o.attatchment.all()]
+        )
 
 class ProjectSerializer(serializers.BaseSerializer):
     def to_representation(self, o):

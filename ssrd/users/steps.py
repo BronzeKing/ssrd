@@ -76,7 +76,6 @@ class Step(object):
 
     def next(self, user: User, project: Project = None) -> "Step":
         step = self.step
-        import ipdb; ipdb.set_trace(context=30)
         if self.name == "审核":
             audit = Audit.next(user)
             if audit:

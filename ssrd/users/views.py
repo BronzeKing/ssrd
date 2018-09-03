@@ -13,7 +13,7 @@ from rest_framework_jwt.settings import api_settings
 
 from ssrd import const
 from ssrd.contrib import APIView, UnAuthView, V, ViewSet
-from ssrd.contrib.serializer import ProjectSerializer, Serializer, UserSerializer
+from ssrd.contrib.serializer import ProjectSerializer, Serializer, UserSerializer, ProjectLogSerializer
 from ssrd.users import models as m
 from ssrd.users.steps import Step
 
@@ -483,8 +483,8 @@ class ProjectViewSet(ViewSet):
 
 
 class ProjectLogViewSet(ViewSet):
-    serializer_class = Serializer(ProjectLog, dep=2)
     permission_classes = (IsAuthenticated,)
+    serializer_class = ProjectLogSerializer
 
     @para_ok_or_400(
         [
@@ -505,6 +505,7 @@ class ProjectLogViewSet(ViewSet):
         project and query.update(project=project)
         action and query.update(action=action)
         obj = ProjectLog.objects.filter(**query).order_by("-updated")
+        dataset = [dict()]
         return self.result_class(data=obj)(serialize=True)
 
     @para_ok_or_400(
@@ -773,6 +774,7 @@ class DocumentsViewSet(ViewSet):
     """
     文档
     """
+    serializer_class = Serializer(m.Documents, dep=0)
 
     @para_ok_or_400(
         [
@@ -811,8 +813,9 @@ class DocumentsViewSet(ViewSet):
     )
     def create(self, request, file=None, type=None, project=None, **kwargs):
         """新建文档"""
-        FileBrowser.createFile(project, type, file)
-        return self.result_class(data={})()
+        if project:  # 新建订单并不生成projectId
+            FileBrowser.createFile(project, type, file)
+        return self.result_class(data=dict(id=file.name))()
 
     @para_ok_or_400(
         [{"name": "pk", "description": "ID", "type": "file", "method": V.documents}]
