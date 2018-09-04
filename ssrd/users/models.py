@@ -159,8 +159,9 @@ class AuthorizeCode(models.Model):
 
     def generateUser(self):
         username = self.name
+        group = Group.objects.get(name='客户')
         self.user = User.objects.create(
-            username=username, email=self.name + "@mum5.cn", password=self.code
+            username=username, email=self.name + "@szssrd.com", password=self.code, group=group
         )
         return self
 
