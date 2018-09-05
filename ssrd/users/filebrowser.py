@@ -54,22 +54,24 @@ class BaseFileBrowser(object):
         )
 
     def createFile(self, project, type, file):
-        directory = dict(const.DOCUMENTS).get(type, '')
+        directory = dict(const.DOCUMENTS).get(type, "")
         self.createDirectory(project, directory)
-        with open(f'files/{project.name}/{directory}/{file.name}', 'wb') as fd:
+        with open(f"files/{project.name}/{directory}/{file.name}", "wb") as fd:
             fd.write(file.read())
 
     def createDirectory(self, project, name):
         token = self.auth(project)
         return requests.post(
-            f"{Api.resource}/{name}", headers={"Authorization": token, 'Content-Length': '0'})
+            f"{Api.resource}/{name}",
+            headers={"Authorization": token, "Content-Length": "0"},
+        )
 
     def getFile(self, project, directory, attatchment):
         token = self.auth(project)
-        directory = dict(const.DOCUMENTS).get(type, '')
-        api = f'{Api.resource}/{project.name}/{directory}/{file.name}'
+        directory = dict(const.DOCUMENTS).get(type, "")
+        api = f"{Api.resource}/{project.name}/{directory}/{file.name}"
         resposne = requests.get(api, headers={"Authorization": token}).json()
-        resposne['url'] = base + resposne['url']
+        resposne["url"] = base + resposne["url"]
         return resposne
 
 

@@ -7,19 +7,25 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auth', '0009_alter_user_last_name_max_length'),
-        ('users', '0052_auto_20180829_1157'),
+        ("auth", "0009_alter_user_last_name_max_length"),
+        ("users", "0052_auto_20180829_1157"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='user',
-            name='groups',
-        ),
+        migrations.RemoveField(model_name="user", name="groups"),
         migrations.AddField(
-            model_name='user',
-            name='groups',
-            field=models.ForeignKey(blank=True, default=1, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', on_delete=django.db.models.deletion.CASCADE, related_name='user_set', related_query_name='user', to='auth.Group', verbose_name='groups'),
+            model_name="user",
+            name="groups",
+            field=models.ForeignKey(
+                blank=True,
+                default=1,
+                help_text="The groups this user belongs to. A user will get all permissions granted to each of their groups.",
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="user_set",
+                related_query_name="user",
+                to="auth.Group",
+                verbose_name="groups",
+            ),
             preserve_default=False,
         ),
     ]

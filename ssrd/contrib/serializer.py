@@ -15,7 +15,6 @@ def to_repr(data):
     return {x: _methodMap.get(x, lambda x: x)(y) for x, y in data.items()}
 
 
-
 class ProjectLogSerializer(serializers.BaseSerializer):
     def to_representation(self, o):
         return dict(
@@ -25,8 +24,11 @@ class ProjectLogSerializer(serializers.BaseSerializer):
             updated=o.updated,
             action=o.action,
             content=o.content,
-            attatchment=[FileBrowser.getFile(o.project, x) for x in o.attatchment.all()]
+            attatchment=[
+                FileBrowser.getFile(o.project, x) for x in o.attatchment.all()
+            ],
         )
+
 
 class ProjectSerializer(serializers.BaseSerializer):
     def to_representation(self, o):

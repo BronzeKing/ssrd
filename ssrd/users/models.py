@@ -13,11 +13,13 @@ from django.utils.translation import ugettext_lazy as _
 
 from ssrd import const
 
+
 def isCustom(self):
-    return self.name == '客户'
+    return self.name == "客户"
 
 
 Group.isCustom = isCustom
+
 
 def generate_key(bit=None):
     if not bit:
@@ -46,15 +48,15 @@ class User(AbstractBaseUser):
     status = models.SmallIntegerField("状态", choices=const.STATUS, default=1)
     group = models.ForeignKey(
         Group,
-        verbose_name=_('groups'),
+        verbose_name=_("groups"),
         blank=True,
         help_text=_(
-            'The groups this user belongs to. A user will get all permissions '
-            'granted to each of their groups.'
+            "The groups this user belongs to. A user will get all permissions "
+            "granted to each of their groups."
         ),
         related_name="user_set",
         related_query_name="user",
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "mobile"
@@ -159,9 +161,12 @@ class AuthorizeCode(models.Model):
 
     def generateUser(self):
         username = self.name
-        group = Group.objects.get(name='客户')
+        group = Group.objects.get(name="客户")
         self.user = User.objects.create(
-            username=username, email=self.name + "@szssrd.com", password=self.code, group=group
+            username=username,
+            email=self.name + "@szssrd.com",
+            password=self.code,
+            group=group,
         )
         return self
 

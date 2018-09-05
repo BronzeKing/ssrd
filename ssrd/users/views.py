@@ -13,7 +13,12 @@ from rest_framework_jwt.settings import api_settings
 
 from ssrd import const
 from ssrd.contrib import APIView, UnAuthView, V, ViewSet
-from ssrd.contrib.serializer import ProjectSerializer, Serializer, UserSerializer, ProjectLogSerializer
+from ssrd.contrib.serializer import (
+    ProjectSerializer,
+    Serializer,
+    UserSerializer,
+    ProjectLogSerializer,
+)
 from ssrd.users import models as m
 from ssrd.users.steps import Step
 
@@ -351,7 +356,9 @@ class ProjectViewSet(ViewSet):
 
         user = request.user
         query = dict()
-        user.group.isCustom() and user.role > 0 and query.update(user=user)  # 内部员工获取全量项目
+        user.group.isCustom() and user.role > 0 and query.update(
+            user=user
+        )  # 内部员工获取全量项目
         status = [x.step for x in Step.steps(user)]
         if "status" in kwargs:
             status = set(status + kwargs["status"])
@@ -534,7 +541,9 @@ class ProjectLogViewSet(ViewSet):
         """
         obj = ProjectLog.objects.create(project=project, action=action, content=kwargs)
         obj.attatchment.add(*(attatchment or []))
-        project.status = Step(project.status)(request.user, action, project=project).step
+        project.status = Step(project.status)(
+            request.user, action, project=project
+        ).step
         project.save()
         return self.result_class(data=obj)(serialize=True)
 
@@ -774,6 +783,7 @@ class DocumentsViewSet(ViewSet):
     """
     文档
     """
+
     serializer_class = Serializer(m.Documents, dep=0)
 
     @para_ok_or_400(

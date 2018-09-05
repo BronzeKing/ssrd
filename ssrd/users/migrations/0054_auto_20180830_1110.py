@@ -5,14 +5,8 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0053_auto_20180829_1559'),
-    ]
+    dependencies = [("users", "0053_auto_20180829_1559")]
 
     operations = [
-        migrations.RenameField(
-            model_name='user',
-            old_name='groups',
-            new_name='group',
-        ),
+        migrations.RenameField(model_name="user", old_name="groups", new_name="group")
     ]

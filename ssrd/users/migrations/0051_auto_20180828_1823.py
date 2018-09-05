@@ -5,23 +5,44 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0050_auto_20180620_1557'),
-    ]
+    dependencies = [("users", "0050_auto_20180620_1557")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='user',
-            name='group',
+        migrations.RemoveField(model_name="user", name="group"),
+        migrations.AlterField(
+            model_name="project",
+            name="status",
+            field=models.SmallIntegerField(
+                choices=[
+                    (1, "下单"),
+                    (2, "转发"),
+                    (3, "设计方案"),
+                    (4, "审核"),
+                    (5, "发货"),
+                    (6, "实施"),
+                    (7, "签字"),
+                    (0, "终止"),
+                ],
+                default=1,
+                verbose_name="项目状态",
+            ),
         ),
         migrations.AlterField(
-            model_name='project',
-            name='status',
-            field=models.SmallIntegerField(choices=[(1, '下单'), (2, '转发'), (3, '设计方案'), (4, '审核'), (5, '发货'), (6, '实施'), (7, '签字'), (0, '终止')], default=1, verbose_name='项目状态'),
-        ),
-        migrations.AlterField(
-            model_name='projectlog',
-            name='action',
-            field=models.SmallIntegerField(choices=[(1, '签字'), (2, '审核'), (3, '协助申请'), (4, '工作日志'), (5, '设计方案'), (6, '发货'), (7, '驳回'), (8, '转发')], default=0, verbose_name='行为'),
+            model_name="projectlog",
+            name="action",
+            field=models.SmallIntegerField(
+                choices=[
+                    (1, "签字"),
+                    (2, "审核"),
+                    (3, "协助申请"),
+                    (4, "工作日志"),
+                    (5, "设计方案"),
+                    (6, "发货"),
+                    (7, "驳回"),
+                    (8, "转发"),
+                ],
+                default=0,
+                verbose_name="行为",
+            ),
         ),
     ]

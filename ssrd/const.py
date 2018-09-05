@@ -112,5 +112,6 @@ ProjectType = (
     ("exhibition", "展会协助"),
 )
 
+
 MediaDomain = "storage.mum5.cn"
 MediaUrl = f"http://{MediaDomain}"
