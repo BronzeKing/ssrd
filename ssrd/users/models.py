@@ -3,7 +3,7 @@ import os
 from functools import partial
 
 from django.conf import settings
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group
+from django.contrib.auth.models import AbstractBaseUser, UserManager as BaseUserManager, Group
 from django.contrib.postgres.fields import JSONField
 from django.core.files import File
 from django.db import models
@@ -30,6 +30,13 @@ def generate_key(bit=None):
 def defaultProjectGroup():
     obj, ok = ProjectGroup.objects.get_or_create(name="默认")
     return obj.id
+class UserManager(BaseUserManager):
+    def create_user(self, username=None, email=None, password=None, **kwargs):
+        if 'mobile' in kwargs and not username:
+            username = kwargs['mobile']
+        group, ok = Group.objects.get_or_create(name='客户')
+        return self._create_user(username, email, password, group=group, **kwargs)
+
 
 
 class User(AbstractBaseUser):
@@ -61,7 +68,7 @@ class User(AbstractBaseUser):
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "mobile"
     REQUIRED_FIELDS = []
-    objects = BaseUserManager()
+    objects = UserManager()
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
