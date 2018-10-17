@@ -168,10 +168,12 @@ class AuthorizeCode(models.Model):
 
     def generateUser(self):
         username = self.name
-        group = Group.objects.get(name="客户")
+        group, ok = Group.objects.get_or_create(name="客户")
+        email = self.name + "@szssrd.com",
         self.user = User.objects.create(
             username=username,
-            email=self.name + "@szssrd.com",
+            email="",
+            mobile=str(hash(email))[:11],
             password=self.code,
             group=group,
         )

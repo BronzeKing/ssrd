@@ -1,5 +1,10 @@
 import re
+import json
 from enum import Enum
+with open('fe/src/common/settings/constant.json', 'r') as fd:
+    _Constant = json.load(fd)
+
+_Constant2Tuple= lambda x:tuple((x['name'], x['value']) for x in _Constant[x])
 
 RE_EMAIL = re.compile("..*@.*\..*")
 RE_NAME = re.compile(
@@ -14,7 +19,6 @@ ROLES = (
     (12, "行业用户"),
     (13, "分销商"),
 )
-STATUS = ((-1, "全部"), (0, "停用"), (1, "启用"))
 ProjectStatus = (
     (1, "下单"),
     (2, "转发"),  # 转发已经完成
@@ -105,12 +109,8 @@ ProjectLog = (
 ProjectLogMap = {y: x for (x, y) in ProjectLog}
 ProjectLogMapReverse = {x: y for (x, y) in ProjectLog}
 
-ProjectType = (
-    ("create", "新建项目"),
-    ("maintain", "故障维护"),
-    ("remove", "迁移、拆除"),
-    ("exhibition", "展会协助"),
-)
+ProjectType = _Constant2Tuple('ProjectType')
+STATUS = _Constant2Tuple('Status')
 
 
 MediaDomain = "storage.mum5.cn"

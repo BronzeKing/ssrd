@@ -2,6 +2,7 @@
 .mypy_cache
 .ropeproject
 Pipfile.lock
+files
 
 *.icloud
 .DS_Store

@@ -224,7 +224,7 @@ class AuthorizeCodeViewSet(ViewSet):
             {"name": "search", "description": "名称搜索过滤"},
             {
                 "name": "status",
-                "method": V.Status,
+                "method": V.enum(const.STATUS),
                 "description": ("状态过滤",) + const.STATUS,
             },
         ]
@@ -257,7 +257,7 @@ class AuthorizeCodeViewSet(ViewSet):
             },
             {
                 "name": "status",
-                "method": V.num,
+                "method": V.enum(const.STATUS),
                 "description": ("授权码状态过滤",) + const.STATUS,
             },
         ]
@@ -388,7 +388,6 @@ class ProjectViewSet(ViewSet):
                 "name": "mobile",
                 "description": "手机",
                 "method": V.mobile,
-                "required": True,
             },
             {"name": "linkman", "description": "联系人", "required": True},
             {"name": "address", "description": "项目地址"},
@@ -406,10 +405,12 @@ class ProjectViewSet(ViewSet):
     )
     def create(self, request, group=None, attatchment=None, **kwargs):
         """新建项目"""
+        if 'mobile' not in kwargs:
+            kwargs['mobile'] = request.user.mobile
         group, ok = ProjectGroup.objects.get_or_create(
             user=request.user, name=group or kwargs["name"]
         )
-        not kwargs["content"] and kwargs.update(content=[])
+        'content' not in kwargs and kwargs.update(content=[])
         obj, ok = Project.objects.get_or_create(
             user=request.user, group=group, **kwargs
         )
