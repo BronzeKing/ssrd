@@ -27,9 +27,6 @@ def generate_key(bit=None):
     return binascii.hexlify(os.urandom(20)).decode()[:bit]
 
 
-def defaultProjectGroup():
-    obj, ok = ProjectGroup.objects.get_or_create(name="默认")
-    return obj.id
 class UserManager(BaseUserManager):
     def create_user(self, username=None, email=None, password=None, **kwargs):
         if 'mobile' in kwargs and not username:
@@ -56,7 +53,6 @@ class User(AbstractBaseUser):
     group = models.ForeignKey(
         Group,
         verbose_name=_("groups"),
-        blank=True,
         help_text=_(
             "The groups this user belongs to. A user will get all permissions "
             "granted to each of their groups."
@@ -217,8 +213,7 @@ class ProjectGroup(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         verbose_name="所属用户",
-        related_name="projectGroups",
-        default=6,
+        related_name="projectGroups"
     )
 
     class Meta:
@@ -242,8 +237,7 @@ class Project(models.Model):
         ProjectGroup,
         on_delete=models.CASCADE,
         verbose_name="所属项目组",
-        related_name="projects",
-        default=defaultProjectGroup,
+        related_name="projects"
     )
     name = models.CharField("项目名称", max_length=50)
     type = models.CharField(

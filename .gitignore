@@ -1,4 +1,5 @@
 ### OSX ###
+.pytest_cache
 .mypy_cache
 .ropeproject
 Pipfile.lock

@@ -44,6 +44,7 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.MD5PasswordHasher',
 ]
+DEFAULT_FILE_STORAGE = 'aspect.storage.FileBrowserStorage'
 
 # TEMPLATE LOADERS
 # ------------------------------------------------------------------------------
@@ -57,3 +58,10 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
         ],
     ],
 ]
+DATABASES = {
+    'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'test.db',
+            'TEST': {'NAME': 'test.db'}
+        }
+}

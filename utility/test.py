@@ -41,7 +41,5 @@ def sms():
     SmsClient.sendCaptcha('14574820226', {'code': '1234'})
 
 def file():
-    p = Project.objects.all()
-    for x in p:
-        response = FileBrowser.auth(x)
-        print(response)
+    from django.core.files.storage import default_storage
+    default_storage.save('asd', 'dsads')
