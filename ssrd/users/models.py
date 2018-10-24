@@ -2,8 +2,10 @@ import binascii
 import os
 from functools import partial
 
+from aspect.storage import FileBrowserStorage
 from django.conf import settings
-from django.contrib.auth.models import AbstractBaseUser, UserManager as BaseUserManager, Group
+from django.contrib.auth.models import AbstractBaseUser, Group
+from django.contrib.auth.models import UserManager as BaseUserManager
 from django.contrib.postgres.fields import JSONField
 from django.core.files import File
 from django.db import models
@@ -12,6 +14,9 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from ssrd import const
+
+fs = FileBrowserStorage()
+
 
 
 def isCustom(self):
@@ -29,11 +34,10 @@ def generate_key(bit=None):
 
 class UserManager(BaseUserManager):
     def create_user(self, username=None, email=None, password=None, **kwargs):
-        if 'mobile' in kwargs and not username:
-            username = kwargs['mobile']
-        group, ok = Group.objects.get_or_create(name='客户')
+        if "mobile" in kwargs and not username:
+            username = kwargs["mobile"]
+        group, ok = Group.objects.get_or_create(name="客户")
         return self._create_user(username, email, password, group=group, **kwargs)
-
 
 
 class User(AbstractBaseUser):
@@ -41,9 +45,7 @@ class User(AbstractBaseUser):
     username = models.CharField(
         _("username"),
         max_length=150,
-        help_text=_(
-            "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
-        ),
+        help_text=_("Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."),
         error_messages={"unique": _("A user with that username already exists.")},
     )
     mobile = models.CharField(_("Mobile Phone"), unique=True, max_length=11)
@@ -54,8 +56,7 @@ class User(AbstractBaseUser):
         Group,
         verbose_name=_("groups"),
         help_text=_(
-            "The groups this user belongs to. A user will get all permissions "
-            "granted to each of their groups."
+            "The groups this user belongs to. A user will get all permissions " "granted to each of their groups."
         ),
         related_name="user_set",
         related_query_name="user",
@@ -146,16 +147,10 @@ class Order(models.Model):
 class AuthorizeCode(models.Model):
     name = models.CharField("授权码名称", max_length=50)
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        verbose_name="授权码对应用户",
-        related_name="authorizecode",
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="授权码对应用户", related_name="authorizecode"
     )
     creator = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        verbose_name="所属用户",
-        related_name="authorizecodes",
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="所属用户", related_name="authorizecodes"
     )
     code = models.CharField("授权码", max_length=40, default=partial(generate_key, bit=6))
     status = models.SmallIntegerField("授权码状态", choices=const.STATUS, default=1)
@@ -165,36 +160,24 @@ class AuthorizeCode(models.Model):
     def generateUser(self):
         username = self.name
         group, ok = Group.objects.get_or_create(name="客户")
-        email = self.name + "@szssrd.com",
+        email = (self.name + "@szssrd.com",)
         self.user = User.objects.create(
-            username=username,
-            email="",
-            mobile=str(hash(email))[:11],
-            password=self.code,
-            group=group,
+            username=username, email="", mobile=str(hash(email))[:11], password=self.code, group=group
         )
         return self
 
     def __str__(self):
-        return "<AuthorizeCode: {}, {}, {}, {}>".format(
-            self.user, self.creator, self.code, self.status
-        )
+        return "<AuthorizeCode: {}, {}, {}, {}>".format(self.user, self.creator, self.code, self.status)
 
     __repr__ = __str__
 
 
 class Invitation(models.Model):
     creator = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        verbose_name="邀请码所属用户",
-        related_name="invitations",
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="邀请码所属用户", related_name="invitations"
     )
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="invited",
-        verbose_name="受邀用户",
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="invited", verbose_name="受邀用户"
     )
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
@@ -210,10 +193,7 @@ class ProjectGroup(models.Model):
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField("更新时间", auto_now=True)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        verbose_name="所属用户",
-        related_name="projectGroups"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="所属用户", related_name="projectGroups"
     )
 
     class Meta:
@@ -227,22 +207,11 @@ class ProjectGroup(models.Model):
 
 class Project(models.Model):
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        verbose_name="所属用户",
-        related_name="projects",
-        default=1,
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="所属用户", related_name="projects", default=1
     )
-    group = models.ForeignKey(
-        ProjectGroup,
-        on_delete=models.CASCADE,
-        verbose_name="所属项目组",
-        related_name="projects"
-    )
+    group = models.ForeignKey(ProjectGroup, on_delete=models.CASCADE, verbose_name="所属项目组", related_name="projects")
     name = models.CharField("项目名称", max_length=50)
-    type = models.CharField(
-        "项目类型", choices=const.ProjectType, max_length=20, default="create"
-    )
+    type = models.CharField("项目类型", choices=const.ProjectType, max_length=20, default="create")
     content = JSONField("内容", default=[])
     mobile = models.CharField(_("Mobile Phone"), blank=True, default="", max_length=11)
     status = models.SmallIntegerField("项目状态", choices=const.ProjectStatus, default=1)
@@ -266,12 +235,7 @@ class Project(models.Model):
 
 
 class ProjectLog(models.Model):
-    project = models.ForeignKey(
-        "users.Project",
-        on_delete=models.CASCADE,
-        verbose_name="所属项目",
-        related_name="logs",
-    )
+    project = models.ForeignKey("users.Project", on_delete=models.CASCADE, verbose_name="所属项目", related_name="logs")
     action = models.SmallIntegerField("行为", choices=const.ProjectLog, default=0)
     content = JSONField("内容")
     created = models.DateTimeField("创建时间", auto_now_add=True)
@@ -279,22 +243,15 @@ class ProjectLog(models.Model):
     attatchment = models.ManyToManyField("users.Documents", verbose_name="附件")
 
     def __str__(self):
-        return "<ProjectLog: {}, {}, {}>".format(
-            self.project, self.action, self.content
-        )
+        return "<ProjectLog: {}, {}, {}>".format(self.project, self.action, self.content)
 
     __repr__ = __str__
 
 
 class Collected(models.Model):
-    product = models.ForeignKey(
-        "home.Product", on_delete=models.CASCADE, verbose_name="收藏的产品"
-    )
+    product = models.ForeignKey("home.Product", on_delete=models.CASCADE, verbose_name="收藏的产品")
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        verbose_name="所属用户",
-        related_name="collects",
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="所属用户", related_name="collects"
     )
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
@@ -322,9 +279,7 @@ class Message(models.Model):
 
 class Directory(models.Model):
     name = models.CharField("文件名", max_length=255, default="")
-    parent = models.ForeignKey(
-        "self", null=True, blank=True, on_delete=models.CASCADE, related_name="dirs"
-    )
+    parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE, related_name="dirs")
     project = models.ForeignKey("users.Project", on_delete=models.CASCADE)
     updated = models.DateTimeField("更新时间", auto_now=True)
 
@@ -342,9 +297,7 @@ class Media(models.Model):
     file = models.FileField("文件", max_length=512)
     updated = models.DateTimeField("更新时间", auto_now=True)
     name = models.CharField("文件名", max_length=512, default="")
-    directory = models.ForeignKey(
-        Directory, on_delete=models.CASCADE, related_name="files"
-    )
+    directory = models.ForeignKey(Directory, on_delete=models.CASCADE, related_name="files")
 
     def __str__(self):
         return "<Media: {}   {}>".format(self.directory, self.name)
@@ -357,7 +310,7 @@ class Media(models.Model):
 
 class Documents(models.Model):
     name = models.CharField("文件名", max_length=255, default="")
-    file = models.FileField("文件")
+    file = models.FileField("文件", storage=fs)
     type = models.SmallIntegerField("文件类型", choices=const.DOCUMENTS, default=1)
     created = models.DateField("创建时间", auto_now_add=True)
     updated = models.DateTimeField("更新时间", auto_now=True)

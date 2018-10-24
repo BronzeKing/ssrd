@@ -50,4 +50,8 @@ def file():
 
     with open("cli.py", "rb") as fd:
         file = File(fd)
-        Documents.objects.create(name="test", source=100, file=file)
+        doc = Documents.objects.create(name="test111", source=100, file=file)
+        import ipdb
+
+        ipdb.set_trace(context=30)
+        print(doc)

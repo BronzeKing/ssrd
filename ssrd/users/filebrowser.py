@@ -16,6 +16,17 @@ def get_password(project):
     return base64.b64encode(f"{project.name}".encode("utf8")).decode("utf8")
 
 
+def compose_name(name: str, type: str, project) -> str:
+    return f"{project.name}/{type}/{name}"
+
+
+def destruct_name(name):
+    nameSplited = name.split("/")
+    projectName, type = nameSplited[0], nameSplited[1]
+    fileName = "/".join(name)
+    return fileName, type, projectName
+
+
 def get_project(name):
     from ssrd.users.models import Project
 
