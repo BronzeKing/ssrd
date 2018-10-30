@@ -1,10 +1,10 @@
-from tests import factories, TestCase
+from tests import TestCase, factories
 
 
 class UserTestCase(TestCase):
     def setUp(self):
         super(UserTestCase, self).setUp()
-        self.baseurl = '/users'
+        self.baseurl = "/users"
         self.factory = factories.UserFactory
         self.obj = self.factory()
 
@@ -13,26 +13,19 @@ class UserTestCase(TestCase):
 
     def test_list_filter(self):
 
-        self.data = {
-            'create': 10,
-            'role': 1,
-        }
+        self.data = {"create": 10, "role": 1}
         self.assertList(1)
 
     def test_create(self):
-        self.data = {
-            'email': 'email@a.com',
-            'username': 'create',
-            'password': '123456'
-        }
+        self.data = {"email": "email@a.com", "username": "create", "password": "123456"}
         self.asserter().assertResource()
 
     def test_update(self):
-        self.data = {'username': 'update'}
+        self.data = {"username": "update"}
         self.setBaseUrl(self.obj.id).asserter().assertResource()
 
     def test_update_status(self):
-        self.data = {'status': 0}
+        self.data = {"status": 0}
         self.setBaseUrl(self.obj.id).asserter().assertResource()
 
     def test_retrieve(self):
@@ -45,27 +38,27 @@ class UserTestCase(TestCase):
 class ProjectTestCase(TestCase):
     def setUp(self):
         super(ProjectTestCase, self).setUp()
-        self.baseurl = '/projects'
+        self.baseurl = "/projects"
         self.factory = factories.ProjectFactory
         self.obj = self.factory()
 
     def test_list(self):
         self.assertList()
-        self.data = {'status': '0'}
+        self.data = {"status": "0"}
         self.obj.status = 0
         self.obj.save()
         self.assertList()
 
     def test_create(self):
-        self.data = {'name': 'create', 'picture': factories.FileFactory()}
+        self.data = {"name": "create", "picture": factories.FileFactory()}
         self.asserter().assertResource()
 
     def test_update(self):
-        self.data = {'name': 'update'}
+        self.data = {"name": "update"}
         self.setBaseUrl(self.obj.id).asserter().assertResource()
 
     def test_update_status(self):
-        self.data = {'status': 0}
+        self.data = {"status": 0}
         self.setBaseUrl(self.obj.id).asserter().assertResource()
 
     def test_retrieve(self):
@@ -78,7 +71,7 @@ class ProjectTestCase(TestCase):
 class AuthorizeCodeTestCase(TestCase):
     def setUp(self):
         super(AuthorizeCodeTestCase, self).setUp()
-        self.baseurl = '/authorizecodes'
+        self.baseurl = "/authorizecodes"
         self.factory = factories.AuthorizeCodeFactory
         self.obj = self.factory()
 
@@ -89,7 +82,7 @@ class AuthorizeCodeTestCase(TestCase):
         self.asserter().assertResource()
 
     def test_update(self):
-        self.data = {'status': 0}
+        self.data = {"status": 0}
         self.setBaseUrl(self.obj.id).asserter().assertResource()
 
     def test_retrieve(self):
@@ -102,7 +95,7 @@ class AuthorizeCodeTestCase(TestCase):
 class CollectTestCase(TestCase):
     def setUp(self):
         super(CollectTestCase, self).setUp()
-        self.baseurl = '/collects'
+        self.baseurl = "/collects"
         self.factory = factories.CollectFactory
         self.obj = self.factory()
 
@@ -110,7 +103,7 @@ class CollectTestCase(TestCase):
         self.assertList()
 
     def test_create(self):
-        self.data = {'projectId': self.obj.project.id}
+        self.data = {"productId": self.obj.product.id}
         self.asserter().assertResource()
 
     def test_delete(self):
@@ -120,7 +113,7 @@ class CollectTestCase(TestCase):
 class InvitationTestCase(TestCase):
     def setUp(self):
         super(InvitationTestCase, self).setUp()
-        self.baseurl = '/invitations'
+        self.baseurl = "/invitations"
         self.factory = factories.InvitationFactory
         self.obj = self.factory()
 
@@ -131,7 +124,7 @@ class InvitationTestCase(TestCase):
 class MessagesTestCase(TestCase):
     def setUp(self):
         super(MessagesTestCase, self).setUp()
-        self.baseurl = '/messages'
+        self.baseurl = "/messages"
         self.factory = factories.MessageFactory
         self.obj = self.factory(userId=self.user.id)
 
@@ -139,7 +132,7 @@ class MessagesTestCase(TestCase):
         self.assertList()
 
     def test_create(self):
-        self.data = {'title': 'title', 'content': 'content', 'userId': self.user.id}
+        self.data = {"title": "title", "content": "content", "userId": self.user.id}
         self.asserter().assertResource()
 
     def test_delete(self):

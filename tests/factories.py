@@ -180,9 +180,18 @@ class UserFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ("username",)
 
 
+class ProjectGroupFactory(factory.django.DjangoModelFactory):
+    name = factory.Sequence(lambda n: "project group name-{0}".format(n))
+    user = factory.SubFactory(UserFactory)
+
+    class Meta:
+        model = "users.ProjectGroup"
+
+
 class ProjectFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
-    name = factory.Sequence(lambda n: "name-{0}".format(n))
+    name = factory.Sequence(lambda n: "project name-{0}".format(n))
+    group = factory.SubFactory(ProjectGroupFactory)
 
     class Meta:
         model = "users.Project"
@@ -205,7 +214,7 @@ class InvitationFactory(factory.django.DjangoModelFactory):
 
 
 class CollectFactory(factory.django.DjangoModelFactory):
-    project = factory.SubFactory(ProjectFactory)
+    product = factory.SubFactory(ProductFactory)
     user = factory.SubFactory(UserFactory)
 
     class Meta:
