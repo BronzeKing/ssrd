@@ -1,24 +1,17 @@
-import re
 import json
+import re
 from enum import Enum
-with open('fe/src/common/settings/constant.json', 'r') as fd:
+
+with open("fe/src/common/settings/constant.json", "r") as fd:
     _Constant = json.load(fd)
 
-_Constant2Tuple= lambda x:tuple((x['name'], x['value']) for x in _Constant[x])
+_Constant2Tuple = lambda x: tuple((x["name"], x["value"]) for x in _Constant[x])
 
 RE_EMAIL = re.compile("..*@.*\..*")
 RE_NAME = re.compile(
     "^[ \u4e00-\u9fa5_＿ａ-ｚＡ-Ｚa-zA-Z0-9０-９\`\~\!\@\#\$\%\^\&()\-\_\=\+\[\{\]\}',.·￣！＠＃￥％……＆×（）－——＝＋【｛】｝、｜；：「」『』‘’”“，《。》、？～＄＾＊＿]+$"
 )
-ROLES = (
-    (0, "管理员"),
-    (1, "经理"),
-    (2, "成员"),
-    (10, "个人用户"),
-    (11, "常规用户"),
-    (12, "行业用户"),
-    (13, "分销商"),
-)
+ROLES = ((0, "管理员"), (1, "经理"), (2, "成员"), (10, "个人用户"), (11, "常规用户"), (12, "行业用户"), (13, "分销商"))
 ProjectStatus = (
     (1, "下单"),
     (2, "转发"),  # 转发已经完成
@@ -78,15 +71,7 @@ SOURCES = (
     (0, "全部文档"),
 )
 
-DOCUMENTS = (
-    (0, "全部文档"),
-    (1, "说明文档"),
-    (2, "常用软件"),
-    (3, "设计方案"),
-    (4, "签证"),
-    (5, "项目材料"),
-    (6, "审核"),
-)
+DOCUMENTS = ((0, "全部文档"), (1, "说明文档"), (2, "常用软件"), (3, "设计方案"), (4, "签证"), (5, "项目材料"), (6, "审核"))
 CredentialKeyMap = dict((("email", "邮箱"), ("mobile", "手机")))
 
 GENDER = (("male", "男"), ("female", "女"))
@@ -95,22 +80,15 @@ MESSAGE = ((0, "全部消息"),)
 
 NEWS = ((0, "全部新闻"), (4, "首页公告"), (1, "公司新闻"), (2, "公益咨询"), (3, "咨询文章"))
 
-ProjectLog = (
-    (1, "签字"),
-    (2, "审核"),
-    (3, "协助申请"),
-    (4, "工作日志"),
-    (5, "设计方案"),
-    (6, "发货"),
-    (7, "驳回"),
-    (8, "转发"),
-)
+ProjectLog = ((1, "签字"), (2, "审核"), (3, "协助申请"), (4, "工作日志"), (5, "设计方案"), (6, "发货"), (7, "驳回"), (8, "转发"))
+
+ProjectPermission = ((1, "只读"),)
 
 ProjectLogMap = {y: x for (x, y) in ProjectLog}
 ProjectLogMapReverse = {x: y for (x, y) in ProjectLog}
 
-ProjectType = _Constant2Tuple('ProjectType')
-STATUS = _Constant2Tuple('Status')
+ProjectType = _Constant2Tuple("ProjectType")
+STATUS = _Constant2Tuple("Status")
 
 
 MediaDomain = "storage.mum5.cn"
