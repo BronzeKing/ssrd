@@ -1,8 +1,9 @@
-from rest_framework import serializers
 from django.conf import settings
-from ssrd.users.models import User, Group
+from rest_framework import serializers
+
 from ssrd import const
 from ssrd.users.filebrowser import FileBrowser
+from ssrd.users.models import Group, User
 
 ProjectType = dict(const.ProjectType)
 _methodMap = {
@@ -24,9 +25,7 @@ class ProjectLogSerializer(serializers.BaseSerializer):
             updated=o.updated,
             action=o.action,
             content=o.content,
-            attatchment=[
-                FileBrowser.getFile(o.project, x) for x in o.attatchment.all()
-            ],
+            attatchment=[FileBrowser.getFile(o.project, x) for x in o.attatchment.all()],
         )
 
 
@@ -42,9 +41,6 @@ class ProjectSerializer(serializers.BaseSerializer):
             linkman=o.linkman,
             budget=o.budget,
             address=o.address,
-            attatchment=[
-                dict(name=x.name, url=x.file.url) for x in o.attatchment.all()
-            ],
             company=o.company,
             created=o.created,
             updated=o.updated,

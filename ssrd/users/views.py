@@ -303,6 +303,7 @@ class ProjectViewSet(ViewSet):
         group, ok = ProjectGroup.objects.get_or_create(user=request.user, name=group or kwargs["name"])
         "content" not in kwargs and kwargs.update(content=[])
         obj, ok = Project.objects.get_or_create(user=request.user, group=group, **kwargs)
+        ProjectLog.objects.create(project=obj, content=[], action=20)
         attatchment and obj.attatchment.add(*attatchment)
         FileBrowser.createUser(obj)
         return self.result_class(data=obj)(serialize=True)

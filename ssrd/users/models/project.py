@@ -39,7 +39,6 @@ class Project(models.Model):
     budget = models.SmallIntegerField("工期", default=1)
     linkman = models.CharField("联系人", max_length=50)
     address = models.CharField("地址", null=True, max_length=255)
-    attatchment = models.ManyToManyField("users.Documents", verbose_name="附件")
     company = models.CharField("所属公司", max_length=255, null=True)
     created = models.DateTimeField("创建时间", auto_now_add=True, null=True)
     updated = models.DateTimeField(("更新时间"), auto_now=True)
