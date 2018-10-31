@@ -37,7 +37,6 @@ TEST_RUNNER = "django.test.runner.DiscoverRunner"
 # ------------------------------------------------------------------------------
 # Use fast password hasher so tests run faster
 PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
-DEFAULT_FILE_STORAGE = "aspect.storage.FileBrowserStorage"
 
 # TEMPLATE LOADERS
 # ------------------------------------------------------------------------------
@@ -48,4 +47,13 @@ TEMPLATES[0]["OPTIONS"]["loaders"] = [
         ["django.template.loaders.filesystem.Loader", "django.template.loaders.app_directories.Loader"],
     ]
 ]
-DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory", "TEST": {"NAME": ":memory"}}}
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": "0.0.0.0",
+        "NAME": ":memory",
+        "USER": "postgres",
+        "PASSWORD": "1qaz2wsx3edcPg!",
+        "TEST": {"NAME": ":memory"},
+    }
+}

@@ -38,6 +38,7 @@ class ConsultationArticlesFactory(factory.django.DjangoModelFactory):
 class ProductFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: "Product-{0}".format(n))
     category = factory.SubFactory(ProductCategoryFactory)
+    content = []  # type: list
 
     class Meta:
         model = "home.Product"
@@ -192,6 +193,14 @@ class ProjectFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     name = factory.Sequence(lambda n: "project name-{0}".format(n))
     group = factory.SubFactory(ProjectGroupFactory)
+    content = factory.Sequence(lambda n: "[]")
+
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        """Override the default ``_create`` with our custom call."""
+        manager = cls._get_manager(model_class)
+        kwargs["content"] = []
+        return manager.create(*args, **kwargs)
 
     class Meta:
         model = "users.Project"

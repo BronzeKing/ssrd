@@ -123,7 +123,7 @@ class UserViewSet(ViewSet):
             {"name": "group", "method": V.group, "description": "用户组ID"},
             {"name": "username", "method": V.name, "description": "用户名称"},
             {"name": "email", "method": V.email, "description": "用户邮箱"},
-            {"name": "status", "method": V.Status, "description": ("用户状态过滤",) + const.STATUS},
+            {"name": "status", **V.enum(const.STATUS)},
         ]
     )
     @perm_ok_or_403([{"method": lambda r, k: r.user.has_permission(k["user"]), "reason": "无权限"}])
@@ -311,15 +311,15 @@ class ProjectViewSet(ViewSet):
         [
             {"name": "pk", "method": V.project, "description": "项目ID", "replace": "obj"},
             {"name": "status", **V.enum(const.ProjectStatus)},
-            {"name": "name", "description": "项目名称", "method": V.name, "required": True},
+            {"name": "name", "description": "项目名称", "method": V.name},
             {"name": "attatchment", "description": "项目文档", "method": V.files, "type": "file"},
             {
                 "name": "type",
                 "description": ("项目类型",) + const.ProjectType,
                 "method": lambda x: x in dict(const.ProjectType) and x,
             },
-            {"name": "mobile", "description": "手机", "method": V.mobile, "required": True},
-            {"name": "linkman", "description": "联系人", "required": True},
+            {"name": "mobile", "description": "手机", "method": V.mobile},
+            {"name": "linkman", "description": "联系人"},
             {"name": "address", "description": "项目地址"},
             {"name": "remark", "description": "补充说明"},
             {"name": "content", "method": V.json, "description": "项目内容"},
@@ -331,7 +331,7 @@ class ProjectViewSet(ViewSet):
     @perm_ok_or_403([{"method": lambda r, k: r.user.has_permission(k["obj"]), "reason": "无权限更改此项目"}])
     def update(self, request, obj=None, group=None, name=None, status=None, **kwargs):
         """更新项目"""
-        group, ok = ProjectGroup.objects.get_or_create(name=group or name, user=obj.user)
+        group = ProjectGroup.objects.filter(name=group, user=obj.user).first()
         status and setattr(obj, "status", status)
         name and setattr(obj, "name", name)
         group and setattr(obj, "group", group)
@@ -343,7 +343,7 @@ class ProjectViewSet(ViewSet):
     def destroy(self, request, obj=None, status=None, **kwargs):
         """删除项目"""
         obj.delete()
-        return self.result_class(obj)(serialize=True)
+        return self.result_class({})()
 
     @para_ok_or_400([{"name": "pk", "method": V.project, "description": "项目ID", "replace": "obj"}])
     @perm_ok_or_403([{"method": lambda r, k: r.user.has_permission(k["obj"]), "reason": "无权限查看此项目"}])

@@ -9,11 +9,6 @@ class UserTestCase(TestCase):
         self.obj = self.factory()
 
     def test_list(self):
-        self.assertList(2)
-
-    def test_list_filter(self):
-
-        self.data = {"create": 10, "role": 1}
         self.assertList(1)
 
     def test_create(self):
@@ -22,10 +17,6 @@ class UserTestCase(TestCase):
 
     def test_update(self):
         self.data = {"username": "update"}
-        self.setBaseUrl(self.obj.id).asserter().assertResource()
-
-    def test_update_status(self):
-        self.data = {"status": 0}
         self.setBaseUrl(self.obj.id).asserter().assertResource()
 
     def test_retrieve(self):
@@ -50,7 +41,7 @@ class ProjectTestCase(TestCase):
         self.assertList()
 
     def test_create(self):
-        self.data = {"name": "create", "picture": factories.FileFactory()}
+        self.data = {"name": "create", "type": "create", "linkman": "test", "budget": 1000, "duration": 100}
         self.asserter().assertResource()
 
     def test_update(self):
@@ -68,28 +59,28 @@ class ProjectTestCase(TestCase):
         self.setBaseUrl(self.obj.id).asserter().assertResource()
 
 
-class AuthorizeCodeTestCase(TestCase):
-    def setUp(self):
-        super(AuthorizeCodeTestCase, self).setUp()
-        self.baseurl = "/authorizecodes"
-        self.factory = factories.AuthorizeCodeFactory
-        self.obj = self.factory()
+# class AuthorizeCodeTestCase(TestCase):
+# def setUp(self):
+# super(AuthorizeCodeTestCase, self).setUp()
+# self.baseurl = "/authorizecodes"
+# self.factory = factories.AuthorizeCodeFactory
+# self.obj = self.factory()
 
-    def test_list(self):
-        self.assertList()
+# def test_list(self):
+# self.assertList()
 
-    def test_create(self):
-        self.asserter().assertResource()
+# def test_create(self):
+# self.asserter().assertResource()
 
-    def test_update(self):
-        self.data = {"status": 0}
-        self.setBaseUrl(self.obj.id).asserter().assertResource()
+# def test_update(self):
+# self.data = {"status": 0}
+# self.setBaseUrl(self.obj.id).asserter().assertResource()
 
-    def test_retrieve(self):
-        self.setBaseUrl(self.obj.id).asserter().assertResource()
+# def test_retrieve(self):
+# self.setBaseUrl(self.obj.id).asserter().assertResource()
 
-    def test_delete(self):
-        self.setBaseUrl(self.obj.id).asserter().assertResource()
+# def test_delete(self):
+# self.setBaseUrl(self.obj.id).asserter().assertResource()
 
 
 class CollectTestCase(TestCase):
